@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Brain } from "lucide-react";
 
 export default function Home() {
@@ -14,6 +15,10 @@ export default function Home() {
 
   return (
     <div className="container relative mx-auto px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="flex min-h-screen flex-col items-center justify-center gap-8 py-8">
         <div className="text-center space-y-6">
           <div className="flex items-center justify-center gap-3 text-primary">

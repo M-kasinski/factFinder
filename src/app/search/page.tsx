@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResults } from "@/components/SearchResults";
 import { LLMResponse } from "@/components/LLMResponse";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { performSearch } from "@/lib/search-service";
 import type { SearchState } from "@/types/search";
 import { toast } from "sonner";
@@ -63,22 +64,26 @@ export default function SearchPage() {
   return (
     <div className="container mx-auto px-4">
       <div className="flex flex-col gap-6 py-4">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/")}
-            className="hover:bg-accent"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => router.push("/")}
+              className="hover:bg-accent rounded-full"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
 
-          <div className="flex items-center gap-3">
-            <Brain className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold tracking-tighter">
-              FactFinder
-            </h1>
+            <div className="flex items-center gap-3">
+              <Brain className="h-8 w-8 text-primary" />
+              <h1 className="text-2xl font-bold tracking-tighter">
+                FactFinder
+              </h1>
+            </div>
           </div>
+
+          <ThemeToggle />
         </div>
 
         <div className="w-full max-w-2xl">
