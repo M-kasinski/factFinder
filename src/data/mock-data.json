@@ -1,0 +1,90 @@
+{
+  "queries": {
+    "intelligence artificielle": {
+      "results": [
+        {
+          "title": "L'Intelligence Artificielle : Guide Complet",
+          "link": "https://example.com/ia-guide",
+          "snippet": "Un guide complet sur l'IA, ses applications et son impact sur notre société. Découvrez les différents types d'IA et leur fonctionnement.",
+          "source": "TechGuide"
+        },
+        {
+          "title": "Les dernières avancées en IA - 2024",
+          "link": "https://example.com/ia-2024",
+          "snippet": "Les développements majeurs en intelligence artificielle cette année, incluant les LLMs et l'IA générative.",
+          "source": "AI News"
+        },
+        {
+          "title": "Éthique et IA : Les enjeux actuels",
+          "link": "https://example.com/ethique-ia",
+          "snippet": "Analyse des questions éthiques soulevées par le développement de l'intelligence artificielle.",
+          "source": "Ethics Daily"
+        }
+      ],
+      "llmAnalysis": {
+        "summary": "L'intelligence artificielle est un domaine en constante évolution qui transforme de nombreux secteurs. Les développements récents se concentrent particulièrement sur:\n\n- Les modèles de langage (LLMs)\n- L'IA générative\n- Les applications pratiques dans l'industrie",
+        "keyPoints": [
+          "Les LLMs représentent une avancée majeure dans le traitement du langage naturel",
+          "L'éthique est une préoccupation centrale dans le développement de l'IA",
+          "Les applications pratiques de l'IA se multiplient dans divers secteurs"
+        ],
+        "sources": [
+          "TechGuide - Guide de référence sur l'IA",
+          "AI News - Actualités 2024",
+          "Ethics Daily - Rapport sur l'éthique"
+        ],
+        "confidence": 0.92
+      }
+    },
+    "ia": {
+      "results": [
+        {
+          "title": "Introduction à l'IA",
+          "link": "https://example.com/intro-ia",
+          "snippet": "Une introduction simple et claire à l'intelligence artificielle et ses concepts de base.",
+          "source": "TechGuide"
+        }
+      ],
+      "llmAnalysis": {
+        "summary": "L'IA (Intelligence Artificielle) est un domaine fondamental de l'informatique moderne qui vise à créer des systèmes capables d'imiter l'intelligence humaine.",
+        "keyPoints": [
+          "L'IA est un terme générique qui englobe plusieurs sous-domaines",
+          "Les applications de l'IA sont de plus en plus présentes dans notre quotidien"
+        ],
+        "sources": [
+          "TechGuide - Introduction à l'IA"
+        ],
+        "confidence": 0.85
+      }
+    },
+    "développement web": {
+      "results": [
+        {
+          "title": "Next.js 14 : Le Guide Complet",
+          "link": "https://example.com/nextjs-14",
+          "snippet": "Tout ce que vous devez savoir sur Next.js 14, le framework React moderne pour la production.",
+          "source": "Dev Insights"
+        },
+        {
+          "title": "Tendances Web 2024",
+          "link": "https://example.com/web-trends-2024",
+          "snippet": "Les technologies et pratiques web qui domineront l'année 2024.",
+          "source": "WebDev Magazine"
+        }
+      ],
+      "llmAnalysis": {
+        "summary": "Le développement web en 2024 est marqué par une forte adoption des frameworks modernes et des architectures JAMstack. Next.js continue d'être un leader dans l'écosystème React.",
+        "keyPoints": [
+          "Next.js 14 apporte des améliorations significatives en termes de performance",
+          "L'adoption du Server Components devient mainstream",
+          "L'importance croissante de l'accessibilité web"
+        ],
+        "sources": [
+          "Dev Insights - Article technique",
+          "WebDev Magazine - Analyse des tendances"
+        ],
+        "confidence": 0.88
+      }
+    }
+  }
+} 
