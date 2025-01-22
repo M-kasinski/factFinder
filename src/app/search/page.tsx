@@ -6,6 +6,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { SearchResults } from "@/components/SearchResults";
 import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SearchDrawer } from "@/components/SearchDrawer";
 import { performSearch } from "@/lib/search-service";
 import type { SearchState } from "@/types/search";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [searchState, setSearchState] = useState<SearchState>({
     isLoading: false,
@@ -62,7 +64,7 @@ export default function SearchPage() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4">
+    <div className={`container mx-auto px-4 transition-all duration-300 ${isDrawerOpen ? 'pr-[520px]' : ''}`}>
       <div className="flex flex-col gap-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -94,13 +96,21 @@ export default function SearchPage() {
           <LLMResponse
             analysis={searchState.llmResponse}
             isLoading={searchState.isLoading}
+            onShowResults={() => setIsDrawerOpen(true)}
           />
           <SearchResults
             results={searchState.results}
             isLoading={searchState.isLoading}
+            onClick={() => setIsDrawerOpen(true)}
           />
         </div>
       </div>
+
+      <SearchDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        results={searchState.results}
+      />
 
       <div className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
         <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />

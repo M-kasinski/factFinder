@@ -1,7 +1,8 @@
 export interface SearchResult {
   title: string;
-  link: string;
-  snippet: string;
+  url: string;
+  date: string;
+  description: string;
   source?: string;
 }
 
