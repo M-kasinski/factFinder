@@ -4,22 +4,39 @@
       "results": [
         {
           "title": "L'Intelligence Artificielle : Guide Complet",
+          "favicon": "https://example.com/favicon.ico",
           "link": "https://example.com/ia-guide",
           "snippet": "Un guide complet sur l'IA, ses applications et son impact sur notre société. Découvrez les différents types d'IA et leur fonctionnement.",
-          "source": "TechGuide"
+          "source": "TechGuide",
+          "date": "2024/03/15",
+          "siteName": "TechGuide",
+          "image": "https://example.com/image.jpg"
         },
         {
           "title": "Les dernières avancées en IA - 2024",
+          "favicon": "https://example.com/favicon.ico",
           "link": "https://example.com/ia-2024",
           "snippet": "Les développements majeurs en intelligence artificielle cette année, incluant les LLMs et l'IA générative.",
-          "source": "AI News"
+          "source": "AI News",
+          "date": "2024/03/15",
+          "siteName": "AI News",
+          "image": "https://example.com/image.jpg"
         },
         {
           "title": "Éthique et IA : Les enjeux actuels",
+          "favicon": "https://example.com/favicon.ico",
           "link": "https://example.com/ethique-ia",
           "snippet": "Analyse des questions éthiques soulevées par le développement de l'intelligence artificielle.",
-          "source": "Ethics Daily"
+          "source": "Ethics Daily",
+          "date": "2024/03/15",
+          "siteName": "Ethics Daily",
+          "image": "https://example.com/image.jpg"
         }
+      ],
+      "relatedSearch": [
+        "intelligence artificielle",
+        "IA générative",
+        "modèles de langage"
       ],
       "llmAnalysis": {
         "summary": "L'intelligence artificielle est un domaine en constante évolution qui transforme de nombreux secteurs. Les développements récents se concentrent particulièrement sur:\n\n- Les modèles de langage (LLMs)\n- L'IA générative\n- Les applications pratiques dans l'industrie",
@@ -40,6 +57,7 @@
       "results": [
         {
           "title": "Introduction à l'IA",
+          "favicon": "https://example.com/favicon.ico",
           "link": "https://example.com/intro-ia",
           "snippet": "Une introduction simple et claire à l'intelligence artificielle et ses concepts de base.",
           "source": "TechGuide"
