@@ -28,9 +28,7 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="min-h-screen">
-            {children}
-          </main>
+          {children}
           <Toaster richColors closeButton position="top-center" />
         </ThemeProvider>
       </body>
