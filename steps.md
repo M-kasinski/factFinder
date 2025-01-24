@@ -40,6 +40,17 @@
 - [ ] Intégration du LLM pour l'analyse des résultats
 - [ ] Gestion des erreurs et des timeouts
 
+## Étape 7 : Composant Sources ✅ (2025-01-24)
+- [x] Création du composant `SourcesComponent` pour l'affichage des sources
+- [x] Implémentation de l'affichage des 3 sources principales
+- [x] Ajout de la carte avec les sources supplémentaires
+- [x] Intégration dans la page de recherche
+- [x] Optimisation de l'affichage horizontal (210px)
+- [x] Support du défilement tactile pour mobile
+- [x] Ajout de la barre de défilement desktop
+- [x] Amélioration du design responsive
+- [x] Optimisation de l'accessibilité
+
 ## Prochaines étapes
 - [ ] Amélioration de l'UI/UX
 - [ ] Ajout de fonctionnalités avancées (filtres, historique)

@@ -12,6 +12,7 @@ import type { SearchState } from "@/types/search";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SourcesComponent from "@/components/SourcesComponent";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -93,6 +94,11 @@ function SearchPageContent() {
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl">
+          <SourcesComponent 
+            results={searchState.results}
+            isLoading={searchState.isLoading}
+            onShowAll={() => setIsDrawerOpen(true)}
+          />
           <LLMResponse
             analysis={searchState.llmResponse}
             isLoading={searchState.isLoading}
