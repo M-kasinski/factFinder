@@ -7,8 +7,8 @@ import { SearchResults } from "@/components/SearchResults";
 import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
-import { performSearch } from "@/lib/search-service";
-import type { SearchState } from "@/types/search";
+import { useEventSource } from "@/hooks/useEventSource";
+import { messagesToLLMAnalysis } from "@/lib/utils";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,44 +19,28 @@ function SearchPageContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [currentQuery, setCurrentQuery] = useState(initialQuery);
 
-  const [searchState, setSearchState] = useState<SearchState>({
-    isLoading: false,
-    results: [],
-    llmResponse: null,
+  const { results, messages, isLoading, error } = useEventSource({
+    query: currentQuery,
+    enabled: !!currentQuery
   });
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = (query: string) => {
     if (!query.trim()) return;
 
     // Update URL with new search query
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
     window.history.pushState({}, "", newUrl);
+    
+    setCurrentQuery(query);
+  };
 
-    setSearchState(prev => ({ ...prev, isLoading: true, error: undefined }));
-
-    try {
-      const response = await performSearch(query);
-      
-      setSearchState({
-        isLoading: false,
-        results: response.results,
-        llmResponse: response.llmAnalysis,
-      });
-
-      if (response.results.length === 0) {
-        toast.info("Aucun résultat trouvé pour cette recherche.");
-      }
-    } catch (error) {
-      console.error("Erreur de recherche:", error);
-      setSearchState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: "Une erreur est survenue lors de la recherche.",
-      }));
+  useEffect(() => {
+    if (error) {
       toast.error("Une erreur est survenue lors de la recherche.");
     }
-  };
+  }, [error]);
 
   useEffect(() => {
     if (initialQuery) {
@@ -95,18 +79,18 @@ function SearchPageContent() {
 
         <div className="mt-8 space-y-6 max-w-4xl">
           <SourcesComponent 
-            results={searchState.results}
-            isLoading={searchState.isLoading}
+            results={results}
+            isLoading={isLoading}
             onShowAll={() => setIsDrawerOpen(true)}
           />
           <LLMResponse
-            analysis={searchState.llmResponse}
-            isLoading={searchState.isLoading}
+            analysis={messagesToLLMAnalysis(messages)}
+            isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
           />
           <SearchResults
-            results={searchState.results}
-            isLoading={searchState.isLoading}
+            results={results}
+            isLoading={isLoading}
             onClick={() => setIsDrawerOpen(true)}
           />
         </div>
@@ -115,7 +99,7 @@ function SearchPageContent() {
       <SearchDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        results={searchState.results}
+        results={results}
       />
 
       <div className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">

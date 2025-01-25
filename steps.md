@@ -34,11 +34,12 @@
 - [x] Gestion des paramètres d'URL pour la recherche
 - [x] Intégration du bouton de retour à l'accueil
 
-## Étape 6 : Intégration des APIs (à venir)
-- [ ] Configuration des clés d'API
-- [ ] Intégration de l'API de recherche Web
-- [ ] Intégration du LLM pour l'analyse des résultats
-- [ ] Gestion des erreurs et des timeouts
+## Étape 6 : Intégration des APIs ✅ (2025-01-24)
+- [x] Configuration des clés d'API
+- [x] Intégration de l'API de recherche Web avec EventSource
+- [x] Création d'un hook personnalisé useEventSource
+- [x] Adaptation des composants pour le streaming des résultats
+- [x] Gestion des erreurs et des timeouts
 
 ## Étape 7 : Composant Sources ✅ (2025-01-24)
 - [x] Création du composant `SourcesComponent` pour l'affichage des sources
@@ -50,6 +51,14 @@
 - [x] Ajout de la barre de défilement desktop
 - [x] Amélioration du design responsive
 - [x] Optimisation de l'accessibilité
+
+## Étape 8 : Implémentation de l'API EventSource (2025-01-24)
+- [x] Création d'un hook personnalisé pour gérer l'EventSource
+- [x] Intégration de l'API dans le service de recherche
+- [x] Gestion des différents types de messages (results, message, end)
+- [x] Stockage des résultats dans le state
+- [x] Adaptation des composants pour utiliser les nouveaux résultats
+- [x] Tests de l'intégration en temps réel
 
 ## Prochaines étapes
 - [ ] Amélioration de l'UI/UX

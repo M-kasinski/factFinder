@@ -1,27 +1,29 @@
-import type { SearchResult, LLMAnalysis } from "@/types/search";
+import type { SearchResult } from "@/types/search";
 import mockData from "@/data/mock-data.json";
 
-interface SearchResponse {
+export interface SearchResponse {
   results: SearchResult[];
-  llmAnalysis: LLMAnalysis;
+  messages: string[];
 }
 
 // Simule un délai d'API
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function performSearch(query: string): Promise<SearchResponse> {
-  // Simule un appel API
-  await delay(1000);
-
   // En mode développement, retourne les données de test
   if (process.env.NODE_ENV === "development") {
-    console.log('Recherche pour:', query); // Pour debug
+    await delay(1000); // Simule la latence
+    console.log('Recherche pour:', query);
     return {
       results: mockData.results,
-      llmAnalysis: mockData.llmAnalysis
+      messages: ["Voici les résultats de votre recherche"]
     };
   }
 
-  // En production, cette partie appellerait l'API réelle
+  // En production, cette partie utiliserait l'EventSource
   throw new Error("API non implémentée en production");
+}
+
+export function createSearchEventSource(query: string): EventSource {
+  return new EventSource(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
 } 
