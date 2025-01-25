@@ -1,5 +1,6 @@
 import React from 'react';
 import { Globe } from 'lucide-react';
+import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { SearchResult } from "@/types/search";
@@ -47,7 +48,21 @@ const SourcesComponent: React.FC<SourcesComponentProps> = ({
                 <a href={source.url} target="_blank" rel="noopener noreferrer" className="block h-full">
                   <div className="flex items-center gap-2 h-full">
                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Globe className="h-3 w-3 text-primary" />
+                      {source.meta_url?.favicon ? (
+                        <Image
+                          src={source.meta_url.favicon}
+                          alt={`${source.source || getSiteName(source.url)} favicon`}
+                          width={12}
+                          height={12}
+                          className="h-3 w-3 object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.nextElementSibling?.classList.remove('hidden');
+                          }}
+                        />
+                      ) : null}
+                      <Globe className={`h-3 w-3 text-primary ${source.meta_url?.favicon ? 'hidden' : ''}`} />
                     </div>
                     <div className="min-w-0 flex-1 flex flex-col justify-between h-full">
                       <h3 className="text-xs font-medium line-clamp-2 leading-tight">
@@ -84,7 +99,21 @@ const SourcesComponent: React.FC<SourcesComponentProps> = ({
                             zIndex: 3 - index,
                           }}
                         >
-                          <Globe className="h-3 w-3 text-primary" />
+                          {hiddenSources[index].meta_url?.favicon ? (
+                            <Image
+                              src={hiddenSources[index].meta_url.favicon}
+                              alt={`${hiddenSources[index].source || getSiteName(hiddenSources[index].url)} favicon`}
+                              width={12}
+                              height={12}
+                              className="h-3 w-3 object-contain"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <Globe className={`h-3 w-3 text-primary ${hiddenSources[index].meta_url?.favicon ? 'hidden' : ''}`} />
                         </div>
                       ))}
                     </div>

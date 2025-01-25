@@ -4,6 +4,13 @@ export interface SearchResult {
   date: string;
   description: string;
   source?: string;
+  meta_url?: {
+    favicon?: string;
+    hostname: string;
+    netloc: string;
+    scheme: string;
+    path: string;
+  };
 }
 
 export interface LLMAnalysis {
