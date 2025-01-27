@@ -26,16 +26,25 @@ interface VideoCarouselProps {
 export function VideoCarousel({ videos, isVisible }: VideoCarouselProps) {
   if (!isVisible || !videos.length) return null;
 
+  // Filtrer les vidéos valides (avec miniature)
+  const validVideos = videos.filter(
+    (video) => video.thumbnail?.src && video.title && video.description
+  );
+
+  // Ne rien afficher si aucune vidéo valide
+  if (validVideos.length === 0) return null;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
+        <Play className="h-5 w-5 text-primary" />
         <h2 className="text-lg font-semibold">Vidéos</h2>
       </div>
 
       <div className="w-full py-2">
         <Carousel className="w-full">
           <CarouselContent className="-ml-4">
-            {videos.map((video, index) => (
+            {validVideos.map((video, index) => (
               <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <Link href={video.url} target="_blank" rel="noopener noreferrer">
                   <Card className="h-[280px]">
