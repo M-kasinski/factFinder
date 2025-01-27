@@ -8,12 +8,12 @@ export interface SearchBarProps {
   defaultValue?: string;
 }
 
-const suggestions = [
-  "Actualités UE",
-  "Politique européenne",
-  "Commission européenne",
-  "Parlement européen"
-];
+// const suggestions = [
+//   "Actualités UE",
+//   "Politique européenne",
+//   "Commission européenne",
+//   "Parlement européen"
+// ];
 
 export function SearchBar({ onSearch, defaultValue = "" }: SearchBarProps) {
   const [query, setQuery] = useState(defaultValue);
@@ -24,10 +24,10 @@ export function SearchBar({ onSearch, defaultValue = "" }: SearchBarProps) {
     onSearch(query);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setQuery(suggestion);
-    onSearch(suggestion);
-  };
+  // const handleSuggestionClick = (suggestion: string) => {
+  //   setQuery(suggestion);
+  //   onSearch(suggestion);
+  // };
 
   return (
     <div className="w-full">
@@ -67,7 +67,7 @@ export function SearchBar({ onSearch, defaultValue = "" }: SearchBarProps) {
       </form>
 
       {/* Suggestions */}
-      {isFocused && query && (
+      {/* {isFocused && query && (
         <div className="absolute mt-2 w-full bg-background rounded-lg shadow-lg border border-border overflow-hidden z-50">
           {suggestions
             .filter(s => s.toLowerCase().includes(query.toLowerCase()))
@@ -83,7 +83,7 @@ export function SearchBar({ onSearch, defaultValue = "" }: SearchBarProps) {
             ))
           }
         </div>
-      )}
+      )} */}
     </div>
   );
 } 

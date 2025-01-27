@@ -38,22 +38,22 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto animate-fade-in-up delay-200">
-            <div className="p-6 rounded-xl bg-card hover:bg-accent/10 border border-border transition-all duration-300 hover:scale-105">
+            <div className="group p-6 rounded-xl bg-card hover:bg-black border border-border transition-all duration-300 hover:scale-105">
               <div className="flex items-center gap-3">
-                <Scale className="h-6 w-6 text-primary" />
-                <p className="text-lg font-medium text-primary">Fast, sourced and unbiased answers.</p>
+                <Scale className="h-6 w-6 text-primary group-hover:text-white" />
+                <p className="text-lg font-medium text-primary group-hover:text-white">Fast, sourced and unbiased answers.</p>
               </div>
             </div>
-            <div className="p-6 rounded-xl bg-card hover:bg-accent/10 border border-border transition-all duration-300 hover:scale-105">
+            <div className="group p-6 rounded-xl bg-card hover:bg-black border border-border transition-all duration-300 hover:scale-105">
               <div className="flex items-center gap-3">
-                <Zap className="h-6 w-6 text-primary" />
-                <p className="text-lg font-medium text-primary">Your search, your truth.</p>
+                <Zap className="h-6 w-6 text-primary group-hover:text-white" />
+                <p className="text-lg font-medium text-primary group-hover:text-white">Your search, your truth.</p>
               </div>
             </div>
-            <div className="p-6 rounded-xl bg-card hover:bg-accent/10 border border-border transition-all duration-300 hover:scale-105">
+            <div className="group p-6 rounded-xl bg-card hover:bg-black border border-border transition-all duration-300 hover:scale-105">
               <div className="flex items-center gap-3">
-                <Lightbulb className="h-6 w-6 text-primary" />
-                <p className="text-lg font-medium text-primary">For enlightened and quick search.</p>
+                <Lightbulb className="h-6 w-6 text-primary group-hover:text-white" />
+                <p className="text-lg font-medium text-primary group-hover:text-white">For enlightened and quick search.</p>
               </div>
             </div>
           </div>
