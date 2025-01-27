@@ -7,6 +7,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
+import { VideoCarousel } from "@/components/VideoCarousel";
 import { useEventSource } from "@/hooks/useEventSource";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
@@ -20,18 +21,15 @@ function SearchPageContent() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
 
-  const { results, messages, isLoading, error } = useEventSource({
+  const { results, messages, videos, showVideos, isLoading, error } = useEventSource({
     query: currentQuery,
     enabled: !!currentQuery,
   });
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
-
-    // Update URL with new search query
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
     window.history.pushState({}, "", newUrl);
-
     setCurrentQuery(query);
   };
 
@@ -91,6 +89,7 @@ function SearchPageContent() {
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
           />
+          <VideoCarousel videos={videos} isVisible={showVideos} />
           {/* <SearchResults
             results={results}
             isLoading={isLoading}

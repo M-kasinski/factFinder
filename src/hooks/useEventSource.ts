@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
+import type { SearchResult } from "@/types/search";
 
-type MessageType = "results" | "message" | "end";
-type MessageData = [MessageType, string | any[]];
+interface WebMessage {
+  results: SearchResult[];
+  type?: string;
+}
+
+type MessageType = "web" | "message" | "end" | "videos";
+
+type MessageData = [MessageType, string | WebMessage];
 
 interface UseEventSourceProps {
   query: string;
@@ -9,8 +16,10 @@ interface UseEventSourceProps {
 }
 
 interface UseEventSourceReturn {
-  results: any[];
+  results: SearchResult[];
   messages: string;
+  videos: SearchResult[];
+  showVideos: boolean;
   isLoading: boolean;
   error: Error | null;
 }
@@ -19,18 +28,24 @@ export function useEventSource({
   query,
   enabled = true,
 }: UseEventSourceProps): UseEventSourceReturn {
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [messages, setMessages] = useState<string>("");
+  const [videos, setVideos] = useState<SearchResult[]>([]);
+  const [showVideos, setShowVideos] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     if (!query || !enabled) return;
 
+    let pendingVideos: SearchResult[] = [];
+
     setIsLoading(true);
     setError(null);
     setResults([]);
     setMessages("");
+    setVideos([]);
+    setShowVideos(false);
 
     const evtSource = new EventSource(
       `http://localhost:3000/search?q=${encodeURIComponent(query)}`
@@ -41,16 +56,20 @@ export function useEventSource({
         const [type, message]: MessageData = JSON.parse(event.data);
 
         switch (type) {
-          case "results":
-            setResults(message as any[]);
+          case "web":
+            setResults((message as WebMessage).results);
             break;
           case "message":
-            setMessages((prev) => {
-              const currentMessage = message as string;
-              return prev + currentMessage;
-            });
+            setMessages((prev) => prev + (message as string));
+            break;
+          case "videos":
+            pendingVideos = (message as WebMessage).results;
             break;
           case "end":
+            if (pendingVideos.length > 0) {
+              setVideos(pendingVideos);
+              setShowVideos(true);
+            }
             evtSource.close();
             setIsLoading(false);
             break;
@@ -76,6 +95,8 @@ export function useEventSource({
   return {
     results,
     messages,
+    videos,
+    showVideos,
     isLoading,
     error,
   };
