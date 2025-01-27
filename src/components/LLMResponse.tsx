@@ -1,19 +1,22 @@
 "use client";
 
-import { LLMAnalysis } from "@/types/search";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface LLMResponseProps {
-  analysis: LLMAnalysis | null;
   isLoading: boolean;
   onShowResults?: () => void;
+  streamingContent?: string;
 }
 
-export function LLMResponse({ analysis, isLoading, onShowResults }: LLMResponseProps) {
-  if (isLoading) {
+export function LLMResponse({ 
+  isLoading, 
+  onShowResults,
+  streamingContent = ""
+}: LLMResponseProps) {
+  if (isLoading && streamingContent.length === 0) {
     return (
       <Card className="p-6 animate-pulse">
         <div className="space-y-4">
@@ -23,10 +26,6 @@ export function LLMResponse({ analysis, isLoading, onShowResults }: LLMResponseP
         </div>
       </Card>
     );
-  }
-
-  if (!analysis) {
-    return null;
   }
 
   return (
@@ -43,22 +42,7 @@ export function LLMResponse({ analysis, isLoading, onShowResults }: LLMResponseP
 
       <Card className="p-6">
         <div className="prose prose-sm dark:prose-invert max-w-none">
-          <ReactMarkdown>{analysis.summary}</ReactMarkdown>
-          
-          {analysis.keyPoints.length > 0 && (
-            <>
-              <h3>Points clés :</h3>
-              <ul>
-                {analysis.keyPoints.map((point, index) => (
-                  <li key={index}>{point}</li>
-                ))}
-              </ul>
-            </>
-          )}
-
-          <div className="mt-4 text-sm text-muted-foreground">
-            Indice de confiance : {Math.round(analysis.confidence * 100)}%
-          </div>
+          {streamingContent && <ReactMarkdown>{streamingContent}</ReactMarkdown>}
         </div>
       </Card>
     </div>

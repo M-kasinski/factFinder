@@ -60,6 +60,13 @@
 - [x] Adaptation des composants pour utiliser les nouveaux résultats
 - [x] Tests de l'intégration en temps réel
 
+## Étape 9 : Streaming des réponses LLM (2025-01-24)
+- [x] Modification du composant LLMResponse pour supporter le streaming
+- [x] Ajout du support des messages en temps réel
+- [x] Intégration avec le hook useEventSource
+- [x] Amélioration de l'expérience utilisateur avec affichage progressif
+- [x] Tests de l'affichage en streaming
+
 ## Prochaines étapes
 - [ ] Amélioration de l'UI/UX
 - [ ] Ajout de fonctionnalités avancées (filtres, historique)

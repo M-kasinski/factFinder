@@ -20,7 +20,7 @@ interface SearchDrawerProps {
 export function SearchDrawer({ isOpen, onClose, results = [] }: SearchDrawerProps) {
   return (
     <div 
-      className={`fixed right-0 top-0 h-full bg-background border-l w-[500px] shadow-lg transform transition-transform duration-300 ease-in-out ${
+      className={`fixed right-0 top-0 h-full bg-background border-l w-[650px] shadow-lg transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
       style={{ marginLeft: 'auto' }}

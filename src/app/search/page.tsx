@@ -3,12 +3,11 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
-import { SearchResults } from "@/components/SearchResults";
+// import { SearchResults } from "@/components/SearchResults";
 import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
 import { useEventSource } from "@/hooks/useEventSource";
-import { messagesToLLMAnalysis } from "@/lib/utils";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,7 @@ function SearchPageContent() {
 
   const { results, messages, isLoading, error } = useEventSource({
     query: currentQuery,
-    enabled: !!currentQuery
+    enabled: !!currentQuery,
   });
 
   const handleSearch = (query: string) => {
@@ -32,7 +31,7 @@ function SearchPageContent() {
     // Update URL with new search query
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
     window.history.pushState({}, "", newUrl);
-    
+
     setCurrentQuery(query);
   };
 
@@ -49,7 +48,11 @@ function SearchPageContent() {
   }, [initialQuery]);
 
   return (
-    <div className={`container mx-auto px-4 transition-all duration-300 ${isDrawerOpen ? 'pr-[520px]' : ''}`}>
+    <div
+      className={`container mx-auto px-4 transition-all duration-300 ${
+        isDrawerOpen ? "pr-[520px]" : ""
+      }`}
+    >
       <div className="flex flex-col gap-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -78,21 +81,21 @@ function SearchPageContent() {
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl">
-          <SourcesComponent 
+          <SourcesComponent
             results={results}
             isLoading={isLoading}
             onShowAll={() => setIsDrawerOpen(true)}
           />
           <LLMResponse
-            analysis={messagesToLLMAnalysis(messages)}
             isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
+            streamingContent={messages}
           />
-          <SearchResults
+          {/* <SearchResults
             results={results}
             isLoading={isLoading}
             onClick={() => setIsDrawerOpen(true)}
-          />
+          /> */}
         </div>
       </div>
 
@@ -102,7 +105,10 @@ function SearchPageContent() {
         results={results}
       />
 
-      <div className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
+      <div
+        className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl"
+        aria-hidden="true"
+      >
         <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
       </div>
     </div>
@@ -115,4 +121,4 @@ export default function SearchPage() {
       <SearchPageContent />
     </Suspense>
   );
-} 
+}
