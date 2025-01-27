@@ -8,6 +8,7 @@ import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
 import { VideoCarousel } from "@/components/VideoCarousel";
+import { RelatedQuestions } from "@/components/RelatedQuestions";
 import { useEventSource } from "@/hooks/useEventSource";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
@@ -20,17 +21,32 @@ function SearchPageContent() {
   const initialQuery = searchParams.get("q") || "";
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
+  const [searchValue, setSearchValue] = useState(initialQuery);
 
-  const { results, messages, videos, showVideos, isLoading, error } = useEventSource({
+  const { 
+    results, 
+    messages, 
+    videos, 
+    showVideos, 
+    relatedQuestions, 
+    showRelated,
+    isLoading, 
+    error 
+  } = useEventSource({
     query: currentQuery,
     enabled: !!currentQuery,
   });
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
+    
+    // Mettre à jour l'URL avec la nouvelle requête
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
-    window.history.pushState({}, "", newUrl);
+    router.push(newUrl);
+    
+    // Mettre à jour les états locaux
     setCurrentQuery(query);
+    setSearchValue(query);
   };
 
   useEffect(() => {
@@ -39,11 +55,14 @@ function SearchPageContent() {
     }
   }, [error]);
 
+  // Écouter les changements de l'URL pour les requêtes externes
   useEffect(() => {
-    if (initialQuery) {
-      handleSearch(initialQuery);
+    const query = searchParams.get("q");
+    if (query && query !== currentQuery) {
+      setCurrentQuery(query);
+      setSearchValue(query);
     }
-  }, [initialQuery]);
+  }, [searchParams]);
 
   return (
     <div
@@ -75,7 +94,11 @@ function SearchPageContent() {
         </div>
 
         <div className="w-full max-w-2xl">
-          <SearchBar onSearch={handleSearch} defaultValue={initialQuery} />
+          <SearchBar 
+            onSearch={handleSearch} 
+            value={searchValue}
+            onChange={setSearchValue}
+          />
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl">
@@ -90,6 +113,11 @@ function SearchPageContent() {
             streamingContent={messages}
           />
           <VideoCarousel videos={videos} isVisible={showVideos} />
+          <RelatedQuestions 
+            questions={relatedQuestions} 
+            isVisible={showRelated}
+            onQuestionClick={handleSearch}
+          />
           {/* <SearchResults
             results={results}
             isLoading={isLoading}

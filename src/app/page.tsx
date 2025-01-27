@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Brain, Zap, Scale, Lightbulb } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
@@ -34,7 +36,11 @@ export default function Home() {
           </div>
 
           <div className="w-full max-w-2xl mx-auto scale-105 transform transition-all duration-200 hover:scale-110 animate-fade-in-up delay-100 mb-12">
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar 
+              onSearch={handleSearch}
+              value={searchValue}
+              onChange={setSearchValue}
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto animate-fade-in-up delay-200">

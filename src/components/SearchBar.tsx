@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Search, Mic } from "lucide-react";
 
-export interface SearchBarProps {
+interface SearchBarProps {
   onSearch: (query: string) => void;
-  defaultValue?: string;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 // const suggestions = [
@@ -15,13 +16,12 @@ export interface SearchBarProps {
 //   "Parlement européen"
 // ];
 
-export function SearchBar({ onSearch, defaultValue = "" }: SearchBarProps) {
-  const [query, setQuery] = useState(defaultValue);
+export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(query);
+    onSearch(value);
   };
 
   // const handleSuggestionClick = (suggestion: string) => {
@@ -40,8 +40,8 @@ export function SearchBar({ onSearch, defaultValue = "" }: SearchBarProps) {
           
           <input
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             className="w-full py-3 pl-4 pr-24 rounded-full focus:outline-none text-lg bg-transparent"
