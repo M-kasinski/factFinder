@@ -67,26 +67,11 @@
 - [x] Amélioration de l'expérience utilisateur avec affichage progressif
 - [x] Tests de l'affichage en streaming
 
-## Étape : Ajout du carrousel de vidéos
-
-1. Installation des composants shadcn/ui nécessaires :
-   - Carousel : `pnpm dlx shadcn@latest add carousel`
-   - Card : `pnpm dlx shadcn@latest add card`
-
-2. Création du composant VideoCarousel :
-   - Utilisation du composant Carousel de shadcn/ui
-   - Intégration des Cards pour afficher les vidéos
-   - Affichage des miniatures, titres et descriptions des vidéos
-   - Support du responsive design (2 vidéos sur tablette, 3 sur desktop)
-
-3. Mise à jour de la page de recherche :
-   - Ajout de l'état pour gérer les vidéos et leur visibilité
-   - Intégration du composant VideoCarousel
-   - Gestion des événements SSE pour les vidéos
-
-4. Améliorations de TypeScript :
-   - Export de l'interface SearchResult
-   - Typage correct des événements et des données
+## Étape : Optimisation du carrousel de vidéos (2025-01-25)
+- [x] Modification du nombre de vidéos affichées sur desktop (4 au lieu de 3)
+- [x] Mise à jour des types pour supporter les propriétés thumbnail et age
+- [x] Optimisation de l'affichage responsive
+- [x] Ajustement du comportement de défilement (1 vidéo à la fois)
 
 ## Prochaines étapes
 - [ ] Amélioration de l'UI/UX

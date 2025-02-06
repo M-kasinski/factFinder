@@ -42,10 +42,16 @@ export function VideoCarousel({ videos, isVisible }: VideoCarouselProps) {
       </div>
 
       <div className="w-full py-2">
-        <Carousel className="w-full">
+        <Carousel
+          className="w-full"
+          opts={{
+            slidesToScroll: 4,
+            loop: false
+          }}
+        >
           <CarouselContent className="-ml-4">
             {validVideos.map((video, index) => (
-              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/4">
                 <Link href={video.url} target="_blank" rel="noopener noreferrer">
                   <Card className="h-[280px]">
                     <CardHeader className="relative aspect-video p-0">

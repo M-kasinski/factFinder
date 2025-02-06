@@ -4,6 +4,10 @@ export interface SearchResult {
   date: string;
   description: string;
   source?: string;
+  thumbnail?: {
+    src: string;
+  };
+  age?: string;
   meta_url?: {
     favicon?: string;
     hostname: string;
