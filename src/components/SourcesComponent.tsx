@@ -11,7 +11,7 @@ interface SourcesComponentProps {
   isLoading?: boolean;
 }
 
-const SourcesComponent: React.FC<SourcesComponentProps> = ({ 
+const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({ 
   results = [], 
   onShowAll,
   isLoading = false 
@@ -135,6 +135,8 @@ const SourcesComponent: React.FC<SourcesComponentProps> = ({
       </ScrollArea>
     </div>
   );
-};
+});
+
+SourcesComponent.displayName = 'SourcesComponent';
 
 export default SourcesComponent; 
