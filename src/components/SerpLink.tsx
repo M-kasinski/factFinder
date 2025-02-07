@@ -44,31 +44,7 @@ const ImageWithFallback = ({ src, alt, ...props }: ImageWithFallbackProps) => {
   );
 };
 
-export function SerpLink({ title, url, date, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) {
-  // Fonction pour formater l'URL en breadcrumb
-  const formatBreadcrumb = (url: string) => {
-    try {
-      const urlObj = new URL(url);
-      const pathParts = urlObj.pathname.split('/').filter(Boolean);
-      return (
-        <div className="flex items-center gap-2 text-sm max-w-[500px] overflow-hidden">
-          <span className="text-muted-foreground truncate">{profile?.name || urlObj.hostname}</span>
-          {pathParts.length > 0 && (
-            <div className="flex items-center gap-1 overflow-hidden">
-              {pathParts.map((part, index) => (
-                <React.Fragment key={index}>
-                  <span className="text-muted-foreground/60 mx-1 flex-shrink-0">›</span>
-                  <span className="text-muted-foreground truncate">{part}</span>
-                </React.Fragment>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    } catch {
-      return <span className="text-muted-foreground">{url}</span>;
-    }
-  };
+export function SerpLink({ title, date, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) {
 
   return (
     <div 
@@ -77,7 +53,6 @@ export function SerpLink({ title, url, date, description, onClick, meta_url, pro
     >
       <div className="flex items-start gap-4">
         <div className="flex-1 min-w-0">
-          {/* URL Breadcrumb with Favicon */}
           <div className="flex items-center gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               {meta_url?.favicon && (
@@ -91,7 +66,7 @@ export function SerpLink({ title, url, date, description, onClick, meta_url, pro
                   />
                 </div>
               )}
-              {formatBreadcrumb(url)}
+              {profile?.name}
             </div>
             {date && (
               <>
