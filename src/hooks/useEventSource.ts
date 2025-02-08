@@ -59,7 +59,7 @@ export function useEventSource({
     setShowRelated(false);
 
     const evtSource = new EventSource(
-      `http://localhost:3000/search?q=${encodeURIComponent(query)}`
+      `${process.env.NEXT_PUBLIC_API_URL}/search?q=${encodeURIComponent(query)}`
     );
 
     evtSource.onmessage = (event) => {
