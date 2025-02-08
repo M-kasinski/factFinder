@@ -25,5 +25,5 @@ export async function performSearch(query: string): Promise<SearchResponse> {
 }
 
 export function createSearchEventSource(query: string): EventSource {
-  return new EventSource(`http://localhost:3000/search?q=${encodeURIComponent(query)}`);
+  return new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/search?q=${encodeURIComponent(query)}`);
 } 
