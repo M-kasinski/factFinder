@@ -45,7 +45,6 @@ const ImageWithFallback = ({ src, alt, ...props }: ImageWithFallbackProps) => {
 };
 
 export function SerpLink({ title, date, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) {
-
   return (
     <div 
       onClick={onClick}

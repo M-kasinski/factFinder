@@ -118,11 +118,6 @@ function SearchPageContent() {
             isVisible={showRelated}
             onQuestionClick={handleSearch}
           />
-          {/* <SearchResults
-            results={results}
-            isLoading={isLoading}
-            onClick={() => setIsDrawerOpen(true)}
-          /> */}
         </div>
       </div>
 

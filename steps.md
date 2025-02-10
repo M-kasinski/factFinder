@@ -73,6 +73,15 @@
 - [x] Optimisation de l'affichage responsive
 - [x] Ajustement du comportement de défilement (1 vidéo à la fois)
 
+## Étape : Optimisation du Responsive Design (2025-01-25)
+- [x] Ajustement de la taille de la barre de recherche sur mobile
+- [x] Optimisation des espacements et marges pour les petits écrans
+- [x] Réduction de la taille des icônes et du texte sur mobile
+- [x] Amélioration de l'ergonomie des boutons sur mobile
+- [x] Ajustement du layout général pour une meilleure expérience sur tous les appareils
+- [x] Optimisation des cards sur mobile (taille réduite, padding ajusté)
+- [x] Correction du background de la première card (bg-car → bg-card)
+
 ## Prochaines étapes
 - [ ] Amélioration de l'UI/UX
 - [ ] Ajout de fonctionnalités avancées (filtres, historique)
