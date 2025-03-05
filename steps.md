@@ -104,6 +104,13 @@
 - [x] Optimisation de la gestion des erreurs
 - [x] Meilleure organisation du code avec une séparation des responsabilités
 
+## Étape : Implémentation du streaming avec l'AI SDK (2025-03-04)
+- [x] Intégration de createStreamableValue pour streamer les résultats de recherche
+- [x] Utilisation de readStreamableValue pour lire les mises à jour en temps réel
+- [x] Amélioration de l'expérience utilisateur avec affichage progressif des résultats
+- [x] Optimisation de la gestion des erreurs dans le flux de streaming
+- [x] Préparation pour l'intégration future avec un LLM en streaming
+
 ## Prochaines étapes
 - [ ] Intégration complète avec un LLM (Gemini)
 - [ ] Amélioration de l'UI/UX

@@ -2,8 +2,8 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
-// import { SearchResults } from "@/components/SearchResults";
 import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
@@ -42,19 +42,30 @@ function SearchPageContent() {
     setError(null);
     
     try {
-      const searchResults = await fetchSearchResults(query);
+      // Appel à la fonction de recherche avec streaming
+      const streamableValue = await fetchSearchResults(query);
       
-      setResults(searchResults.results);
-      setMessages(searchResults.messages);
-      setVideos(searchResults.videos);
-      setShowVideos(searchResults.showVideos);
-      setRelatedQuestions(searchResults.relatedQuestions);
-      setShowRelated(searchResults.showRelated);
+      // Utiliser readStreamableValue pour lire les mises à jour du streamable
+      for await (const update of readStreamableValue(streamableValue)) {
+        if (update) {
+          // Mettre à jour les états avec les valeurs streamées
+          setResults(update.results || []);
+          setMessages(update.messages || "");
+          setVideos(update.videos || []);
+          setShowVideos(update.showVideos || false);
+          setRelatedQuestions(update.relatedQuestions || []);
+          setShowRelated(update.showRelated || false);
+          
+          // Si nous avons des résultats, la recherche n'est plus en cours de chargement
+          if (update.results && update.results.length > 0) {
+            setIsLoading(false);
+          }
+        }
+      }
     } catch (err) {
       console.error("Error performing search:", err);
       setError(err instanceof Error ? err : new Error("Une erreur est survenue"));
       toast.error("Une erreur est survenue lors de la recherche.");
-    } finally {
       setIsLoading(false);
     }
   };
