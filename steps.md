@@ -82,7 +82,30 @@
 - [x] Optimisation des cards sur mobile (taille réduite, padding ajusté)
 - [x] Correction du background de la première card (bg-car → bg-card)
 
+## Étape : Intégration de Brave Search et API Serverless (2025-03-04)
+- [x] Création d'une route API dans Next.js App Router pour Brave Search
+- [x] Implémentation du streaming des résultats avec SSE (Server-Sent Events)
+- [x] Création d'une action côté serveur pour remplacer useEventSource
+- [x] Adaptation du format des résultats de Brave Search au format de l'application
+- [x] Préparation pour l'intégration future avec un LLM
+- [x] Optimisation de la gestion des erreurs et des timeouts
+- [x] Utilisation de l'API Brave Search avec la clé d'API existante
+
+## Étape : Refactoring de l'architecture (2025-03-04)
+- [x] Simplification de l'architecture en supprimant la route API intermédiaire
+- [x] Création d'un service BraveSearch dédié dans lib/services
+- [x] Appel direct au service BraveSearch depuis les actions serveur
+- [x] Suppression du code de streaming SSE devenu inutile
+- [x] Préparation de la structure pour l'intégration future du LLM
+
+## Étape : Amélioration du service BraveSearch (2025-03-04)
+- [x] Refactoring du service BraveSearch en utilisant une classe client
+- [x] Amélioration des paramètres de requête API (extra_snippets, text_decorations, etc.)
+- [x] Optimisation de la gestion des erreurs
+- [x] Meilleure organisation du code avec une séparation des responsabilités
+
 ## Prochaines étapes
+- [ ] Intégration complète avec un LLM (Gemini)
 - [ ] Amélioration de l'UI/UX
 - [ ] Ajout de fonctionnalités avancées (filtres, historique)
 - [ ] Tests et optimisations

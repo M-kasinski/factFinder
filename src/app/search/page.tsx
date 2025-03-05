@@ -9,11 +9,12 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
 import { VideoCarousel } from "@/components/VideoCarousel";
 import { RelatedQuestions } from "@/components/RelatedQuestions";
-import { useEventSource } from "@/hooks/useEventSource";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SourcesComponent from "@/components/SourcesComponent";
+import { fetchSearchResults } from "@/app/actions";
+import { SearchResult } from "@/types/search";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -22,20 +23,41 @@ function SearchPageContent() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
+  
+  // États pour stocker les résultats de recherche
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [messages, setMessages] = useState("");
+  const [videos, setVideos] = useState<SearchResult[]>([]);
+  const [showVideos, setShowVideos] = useState(false);
+  const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
+  const [showRelated, setShowRelated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { 
-    results, 
-    messages, 
-    videos, 
-    showVideos, 
-    relatedQuestions, 
-    showRelated,
-    isLoading, 
-    error 
-  } = useEventSource({
-    query: currentQuery,
-    enabled: !!currentQuery,
-  });
+  // Fonction pour effectuer la recherche
+  const performSearch = async (query: string) => {
+    if (!query.trim()) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const searchResults = await fetchSearchResults(query);
+      
+      setResults(searchResults.results);
+      setMessages(searchResults.messages);
+      setVideos(searchResults.videos);
+      setShowVideos(searchResults.showVideos);
+      setRelatedQuestions(searchResults.relatedQuestions);
+      setShowRelated(searchResults.showRelated);
+    } catch (err) {
+      console.error("Error performing search:", err);
+      setError(err instanceof Error ? err : new Error("Une erreur est survenue"));
+      toast.error("Une erreur est survenue lors de la recherche.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
@@ -47,6 +69,9 @@ function SearchPageContent() {
     // Mettre à jour les états locaux
     setCurrentQuery(query);
     setSearchValue(query);
+    
+    // Effectuer la recherche
+    performSearch(query);
   };
 
   useEffect(() => {
@@ -61,8 +86,16 @@ function SearchPageContent() {
     if (query && query !== currentQuery) {
       setCurrentQuery(query);
       setSearchValue(query);
+      performSearch(query);
     }
   }, [searchParams]);
+
+  // Effectuer la recherche initiale si une requête est présente
+  useEffect(() => {
+    if (initialQuery) {
+      performSearch(initialQuery);
+    }
+  }, []);
 
   return (
     <div
