@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense, useCallback } from "react";
+import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
@@ -23,6 +23,7 @@ function SearchPageContent() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
+  const isSearchingRef = useRef(false);
   
   // États pour stocker les résultats de recherche
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -36,8 +37,10 @@ function SearchPageContent() {
 
   // Fonction pour effectuer la recherche avec useCallback
   const performSearch = useCallback(async (query: string) => {
-    if (!query.trim()) return;
+    if (!query.trim() || isSearchingRef.current) return;
     
+    // Marquer que nous sommes en train de rechercher pour éviter les doublons
+    isSearchingRef.current = true;
     setIsLoading(true);
     setError(null);
     
@@ -66,12 +69,15 @@ function SearchPageContent() {
       console.error("Error performing search:", err);
       setError(err instanceof Error ? err : new Error("Une erreur est survenue"));
       toast.error("Une erreur est survenue lors de la recherche.");
+    } finally {
       setIsLoading(false);
+      // Marquer que nous avons terminé la recherche
+      isSearchingRef.current = false;
     }
   }, []);
 
   const handleSearch = (query: string) => {
-    if (!query.trim()) return;
+    if (!query.trim() || query === currentQuery) return;
     
     // Mettre à jour l'URL avec la nouvelle requête
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
@@ -91,22 +97,18 @@ function SearchPageContent() {
     }
   }, [error]);
 
-  // Écouter les changements de l'URL pour les requêtes externes
+  // Un seul useEffect pour gérer les changements d'URL et la recherche initiale
   useEffect(() => {
-    const query = searchParams.get("q");
-    if (query && query !== currentQuery) {
+    const query = searchParams.get("q") || "";
+    
+    // Ne faire la recherche que si la requête est différente de la requête actuelle
+    // et si nous ne sommes pas déjà en train de rechercher
+    if (query && query !== currentQuery && !isSearchingRef.current) {
       setCurrentQuery(query);
       setSearchValue(query);
       performSearch(query);
     }
   }, [searchParams, currentQuery, performSearch]);
-
-  // Effectuer la recherche initiale si une requête est présente
-  useEffect(() => {
-    if (initialQuery) {
-      performSearch(initialQuery);
-    }
-  }, [initialQuery, performSearch]);
 
   return (
     <div

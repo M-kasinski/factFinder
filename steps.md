@@ -146,6 +146,9 @@
 - [x] Suppression des services de recherche basés sur les mocks
 - [x] Suppression des données de test (mock-data.json)
 - [x] Nettoyage du code pour n'utiliser que les actions serveur
+- [x] Correction du problème de requêtes multiples avec l'utilisation d'un drapeau (isSearchingRef)
+- [x] Fusion des useEffect pour une meilleure gestion des recherches
+- [x] Optimisation des vérifications pour éviter les recherches redondantes
 
 ## Prochaines étapes
 - [ ] Implémentation d'un système de feedback utilisateur
