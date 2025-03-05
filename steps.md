@@ -150,6 +150,29 @@
 - [x] Fusion des useEffect pour une meilleure gestion des recherches
 - [x] Optimisation des vérifications pour éviter les recherches redondantes
 
+## Étape : Implémentation du carrousel de vidéos animé (2025-03-05)
+- [x] Mise à jour du service BraveSearch pour extraire les vidéos de la réponse API
+- [x] Adaptation de l'action serveur fetchSearchResults pour traiter les vidéos
+- [x] Ajout d'animations avec framer-motion au composant VideoCarousel
+- [x] Implémentation d'un effet d'apparition progressive similaire aux questions connexes
+- [x] Amélioration de l'expérience utilisateur avec des transitions fluides pour les vidéos
+- [x] Optimisation de l'affichage des miniatures vidéo
+
+## Étape : Correction du chargement initial des recherches (2025-03-06)
+- [x] Correction du problème empêchant le déclenchement de la recherche lors du chargement initial
+- [x] Ajout d'un indicateur spécifique pour le premier rendu de la page
+- [x] Optimisation de la logique pour détecter et traiter correctement les requêtes dans l'URL
+- [x] Amélioration de la gestion des recherches lors du refresh ou de la navigation depuis la page d'accueil
+- [x] Élimination des problèmes de requêtes non déclenchées
+
+## Étape : Correction du carrousel de vidéos (2025-03-06)
+- [x] Correction du problème d'affichage où toutes les vidéos étaient visibles simultanément
+- [x] Restructuration de l'intégration entre Framer Motion et le composant Carousel
+- [x] Optimisation des options de configuration du carrousel (alignement, défilement, boucle)
+- [x] Amélioration du positionnement des boutons de navigation
+- [x] Uniformisation de la taille des cartes vidéo pour une meilleure cohérence visuelle
+- [x] Conservation des animations d'apparition progressive avec délai séquentiel
+
 ## Prochaines étapes
 - [ ] Implémentation d'un système de feedback utilisateur
 - [ ] Optimisation des performances

@@ -35,9 +35,11 @@ export async function fetchSearchResults(query: string) {
   (async () => {
     try {
       // Appel direct au service BraveSearch
-      const searchResults = await searchWithBrave(query);
+      const searchResponse = await searchWithBrave(query);
+      const searchResults = searchResponse.results;
+      const videoResults = searchResponse.videos || [];
       
-      // Mettre à jour le streamable avec les résultats de recherche
+      // Mettre à jour le streamable avec les résultats de recherche et les vidéos
       streamable.update({
         results: searchResults,
         messages: "Analyse des résultats...",
@@ -71,8 +73,8 @@ export async function fetchSearchResults(query: string) {
           streamable.update({
             results: searchResults,
             messages: accumulatedText,
-            videos: [],
-            showVideos: false,
+            videos: videoResults,
+            showVideos: videoResults.length > 0,
             relatedQuestions: [],
             showRelated: false,
           });
@@ -85,8 +87,8 @@ export async function fetchSearchResults(query: string) {
         streamable.done({
           results: searchResults,
           messages: accumulatedText,
-          videos: [],
-          showVideos: false,
+          videos: videoResults,
+          showVideos: videoResults.length > 0,
           relatedQuestions,
           showRelated: relatedQuestions.length > 0,
         });

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Carousel,
   CarouselContent,
@@ -34,8 +35,24 @@ export function VideoCarousel({ videos, isVisible }: VideoCarouselProps) {
   // Ne rien afficher si aucune vidéo valide
   if (validVideos.length === 0) return null;
 
+  // Animation variants pour le conteneur
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
-    <div className="space-y-3">
+    <motion.div 
+      className="space-y-3"
+      initial="hidden"
+      animate="show"
+      variants={container}
+    >
       <div className="flex items-center gap-2">
         <Play className="h-5 w-5 text-primary" />
         <h2 className="text-lg font-semibold">Vidéos</h2>
@@ -45,48 +62,58 @@ export function VideoCarousel({ videos, isVisible }: VideoCarouselProps) {
         <Carousel
           className="w-full"
           opts={{
-            slidesToScroll: 4,
-            loop: false
+            align: "start",
+            loop: false,
+            slidesToScroll: 1
           }}
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent>
             {validVideos.map((video, index) => (
-              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/4">
-                <Link href={video.url} target="_blank" rel="noopener noreferrer">
-                  <Card className="h-[280px]">
-                    <CardHeader className="relative aspect-video p-0">
-                      <Image
-                        src={video.thumbnail?.src || ""}
-                        alt={video.title}
-                        fill
-                        className="object-cover rounded-t-lg"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-8 h-8 rounded-full bg-black/50 flex items-center justify-center">
-                          <Play className="h-4 w-4 text-white" fill="white" />
+              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="h-full px-1"
+                >
+                  <Link href={video.url} target="_blank" rel="noopener noreferrer" className="block h-full">
+                    <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                      <CardHeader className="relative aspect-video p-0">
+                        <Image
+                          src={video.thumbnail?.src || ""}
+                          alt={video.title}
+                          fill
+                          className="object-cover rounded-t-lg"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-black/50 flex items-center justify-center">
+                            <Play className="h-4 w-4 text-white" fill="white" />
+                          </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-3">
-                      <CardTitle className="line-clamp-2 text-sm">
-                        {video.title}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-1 mt-1 text-xs">
-                        {video.description}
-                      </CardDescription>
-                    </CardContent>
-                    <CardFooter className="p-3 pt-0 text-xs text-muted-foreground">
-                      {video.age}
-                    </CardFooter>
-                  </Card>
-                </Link>
+                      </CardHeader>
+                      <CardContent className="p-3">
+                        <CardTitle className="line-clamp-2 text-sm">
+                          {video.title}
+                        </CardTitle>
+                        <CardDescription className="line-clamp-1 mt-1 text-xs">
+                          {video.description}
+                        </CardDescription>
+                      </CardContent>
+                      <CardFooter className="p-3 pt-0 text-xs text-muted-foreground">
+                        {video.age}
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <div className="flex justify-end gap-2 mt-2">
+            <CarouselPrevious className="static transform-none" />
+            <CarouselNext className="static transform-none" />
+          </div>
         </Carousel>
       </div>
-    </div>
+    </motion.div>
   );
 } 

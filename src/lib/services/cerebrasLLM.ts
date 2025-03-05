@@ -80,7 +80,7 @@ Réponds de manière concise, factuelle et en français.
 
     // Utiliser streamText pour générer une réponse en streaming
     return streamText({
-      model: cerebras("llama-3.3-70b"),
+      model: cerebras("llama3.3-70b"),
       prompt,
     });
   } catch (error) {

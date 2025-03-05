@@ -25,6 +25,26 @@ interface BraveSearchResponse {
       };
     }>;
   };
+  videos?: {
+    results: Array<{
+      title: string;
+      url: string;
+      description?: string;
+      age?: string;
+      page_age?: string;
+      meta_url: {
+        favicon?: string;
+        hostname: string;
+        netloc: string;
+        scheme: string;
+        path: string;
+      };
+      thumbnail: {
+        src: string;
+        original: string;
+      };
+    }>;
+  };
 }
 
 // Classe pour gérer les appels à l'API Brave Search
@@ -71,7 +91,7 @@ class BraveSearchClient {
 /**
  * Fonction pour effectuer une recherche avec Brave Search
  */
-export async function searchWithBrave(query: string): Promise<SearchResult[]> {
+export async function searchWithBrave(query: string): Promise<{results: SearchResult[], videos: SearchResult[]}> {
   try {
     // Récupérer la clé API
     const braveApiKey = process.env.BRAVE_API_KEY;
@@ -109,8 +129,32 @@ export async function searchWithBrave(query: string): Promise<SearchResult[]> {
       },
     }));
 
+    // Extraire les vidéos si elles existent
+    const videoResults: SearchResult[] = braveData.videos?.results.map(video => ({
+      title: video.title,
+      url: video.url,
+      date: video.age || video.page_age || "",
+      description: video.description || "",
+      extra_snippet: [], // Champ requis par le type SearchResult
+      age: video.age || video.page_age || "",
+      meta_url: {
+        favicon: video.meta_url.favicon,
+        hostname: video.meta_url.hostname,
+        netloc: video.meta_url.netloc,
+        scheme: video.meta_url.scheme,
+        path: video.meta_url.path,
+      },
+      thumbnail: {
+        src: video.thumbnail?.src,
+      },
+      // Les champs supplémentaires comme 'original' dans thumbnail ne sont pas inclus dans le type SearchResult
+    })) || [];
 
-    return searchResults;
+
+    return { 
+      results: searchResults, 
+      videos: videoResults 
+    };
   } catch (error) {
     console.error('Error in Brave Search:', error);
     throw error;

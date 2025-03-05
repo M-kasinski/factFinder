@@ -24,6 +24,7 @@ function SearchPageContent() {
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
   const isSearchingRef = useRef(false);
+  const isInitialRenderRef = useRef(true);
   
   // États pour stocker les résultats de recherche
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -101,9 +102,16 @@ function SearchPageContent() {
   useEffect(() => {
     const query = searchParams.get("q") || "";
     
-    // Ne faire la recherche que si la requête est différente de la requête actuelle
+    // Si c'est le premier rendu et qu'il y a une requête, déclencher la recherche
+    if (isInitialRenderRef.current && query) {
+      isInitialRenderRef.current = false;
+      setCurrentQuery(query);
+      setSearchValue(query);
+      performSearch(query);
+    }
+    // Sinon, ne faire la recherche que si la requête est différente de la requête actuelle
     // et si nous ne sommes pas déjà en train de rechercher
-    if (query && query !== currentQuery && !isSearchingRef.current) {
+    else if (query && query !== currentQuery && !isSearchingRef.current) {
       setCurrentQuery(query);
       setSearchValue(query);
       performSearch(query);
