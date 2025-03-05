@@ -133,6 +133,13 @@
 - [x] Amélioration de la gestion des erreurs pour le streaming LLM
 - [x] Optimisation de l'expérience utilisateur avec un affichage en temps réel
 
+## Étape : Documentation et configuration (2025-03-05)
+- [x] Création d'un README bilingue (français et anglais)
+- [x] Ajout d'un fichier .env.example pour faciliter la configuration
+- [x] Création d'un fichier LICENSE avec la licence MIT
+- [x] Documentation des fonctionnalités principales
+- [x] Instructions d'installation et d'utilisation
+
 ## Prochaines étapes
 - [ ] Implémentation d'un système de feedback utilisateur
 - [ ] Optimisation des performances
