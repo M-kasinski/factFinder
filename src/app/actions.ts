@@ -3,6 +3,7 @@
 import { SearchResult } from '@/types/search';
 import { searchWithBrave } from '@/lib/services/braveSearch';
 import { createStreamableValue } from 'ai/rsc';
+import { streamLLMResponse, generateRelatedQuestions } from '@/lib/services/cerebrasLLM';
 
 /**
  * Type pour les résultats de recherche
@@ -36,25 +37,63 @@ export async function fetchSearchResults(query: string) {
       // Appel direct au service BraveSearch
       const searchResults = await searchWithBrave(query);
       
-      // Mettre à jour le streamable avec les résultats
+      // Mettre à jour le streamable avec les résultats de recherche
       streamable.update({
         results: searchResults,
-        messages: `Voici les résultats pour "${query}"`, // Sera remplacé par la réponse du LLM
-        videos: [], // Sera rempli par une recherche de vidéos plus tard
+        messages: "Analyse des résultats...",
+        videos: [],
         showVideos: false,
-        relatedQuestions: [], // Sera généré par le LLM plus tard
+        relatedQuestions: [],
         showRelated: false,
       });
+
+      // Utiliser la version streaming du LLM
+      const llmStream = streamLLMResponse(query, searchResults);
       
-      // Marquer le streamable comme terminé
-      streamable.done({
-        results: searchResults,
-        messages: `Voici les résultats pour "${query}"`, // Sera remplacé par la réponse du LLM
-        videos: [], // Sera rempli par une recherche de vidéos plus tard
-        showVideos: false,
-        relatedQuestions: [], // Sera généré par le LLM plus tard
-        showRelated: false,
-      });
+      // Variable pour accumuler le texte généré
+      let accumulatedText = "";
+      
+      // Lire le stream chunk par chunk
+      const reader = llmStream.textStream.getReader();
+      
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) {
+            break;
+          }
+          
+          // Accumuler le texte
+          accumulatedText += value;
+          
+          // Mettre à jour le streamable avec le texte accumulé
+          streamable.update({
+            results: searchResults,
+            messages: accumulatedText,
+            videos: [],
+            showVideos: false,
+            relatedQuestions: [],
+            showRelated: false,
+          });
+        }
+        
+        // Générer des questions connexes une fois que le LLM a terminé
+        const relatedQuestions = await generateRelatedQuestions(query, accumulatedText);
+        
+        // Marquer le streamable comme terminé avec toutes les données
+        streamable.done({
+          results: searchResults,
+          messages: accumulatedText,
+          videos: [],
+          showVideos: false,
+          relatedQuestions,
+          showRelated: relatedQuestions.length > 0,
+        });
+      } catch (readerError) {
+        console.error('Error reading LLM stream:', readerError);
+        streamable.error(readerError instanceof Error ? readerError : new Error('Erreur lors de la lecture du stream LLM'));
+      }
     } catch (error) {
       console.error('Error fetching search results:', error);
       streamable.error(error instanceof Error ? error : new Error('Une erreur est survenue'));

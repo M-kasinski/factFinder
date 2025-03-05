@@ -1,4 +1,5 @@
 export interface SearchResult {
+  extra_snippet: string[];
   title: string;
   url: string;
   date: string;

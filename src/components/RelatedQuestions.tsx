@@ -1,6 +1,6 @@
-import { HelpCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { HelpCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 interface RelatedQuestionsProps {
   questions: string[];
@@ -11,29 +11,47 @@ interface RelatedQuestionsProps {
 export function RelatedQuestions({ questions, isVisible, onQuestionClick }: RelatedQuestionsProps) {
   if (!isVisible || !questions.length) return null;
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="space-y-3">
+    <motion.div 
+      className="space-y-4"
+      initial="hidden"
+      animate="show"
+      variants={container}
+    >
       <div className="flex items-center gap-2">
         <HelpCircle className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold">Questions liées</h2>
+        <h2 className="text-lg font-semibold">Questions connexes</h2>
       </div>
 
-      <div className="grid gap-2">
+      <div className="grid gap-3">
         {questions.map((question, index) => (
-          <Button
-            key={index}
-            variant="ghost"
-            className="w-full h-auto p-0 hover:no-underline"
-            onClick={() => onQuestionClick(question)}
-          >
-            <Card className="w-full hover:bg-accent/50 transition-colors">
-              <CardContent className="p-3">
-                <p className="text-sm text-left">{question}</p>
-              </CardContent>
-            </Card>
-          </Button>
+          <motion.div key={index} variants={item}>
+            <Button
+              variant="outline"
+              className="w-full h-auto justify-between group hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all duration-300"
+              onClick={() => onQuestionClick(question)}
+            >
+              <span className="text-sm text-left font-medium">{question}</span>
+              <ArrowRight className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </Button>
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 } 

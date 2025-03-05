@@ -111,9 +111,33 @@
 - [x] Optimisation de la gestion des erreurs dans le flux de streaming
 - [x] Préparation pour l'intégration future avec un LLM en streaming
 
+## Étape : Intégration de Cerebras LLM (2025-03-04)
+- [x] Installation du package @ai-sdk/cerebras
+- [x] Création d'un service dédié pour Cerebras LLM
+- [x] Implémentation d'un prompt RAG (Retrieval-Augmented Generation)
+- [x] Intégration du LLM dans le flux de recherche
+- [x] Affichage des réponses générées par le LLM dans l'interface
+- [x] Optimisation de la gestion des erreurs pour le LLM
+
+## Étape : Amélioration de l'UI/UX (2025-03-05)
+- [x] Installation de framer-motion pour les animations
+- [x] Amélioration du composant RelatedQuestions avec des animations
+- [x] Implémentation de la génération de questions connexes
+- [x] Intégration des questions connexes dans le flux de recherche
+- [x] Amélioration de l'expérience utilisateur avec des transitions fluides
+
+## Étape : Correction du streaming LLM (2025-03-05)
+- [x] Correction de l'implémentation du streaming des réponses LLM
+- [x] Utilisation de la fonction streamLLMResponse au lieu de generateLLMResponse
+- [x] Mise à jour progressive du streamable avec les chunks de texte reçus
+- [x] Amélioration de la gestion des erreurs pour le streaming LLM
+- [x] Optimisation de l'expérience utilisateur avec un affichage en temps réel
+
 ## Prochaines étapes
+- [ ] Implémentation d'un système de feedback utilisateur
+- [ ] Optimisation des performances
+- [ ] Ajout de filtres de recherche avancés
 - [ ] Intégration complète avec un LLM (Gemini)
 - [ ] Amélioration de l'UI/UX
-- [ ] Ajout de fonctionnalités avancées (filtres, historique)
 - [ ] Tests et optimisations
 - [ ] Déploiement 

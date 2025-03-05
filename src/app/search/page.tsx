@@ -20,7 +20,7 @@ function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
   

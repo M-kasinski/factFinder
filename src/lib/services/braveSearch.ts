@@ -8,6 +8,7 @@ interface BraveSearchResponse {
       title: string;
       url: string;
       description: string;
+      extra_snippets: string[];
       age: string;
       meta_url: {
         favicon?: string;
@@ -91,6 +92,7 @@ export async function searchWithBrave(query: string): Promise<SearchResult[]> {
       url: result.url,
       date: result.age,
       description: result.description,
+      extra_snippet: result.extra_snippets,
       age: result.age,
       meta_url: {
         favicon: result.meta_url.favicon,
