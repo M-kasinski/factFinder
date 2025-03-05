@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
@@ -34,8 +34,8 @@ function SearchPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Fonction pour effectuer la recherche
-  const performSearch = async (query: string) => {
+  // Fonction pour effectuer la recherche avec useCallback
+  const performSearch = useCallback(async (query: string) => {
     if (!query.trim()) return;
     
     setIsLoading(true);
@@ -68,7 +68,7 @@ function SearchPageContent() {
       toast.error("Une erreur est survenue lors de la recherche.");
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
@@ -99,14 +99,14 @@ function SearchPageContent() {
       setSearchValue(query);
       performSearch(query);
     }
-  }, [searchParams]);
+  }, [searchParams, currentQuery, performSearch]);
 
   // Effectuer la recherche initiale si une requête est présente
   useEffect(() => {
     if (initialQuery) {
       performSearch(initialQuery);
     }
-  }, []);
+  }, [initialQuery, performSearch]);
 
   return (
     <div

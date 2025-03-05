@@ -140,6 +140,13 @@
 - [x] Documentation des fonctionnalités principales
 - [x] Instructions d'installation et d'utilisation
 
+## Étape : Nettoyage et corrections (2025-03-05)
+- [x] Correction des dépendances manquantes dans les hooks useEffect
+- [x] Optimisation avec useCallback pour éviter les dépendances circulaires
+- [x] Suppression des services de recherche basés sur les mocks
+- [x] Suppression des données de test (mock-data.json)
+- [x] Nettoyage du code pour n'utiliser que les actions serveur
+
 ## Prochaines étapes
 - [ ] Implémentation d'un système de feedback utilisateur
 - [ ] Optimisation des performances
