@@ -143,8 +143,8 @@ export async function searchWithBrave(query: string): Promise<{
         name: result.profile?.name,
       },
       thumbnail: result.thumbnail ? {
-        src: result.thumbnail.src,
-        original: result.thumbnail.src,
+        src: result.thumbnail?.src,
+        original: result.thumbnail?.src,
       } : undefined,
     }));
 
@@ -164,8 +164,8 @@ export async function searchWithBrave(query: string): Promise<{
         path: video.meta_url.path,
       },
       thumbnail: {
-        src: video.thumbnail.src,
-        original: video.thumbnail.original || video.thumbnail.src,
+        src: video.thumbnail?.src,
+        original: video.thumbnail?.src,
       },
     })) || [];
 
@@ -188,8 +188,8 @@ export async function searchWithBrave(query: string): Promise<{
         name: news.profile?.name || news.meta_url.hostname,
       },
       thumbnail: news.thumbnail ? {
-        src: news.thumbnail.src || "",
-        original: news.thumbnail.original || "",
+        src: news.thumbnail?.src || "",
+        original: news.thumbnail?.original || "",
       } : undefined,
       isNews: true, // Indicateur pour identifier les actualités
     })) || [];
