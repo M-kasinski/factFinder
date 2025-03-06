@@ -168,7 +168,7 @@ function SearchPageContent() {
             streamingContent={messages}
           />
           
-          {(isLoading || showNews || showVideos || showRelated) && (
+          {/* {(isLoading || showNews || showVideos || showRelated) && ( */}
             <>
               <NewsHighlights 
                 news={news} 
@@ -190,7 +190,7 @@ function SearchPageContent() {
                 results={results}
               />
             </>
-          )}
+          {/* )} */}
         </div>
       </div>
 
