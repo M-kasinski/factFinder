@@ -6,7 +6,7 @@ import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
 import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { SearchDrawer } from "@/components/SearchDrawer";
+import { ResponsiveSearchDrawer } from "@/components/ResponsiveSearchDrawer";
 import { VideoCarousel } from "@/components/VideoCarousel";
 import { RelatedQuestions } from "@/components/RelatedQuestions";
 import { NewsHighlights } from "@/components/NewsHighlights";
@@ -21,7 +21,7 @@ function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
   const isSearchingRef = useRef(false);
@@ -124,11 +124,7 @@ function SearchPageContent() {
   }, [searchParams, currentQuery, performSearch]);
 
   return (
-    <div
-      className={`container mx-auto px-4 transition-all duration-300 ${
-        isDrawerOpen ? "pr-[520px]" : ""
-      }`}
-    >
+    <div className="container mx-auto px-4">
       <div className="flex flex-col gap-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -181,7 +177,7 @@ function SearchPageContent() {
         </div>
       </div>
 
-      <SearchDrawer
+      <ResponsiveSearchDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         results={results}

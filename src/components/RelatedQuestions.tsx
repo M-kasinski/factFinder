@@ -1,6 +1,6 @@
 import { HelpCircle, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface RelatedQuestionsProps {
   questions: string[];
@@ -28,7 +28,7 @@ export function RelatedQuestions({ questions, isVisible, onQuestionClick }: Rela
 
   return (
     <motion.div 
-      className="space-y-4"
+      className="space-y-4 w-full"
       initial="hidden"
       animate="show"
       variants={container}
@@ -38,17 +38,30 @@ export function RelatedQuestions({ questions, isVisible, onQuestionClick }: Rela
         <h2 className="text-lg font-semibold">Questions connexes</h2>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-3 w-full">
         {questions.map((question, index) => (
           <motion.div key={index} variants={item}>
-            <Button
-              variant="outline"
-              className="w-full h-auto justify-between group hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all duration-300"
-              onClick={() => onQuestionClick(question)}
+            <div 
+              className={cn(
+                "border rounded-md",
+                "border-input hover:border-primary/30 transition-colors"
+              )}
             >
-              <span className="text-sm text-left font-medium">{question}</span>
-              <ArrowRight className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </Button>
+              <button
+                className={cn(
+                  "w-full px-4 py-3 flex justify-between items-start text-left", 
+                  "bg-background hover:bg-primary/5 transition-colors"
+                )}
+                onClick={() => onQuestionClick(question)}
+              >
+                <div className="flex-1 mr-3">
+                  <p className="text-sm font-medium text-foreground line-clamp-2">
+                    {question}
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground mt-1" />
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>

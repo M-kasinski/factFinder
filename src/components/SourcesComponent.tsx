@@ -138,7 +138,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
       </div>
 
       <ScrollArea className="w-full relative" type="scroll">
-        <div className="flex gap-2 pb-4 px-1 touch-pan-x">
+        <div className="flex gap-2 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
           {visibleSources.map((source) => (
             <SourceCard 
               key={source.url} 
@@ -155,7 +155,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
             />
           )}
         </div>
-        <ScrollBar orientation="horizontal" className="opacity-0 sm:opacity-100" />
+        <ScrollBar orientation="horizontal" className="opacity-100" />
       </ScrollArea>
     </div>
   );
