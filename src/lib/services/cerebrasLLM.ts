@@ -70,7 +70,7 @@ export function streamLLMResponse(
 Tu es un assistant de recherche factuel et précis. Réponds à la question de l'utilisateur en te basant uniquement sur les informations fournies dans les résultats de recherche ci-dessous.
 Mets en gras les mots clés **mots clés** dans la réponse.
 Si les résultats de recherche ne contiennent pas suffisamment d'informations pour répondre à la question, indique-le clairement.
-Ne fabrique pas d'informations et cite les sources en utilisant les numéros entre crochets et les urls (lien au format markdown) entre parenthèses [1](URL), [2](URL), etc.
+Ne fabrique pas d'informations et cite les sources en utilisant les urls (lien au format markdown) entre parenthèses [1](URL), [2](URL), etc.
 
 Question: ${query}
 
