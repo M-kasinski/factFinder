@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchDrawer } from "@/components/SearchDrawer";
 import { VideoCarousel } from "@/components/VideoCarousel";
 import { RelatedQuestions } from "@/components/RelatedQuestions";
+import { NewsHighlights } from "@/components/NewsHighlights";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,8 @@ function SearchPageContent() {
   const [messages, setMessages] = useState("");
   const [videos, setVideos] = useState<SearchResult[]>([]);
   const [showVideos, setShowVideos] = useState(false);
+  const [news, setNews] = useState<SearchResult[]>([]);
+  const [showNews, setShowNews] = useState(false);
   const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
   const [showRelated, setShowRelated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +60,8 @@ function SearchPageContent() {
           setMessages(update.messages || "");
           setVideos(update.videos || []);
           setShowVideos(update.showVideos || false);
+          setNews(update.news || []);
+          setShowNews(update.showNews || false);
           setRelatedQuestions(update.relatedQuestions || []);
           setShowRelated(update.showRelated || false);
           
@@ -166,6 +171,7 @@ function SearchPageContent() {
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
           />
+          <NewsHighlights news={news} isVisible={showNews} />
           <VideoCarousel videos={videos} isVisible={showVideos} />
           <RelatedQuestions 
             questions={relatedQuestions} 

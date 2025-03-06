@@ -173,6 +173,29 @@
 - [x] Uniformisation de la taille des cartes vidéo pour une meilleure cohérence visuelle
 - [x] Conservation des animations d'apparition progressive avec délai séquentiel
 
+## Étape : Implémentation des actualités (2025-03-06)
+- [x] Mise à jour du service BraveSearch pour extraire les actualités de la réponse API
+- [x] Adaptation de l'action serveur fetchSearchResults pour traiter les actualités
+- [x] Création du composant NewsHighlights avec un design "À la une"
+- [x] Implémentation d'une version desktop avec article principal et articles secondaires
+- [x] Création d'une version mobile avec carrousel de cartes pour les actualités
+- [x] Ajout d'animations avec framer-motion pour une apparition progressive
+- [x] Intégration du composant dans la page de recherche
+
+## Étape : Optimisation des performances des composants média (2025-03-06)
+- [x] Correction des erreurs de lint dans le service BraveSearch
+- [x] Implémentation de React.memo pour éviter les re-renders inutiles des composants
+- [x] Extraction des composants d'images en sous-composants mémorisés
+- [x] Ajout d'attributs de taille et priorité pour optimiser le chargement des images
+- [x] Utilisation de clés uniques (URL) pour les éléments de liste pour améliorer la réconciliation React
+- [x] Refactorisation du composant SourcesComponent avec sous-composants mémorisés pour les sources et favicons
+- [x] Optimisation du composant SerpLink avec extraction des miniatures et favicons en composants mémorisés
+- [x] Implémentation d'une fonction de comparaison personnalisée pour la mémorisation efficace des résultats de recherche
+- [x] Amélioration de la gestion des erreurs et des fallbacks pour les favicons
+- [x] Ajout de l'attribut loading="lazy" pour différer le chargement des images hors-écran
+- [x] Élimination du problème de rechargement des images lors de la frappe dans l'input de recherche
+- [x] Optimisation du rendu conditionnel pour réduire la charge de travail du DOM
+
 ## Prochaines étapes
 - [ ] Implémentation d'un système de feedback utilisateur
 - [ ] Optimisation des performances

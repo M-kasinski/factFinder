@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import Image, { ImageProps } from 'next/image';
 import { decode } from 'he';
 
@@ -26,7 +26,8 @@ type ImageWithFallbackProps = Omit<ImageProps, 'src'> & {
   alt: string;
 };
 
-const ImageWithFallback = ({ src, alt, ...props }: ImageWithFallbackProps) => {
+// Composant mémorisé pour les images avec fallback
+const ImageWithFallback = memo(({ src, alt, ...props }: ImageWithFallbackProps) => {
   const [error, setError] = useState(false);
 
   if (error) return null;
@@ -38,13 +39,57 @@ const ImageWithFallback = ({ src, alt, ...props }: ImageWithFallbackProps) => {
         alt={alt}
         onError={() => setError(true)}
         className="object-contain"
+        loading="lazy"
         {...props}
       />
     </div>
   );
+});
+ImageWithFallback.displayName = 'ImageWithFallback';
+
+// Composant mémorisé pour le favicon
+const Favicon = memo(({ favicon, profileName }: { favicon: string; profileName: string }) => (
+  <div className="w-4 h-4 relative flex-shrink-0 overflow-hidden">
+    <ImageWithFallback
+      src={favicon}
+      alt={profileName || "site icon"}
+      fill
+      sizes="16px"
+      className="object-contain"
+    />
+  </div>
+));
+Favicon.displayName = 'Favicon';
+
+// Composant mémorisé pour la miniature
+const Thumbnail = memo(({ src, title }: { src: string; title: string }) => (
+  <div className="w-24 h-24 relative flex-shrink-0 rounded-lg overflow-hidden bg-muted">
+    <ImageWithFallback
+      src={src}
+      alt={title}
+      fill
+      sizes="96px"
+      className="object-cover"
+    />
+  </div>
+));
+Thumbnail.displayName = 'Thumbnail';
+
+// Fonction pour déterminer si deux props sont égales (pour la mémorisation)
+const arePropsEqual = (prevProps: SerpLinkProps, nextProps: SerpLinkProps) => {
+  return (
+    prevProps.title === nextProps.title &&
+    prevProps.url === nextProps.url &&
+    prevProps.date === nextProps.date &&
+    prevProps.description === nextProps.description &&
+    prevProps.meta_url?.favicon === nextProps.meta_url?.favicon &&
+    prevProps.profile?.name === nextProps.profile?.name &&
+    prevProps.thumbnail?.src === nextProps.thumbnail?.src
+  );
 };
 
-export function SerpLink({ title, date, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) {
+// Composant principal SerpLink mémorisé
+const SerpLinkComponent = ({ title, date, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) => {
   return (
     <div 
       onClick={onClick}
@@ -55,15 +100,7 @@ export function SerpLink({ title, date, description, onClick, meta_url, profile,
           <div className="flex items-center gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               {meta_url?.favicon && (
-                <div className="w-4 h-4 relative flex-shrink-0 overflow-hidden">
-                  <ImageWithFallback
-                    src={meta_url.favicon}
-                    alt={profile?.name || "site icon"}
-                    fill
-                    sizes="16px"
-                    className="object-contain"
-                  />
-                </div>
+                <Favicon favicon={meta_url.favicon} profileName={profile?.name || ""} />
               )}
               {profile?.name}
             </div>
@@ -88,17 +125,12 @@ export function SerpLink({ title, date, description, onClick, meta_url, profile,
 
         {/* Thumbnail */}
         {thumbnail?.src && (
-          <div className="w-24 h-24 relative flex-shrink-0 rounded-lg overflow-hidden bg-muted">
-            <ImageWithFallback
-              src={thumbnail.src}
-              alt={title}
-              fill
-              sizes="96px"
-              className="object-cover"
-            />
-          </div>
+          <Thumbnail src={thumbnail.src} title={title} />
         )}
       </div>
     </div>
   );
-} 
+};
+
+// Export du composant mémorisé
+export const SerpLink = memo(SerpLinkComponent, arePropsEqual); 

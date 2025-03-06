@@ -6,7 +6,8 @@ export interface SearchResult {
   description: string;
   source?: string;
   thumbnail?: {
-    src: string;
+    src?: string;
+    original?: string;
   };
   age?: string;
   meta_url?: {
@@ -16,6 +17,7 @@ export interface SearchResult {
     scheme: string;
     path: string;
   };
+  isNews?: boolean;
 }
 
 export interface SearchState {

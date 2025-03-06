@@ -4,7 +4,6 @@ import { SearchResult } from "@/types/search";
 interface BraveSearchResponse {
   web: {
     results: Array<{
-     
       title: string;
       url: string;
       description: string;
@@ -45,6 +44,29 @@ interface BraveSearchResponse {
       };
     }>;
   };
+  news?: {
+    results: Array<{
+      title: string;
+      url: string;
+      description: string;
+      page_age?: string;
+      profile?: {
+        name: string;
+        url?: string;
+        img?: string;
+      };
+      meta_url: {
+        favicon?: string;
+        hostname: string;
+        netloc: string;
+        scheme: string;
+        path: string;
+      };
+      thumbnail?: {
+        src?: string;
+      };
+    }>;
+  };
 }
 
 // Classe pour gérer les appels à l'API Brave Search
@@ -66,6 +88,7 @@ class BraveSearchClient {
       count: '10',
       safesearch: 'off',
       extra_snippets: '1',
+      country: 'FR',
       text_decorations: '0',
     });
 
@@ -91,22 +114,16 @@ class BraveSearchClient {
 /**
  * Fonction pour effectuer une recherche avec Brave Search
  */
-export async function searchWithBrave(query: string): Promise<{results: SearchResult[], videos: SearchResult[]}> {
+export async function searchWithBrave(query: string): Promise<{
+  results: SearchResult[]; 
+  videos: SearchResult[];
+  news: SearchResult[];
+}> {
   try {
-    // Récupérer la clé API
-    const braveApiKey = process.env.BRAVE_API_KEY;
-    
-    if (!braveApiKey) {
-      throw new Error("Brave API key is missing");
-    }
-    
-    // Créer une instance du client Brave Search
-    const braveClient = new BraveSearchClient(braveApiKey);
-    
-    // Effectuer la recherche
+    const braveClient = new BraveSearchClient(process.env.BRAVE_API_KEY || "");
     const braveData = await braveClient.search(query);
-    
-    // Transformer les résultats au format SearchResult
+
+    // Traiter les résultats web
     const searchResults: SearchResult[] = braveData.web.results.map(result => ({
       title: result.title,
       url: result.url,
@@ -124,9 +141,10 @@ export async function searchWithBrave(query: string): Promise<{results: SearchRe
       profile: {
         name: result.profile?.name,
       },
-      thumbnail: {
-        src: result.thumbnail?.src,
-      },
+      thumbnail: result.thumbnail ? {
+        src: result.thumbnail.src,
+        original: result.thumbnail.src,
+      } : undefined,
     }));
 
     // Extraire les vidéos si elles existent
@@ -145,18 +163,43 @@ export async function searchWithBrave(query: string): Promise<{results: SearchRe
         path: video.meta_url.path,
       },
       thumbnail: {
-        src: video.thumbnail?.src,
+        src: video.thumbnail.src,
+        original: video.thumbnail.original || video.thumbnail.src,
       },
-      // Les champs supplémentaires comme 'original' dans thumbnail ne sont pas inclus dans le type SearchResult
     })) || [];
 
+    // Extraire les actualités (news) si elles existent
+    const newsResults: SearchResult[] = braveData.news?.results.map(news => ({
+      title: news.title,
+      url: news.url,
+      date: news.page_age || "",
+      description: news.description,
+      extra_snippet: [], // Champ requis par le type SearchResult
+      age: news.page_age || "",
+      meta_url: {
+        favicon: news.meta_url.favicon,
+        hostname: news.meta_url.hostname,
+        netloc: news.meta_url.netloc,
+        scheme: news.meta_url.scheme,
+        path: news.meta_url.path,
+      },
+      profile: {
+        name: news.profile?.name || news.meta_url.hostname,
+      },
+      thumbnail: news.thumbnail ? {
+        src: news.thumbnail.src || "",
+        original: news.thumbnail.src || "",
+      } : undefined,
+      isNews: true, // Indicateur pour identifier les actualités
+    })) || [];
 
-    return { 
-      results: searchResults, 
-      videos: videoResults 
+    return {
+      results: searchResults,
+      videos: videoResults,
+      news: newsResults
     };
   } catch (error) {
-    console.error('Error in Brave Search:', error);
-    throw error;
+    console.error("Error fetching Brave search results:", error);
+    throw new Error("Failed to fetch search results from Brave Search");
   }
 } 
