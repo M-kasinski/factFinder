@@ -301,4 +301,16 @@
 - [x] Optimisation de la taille du bundle en évitant les importations inutiles
 - [x] Finalisation de l'architecture pour une meilleure maintenabilité
 
+## Étape : Expérience - Utilisation du composant NewsHighlights avec des résultats SERP (2025-03-06)
+- [x] Adaptation du composant NewsHighlights pour accepter des résultats SERP en prop optionnelle
+- [x] Implémentation d'une logique conditionnelle pour utiliser les résultats SERP quand il n'y a pas d'actualités
+- [x] Limitation du nombre de résultats SERP à 5 maximum pour l'affichage
+- [x] Modification du titre du composant ("Résultats" au lieu de "À la une") quand les résultats SERP sont utilisés
+- [x] Mise à jour de la page de recherche pour passer les résultats SERP au composant
+- [x] Optimisation du code pour éviter les duplications et les erreurs de rendu
+- [x] Conservation du même design et des mêmes animations pour une expérience utilisateur cohérente
+- [x] Amélioration de la condition d'affichage pour montrer les résultats SERP même si showNews est false
+- [x] Filtrage des résultats SERP pour ne garder que ceux qui ont des images (thumbnail)
+- [x] Utilisation de l'image source comme image originale pour améliorer la qualité visuelle des résultats web
+
 ## Prochaines étapes

@@ -20,6 +20,7 @@ interface BraveSearchResponse {
         name: string;
       };
       thumbnail: {
+        original: string;
         src: string;
       };
     }>;
@@ -144,7 +145,7 @@ export async function searchWithBrave(query: string): Promise<{
       },
       thumbnail: result.thumbnail ? {
         src: result.thumbnail?.src,
-        original: result.thumbnail?.src,
+        original: result.thumbnail?.original,
       } : undefined,
     }));
 
@@ -165,7 +166,7 @@ export async function searchWithBrave(query: string): Promise<{
       },
       thumbnail: {
         src: video.thumbnail?.src,
-        original: video.thumbnail?.src,
+        original: video.thumbnail?.original,
       },
     })) || [];
 

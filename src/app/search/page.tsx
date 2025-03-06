@@ -167,21 +167,29 @@ function SearchPageContent() {
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
           />
-          <NewsHighlights news={news} isVisible={showNews} />
-          <VideoCarousel videos={videos} isVisible={showVideos} />
-          <RelatedQuestions 
-            questions={relatedQuestions} 
-            isVisible={showRelated}
-            onQuestionClick={handleSearch}
-          />
+          
+          {!isLoading && (relatedQuestions.length > 0 || news.length > 0 || videos.length > 0) && (
+            <>
+              <NewsHighlights 
+                news={news} 
+                isVisible={showNews} 
+                serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
+              />
+              <VideoCarousel videos={videos} isVisible={showVideos} />
+              <RelatedQuestions 
+                questions={relatedQuestions} 
+                isVisible={showRelated}
+                onQuestionClick={handleSearch}
+              />
+              <ResponsiveSearchDrawer
+                isOpen={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                results={results}
+              />
+            </>
+          )}
         </div>
       </div>
-
-      <ResponsiveSearchDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        results={results}
-      />
 
       <div
         className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl"

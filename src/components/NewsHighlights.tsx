@@ -23,12 +23,30 @@ import {
 interface NewsHighlightsProps {
   news: SearchResult[];
   isVisible: boolean;
+  serpResults?: SearchResult[]; // Ajouter les résultats SERP comme prop optionnelle
 }
+
+// Animation variants
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
 
 // Composant de l'image principale optimisé pour éviter les re-renders
 const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const [useOriginal, setUseOriginal] = useState(true);
   const hasOriginal = article.thumbnail?.original && article.thumbnail.original !== article.thumbnail?.src;
+  const imageKey = `${article.url}-${useOriginal ? 'original' : 'compressed'}`;
   
   if (!article.thumbnail?.src) {
     return (
@@ -45,6 +63,7 @@ const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   
   return (
     <Image
+      key={imageKey}
       src={imageSrc}
       alt={article.title}
       fill
@@ -59,11 +78,20 @@ const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
       }}
     />
   );
+}, (prevProps, nextProps) => {
+  // Fonction de comparaison personnalisée pour React.memo
+  return (
+    prevProps.article.url === nextProps.article.url &&
+    prevProps.article.thumbnail?.src === nextProps.article.thumbnail?.src &&
+    prevProps.article.thumbnail?.original === nextProps.article.thumbnail?.original
+  );
 });
 MainNewsImage.displayName = "MainNewsImage";
 
 // Composant d'image secondaire optimisé
 const SecondaryNewsImage = React.memo(({ article }: { article: SearchResult }) => {
+  const imageKey = article.url;
+  
   if (!article.thumbnail?.src) {
     return (
       <div className="h-full w-full bg-muted flex items-center justify-center">
@@ -74,18 +102,27 @@ const SecondaryNewsImage = React.memo(({ article }: { article: SearchResult }) =
   
   return (
     <Image
+      key={imageKey}
       src={article.thumbnail.src}
       alt={article.title}
       fill
+      loading="lazy"
       sizes="(max-width: 768px) 100vw, 128px"
       className="object-cover"
     />
+  );
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.article.url === nextProps.article.url &&
+    prevProps.article.thumbnail?.src === nextProps.article.thumbnail?.src
   );
 });
 SecondaryNewsImage.displayName = "SecondaryNewsImage";
 
 // Composant d'image pour le carrousel mobile
 const CarouselNewsImage = React.memo(({ article }: { article: SearchResult }) => {
+  const imageKey = article.url;
+  
   if (!article.thumbnail?.src) {
     return (
       <div className="w-full h-full bg-muted flex items-center justify-center rounded-t-lg">
@@ -96,141 +133,164 @@ const CarouselNewsImage = React.memo(({ article }: { article: SearchResult }) =>
   
   return (
     <Image
+      key={imageKey}
       src={article.thumbnail.src}
       alt={article.title}
       fill
+      loading="lazy"
       sizes="(max-width: 768px) 80vw, 0px"
       className="object-cover rounded-t-lg"
     />
   );
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.article.url === nextProps.article.url &&
+    prevProps.article.thumbnail?.src === nextProps.article.thumbnail?.src
+  );
 });
 CarouselNewsImage.displayName = "CarouselNewsImage";
 
-function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
-  if (!isVisible || news.length === 0) return null;
-
-  // Animation variants pour le conteneur
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
-
-  // Limiter à 4 articles max pour l'affichage initial
-  const displayedNews = news.slice(0, Math.min(4, news.length));
-  const mainArticle = displayedNews[0]; // L'article principal (à la une)
-  const secondaryArticles = displayedNews.slice(1); // Les articles secondaires
+// Composant pour l'article principal
+const MainArticle = React.memo(({ article }: { article: SearchResult }) => {
+  if (!article) return null;
   
-  // Version desktop
-  const DesktopView = () => (
-    <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-      {/* Article principal (à la une) */}
-      {mainArticle && (
-        <motion.div 
-          className="col-span-2" 
-          variants={item}
-        >
-          <Link href={mainArticle.url} target="_blank" rel="noopener noreferrer" className="block">
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
-              <MainNewsImage article={mainArticle} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-              <div className="absolute bottom-0 p-4 text-white">
-                <h3 className="text-xl font-bold">{mainArticle.title}</h3>
-                <p className="mt-1 text-sm opacity-90 line-clamp-2">{mainArticle.description}</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="text-xs bg-primary/70 px-2 py-0.5 rounded-full">
-                    {mainArticle.meta_url?.hostname || 'Source'}
-                  </span>
-                  {mainArticle.age && (
-                    <span className="text-xs opacity-80">{mainArticle.age}</span>
-                  )}
-                </div>
-              </div>
+  return (
+    <motion.div className="col-span-2" variants={item}>
+      <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
+          <MainNewsImage article={article} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          <div className="absolute bottom-0 p-4 text-white">
+            <h3 className="text-xl font-bold">{article.title}</h3>
+            <p className="mt-1 text-sm opacity-90 line-clamp-2">{article.description}</p>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-xs bg-primary/70 px-2 py-0.5 rounded-full">
+                {article.meta_url?.hostname || 'Source'}
+              </span>
+              {article.age && (
+                <span className="text-xs opacity-80">{article.age}</span>
+              )}
             </div>
-          </Link>
-        </motion.div>
-      )}
-
-      {/* Articles secondaires */}
-      {secondaryArticles.map((article) => (
-        <motion.div key={article.url} variants={item}>
-          <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block">
-            <div className="flex gap-3 h-full">
-              <div className="relative h-24 w-32 flex-shrink-0 overflow-hidden rounded-md">
-                <SecondaryNewsImage article={article} />
-              </div>
-              <div className="flex flex-col">
-                <h3 className="font-medium line-clamp-2 text-sm">{article.title}</h3>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
-                  {article.meta_url?.hostname || 'Source'}
-                </p>
-                {article.age && (
-                  <span className="mt-auto text-xs text-muted-foreground">{article.age}</span>
-                )}
-              </div>
-            </div>
-          </Link>
-        </motion.div>
-      ))}
-    </div>
-  );
-
-  // Version mobile (carrousel)
-  const MobileView = () => (
-    <div className="md:hidden mt-4">
-      <Carousel
-        className="w-full"
-        opts={{
-          align: "start",
-          loop: true
-        }}
-      >
-        <CarouselContent>
-          {news.map((article, index) => (
-            <CarouselItem key={article.url} className="basis-5/6 pl-1 first:pl-0">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block h-full">
-                  <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300">
-                    <CardHeader className="relative aspect-video p-0">
-                      <CarouselNewsImage article={article} />
-                    </CardHeader>
-                    <CardContent className="p-3">
-                      <CardTitle className="line-clamp-2 text-sm">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-1 mt-1 text-xs">
-                        {article.meta_url?.hostname || 'Source'}
-                      </CardDescription>
-                    </CardContent>
-                    <CardFooter className="p-3 pt-0 text-xs text-muted-foreground">
-                      {article.age}
-                    </CardFooter>
-                  </Card>
-                </Link>
-              </motion.div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <div className="flex justify-end gap-2 mt-2">
-          <CarouselPrevious className="static transform-none" />
-          <CarouselNext className="static transform-none" />
+          </div>
         </div>
-      </Carousel>
-    </div>
+      </Link>
+    </motion.div>
   );
+}, (prevProps, nextProps) => {
+  return prevProps.article.url === nextProps.article.url;
+});
+MainArticle.displayName = "MainArticle";
+
+// Composant pour les articles secondaires
+const SecondaryArticle = React.memo(({ article }: { article: SearchResult }) => {
+  return (
+    <motion.div variants={item}>
+      <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block">
+        <div className="flex gap-3 h-full">
+          <div className="relative h-24 w-32 flex-shrink-0 overflow-hidden rounded-md">
+            <SecondaryNewsImage article={article} />
+          </div>
+          <div className="flex flex-col">
+            <h3 className="font-medium line-clamp-2 text-sm">{article.title}</h3>
+            <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+              {article.meta_url?.hostname || 'Source'}
+            </p>
+            {article.age && (
+              <span className="mt-auto text-xs text-muted-foreground">{article.age}</span>
+            )}
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}, (prevProps, nextProps) => {
+  return prevProps.article.url === nextProps.article.url;
+});
+SecondaryArticle.displayName = "SecondaryArticle";
+
+// Version desktop optimisée
+const DesktopView = React.memo(({ mainArticle, secondaryArticles }: { 
+  mainArticle: SearchResult; 
+  secondaryArticles: SearchResult[];
+}) => (
+  <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    {mainArticle && <MainArticle article={mainArticle} />}
+    {secondaryArticles.map((article) => (
+      <SecondaryArticle key={article.url} article={article} />
+    ))}
+  </div>
+));
+DesktopView.displayName = "DesktopView";
+
+// Version mobile optimisée
+const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] }) => (
+  <div className="md:hidden mt-4">
+    <Carousel
+      className="w-full"
+      opts={{
+        align: "start",
+        loop: true
+      }}
+    >
+      <CarouselContent>
+        {displayData.map((article, index) => (
+          <CarouselItem key={article.url} className="basis-5/6 pl-1 first:pl-0">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block h-full">
+                <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                  <CardHeader className="relative aspect-video p-0">
+                    <CarouselNewsImage article={article} />
+                  </CardHeader>
+                  <CardContent className="p-3">
+                    <CardTitle className="line-clamp-2 text-sm">
+                      {article.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-1 mt-1 text-xs">
+                      {article.meta_url?.hostname || 'Source'}
+                    </CardDescription>
+                  </CardContent>
+                  <CardFooter className="p-3 pt-0 text-xs text-muted-foreground">
+                    {article.age}
+                  </CardFooter>
+                </Card>
+              </Link>
+            </motion.div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <div className="flex justify-end gap-2 mt-2">
+        <CarouselPrevious className="static transform-none" />
+        <CarouselNext className="static transform-none" />
+      </div>
+    </Carousel>
+  </div>
+));
+MobileView.displayName = "MobileView";
+
+function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHighlightsProps) {
+  // Vérifier si nous devons utiliser les résultats SERP (pas d'actualités)
+  const useSerpResults = news.length === 0 && serpResults.length > 0;
+  
+  // Déterminer si le composant doit être visible
+  const shouldDisplay = isVisible || useSerpResults;
+  
+  // Ne rien afficher si le composant ne doit pas être visible
+  if (!shouldDisplay) return null;
+
+  // Utiliser les résultats SERP ou les actualités selon le cas
+  const displayData = useSerpResults ? serpResults.slice(0, 5) : news;
+  
+  // Limiter à 4 articles max pour l'affichage initial
+  const displayedItems = displayData.slice(0, Math.min(4, displayData.length));
+  const mainArticle = displayedItems[0];
+  const secondaryArticles = displayedItems.slice(1);
+
+  // Titre personnalisé selon le type de données affichées
+  const sectionTitle = useSerpResults ? "Résultats" : "À la une";
 
   return (
     <motion.div
@@ -241,14 +301,20 @@ function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
     >
       <div className="flex items-center gap-2">
         <Newspaper className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold">À la une</h2>
+        <h2 className="text-lg font-semibold">{sectionTitle}</h2>
       </div>
 
-      <DesktopView />
-      <MobileView />
+      <DesktopView mainArticle={mainArticle} secondaryArticles={secondaryArticles} />
+      <MobileView displayData={displayData} />
     </motion.div>
   );
 }
 
-// Utiliser React.memo pour éviter les re-renders inutiles
-export const NewsHighlights = React.memo(NewsHighlightsComponent); 
+// Utiliser React.memo avec une fonction de comparaison personnalisée pour le composant principal
+export const NewsHighlights = React.memo(NewsHighlightsComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.isVisible === nextProps.isVisible &&
+    prevProps.news === nextProps.news &&
+    prevProps.serpResults === nextProps.serpResults
+  );
+}); 
