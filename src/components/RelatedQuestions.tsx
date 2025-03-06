@@ -8,8 +8,32 @@ interface RelatedQuestionsProps {
   onQuestionClick: (question: string) => void;
 }
 
+// Skeleton loader pour les questions associées
+const RelatedQuestionsSkeleton = () => (
+  <div>
+    <div className="flex items-center gap-2">
+      <HelpCircle className="h-5 w-5 text-primary/50" />
+      <div className="h-6 w-36 bg-muted-foreground/20 rounded-lg animate-pulse" />
+    </div>
+    
+    <div className="mt-4 flex flex-wrap gap-3">
+      {[...Array(5)].map((_, index) => (
+        <div 
+          key={index} 
+          className="animate-pulse px-4 py-2 rounded-full bg-muted w-28 h-9 sm:w-36"
+        />
+      ))}
+    </div>
+  </div>
+);
+
 export function RelatedQuestions({ questions, isVisible, onQuestionClick }: RelatedQuestionsProps) {
-  if (!isVisible || !questions.length) return null;
+  if (!isVisible) return null;
+  
+  // Afficher le skeleton loader si aucune question n'est disponible
+  if (questions.length === 0) {
+    return <RelatedQuestionsSkeleton />;
+  }
 
   const container = {
     hidden: { opacity: 0 },

@@ -119,15 +119,63 @@ const MoreSourcesCard = React.memo(({
 ));
 MoreSourcesCard.displayName = 'MoreSourcesCard';
 
+// Skeleton loader pour les sources
+const SourcesSkeleton = () => (
+  <div>
+    <div className="flex items-center gap-2 mb-4">
+      <Globe className="h-5 w-5 text-primary/50" />
+      <div className="h-6 w-28 bg-muted-foreground/20 rounded-lg animate-pulse" />
+    </div>
+    
+    <div className="flex overflow-x-auto gap-3 pb-4">
+      {[...Array(5)].map((_, index) => (
+        <div 
+          key={index} 
+          className="animate-pulse flex-shrink-0 flex flex-col items-center"
+        >
+          <div className="h-12 w-12 rounded-full bg-muted mb-2" />
+          <div className="h-3 bg-muted-foreground/20 rounded w-20" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({ 
   results = [], 
   onShowAll,
   isLoading = false 
 }) => {
+  // Afficher le skeleton loader pendant le chargement
+  if (isLoading) {
+    return <SourcesSkeleton />;
+  }
+  
+  // Masquer le composant s'il n'y a pas de résultats
+  if (!results?.length) return null;
+  
+  // Calculer les sources uniques en se basant sur l'hostname des URL
+  const domains = results
+    .map(result => result.meta_url?.hostname)
+    .filter(Boolean) as string[];
+  
+  // Compter les occurrences de chaque domaine
+  const domainCounts = domains.reduce((acc, domain) => {
+    acc[domain] = (acc[domain] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  // Trier les domaines par nombre d'occurrences
+  const sortedDomains = Object.entries(domainCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([domain, count]) => ({ domain, count }));
+  
+  // Ne rien afficher s'il n'y a pas de domaines uniques
+  if (!sortedDomains.length) return null;
+
   const visibleSources = results.slice(0, 3);
   const hiddenSources = results.slice(3);
-
-  if (results.length === 0 && !isLoading) return null;
 
   const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[90px] dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 hover:bg-accent/50 transition-colors";
 

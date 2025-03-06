@@ -168,17 +168,20 @@ function SearchPageContent() {
             streamingContent={messages}
           />
           
-          {!isLoading && (relatedQuestions.length > 0 || news.length > 0 || videos.length > 0) && (
+          {(isLoading || showNews || showVideos || showRelated) && (
             <>
               <NewsHighlights 
                 news={news} 
-                isVisible={showNews} 
+                isVisible={isLoading || showNews} 
                 serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
               />
-              <VideoCarousel videos={videos} isVisible={showVideos} />
+              <VideoCarousel 
+                videos={videos} 
+                isVisible={isLoading || showVideos} 
+              />
               <RelatedQuestions 
                 questions={relatedQuestions} 
-                isVisible={showRelated}
+                isVisible={isLoading || showRelated}
                 onQuestionClick={handleSearch}
               />
               <ResponsiveSearchDrawer

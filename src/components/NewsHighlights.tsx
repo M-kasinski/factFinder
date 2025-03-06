@@ -42,6 +42,54 @@ const item = {
   show: { opacity: 1, y: 0 }
 };
 
+// Skeleton loader pour l'article principal
+const MainArticleSkeleton = () => (
+  <div className="col-span-2 animate-pulse">
+    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
+      <div className="absolute inset-0 bg-gradient-to-t from-muted-foreground/10 to-transparent" />
+      <div className="absolute bottom-0 p-4 space-y-3 w-full">
+        <div className="h-6 bg-muted-foreground/20 rounded-lg w-3/4" />
+        <div className="h-4 bg-muted-foreground/10 rounded-lg w-full" />
+        <div className="h-4 bg-muted-foreground/10 rounded-lg w-2/3" />
+        <div className="flex gap-2 mt-2">
+          <div className="h-5 w-20 bg-primary/30 rounded-full" />
+          <div className="h-5 w-12 bg-muted-foreground/20 rounded-full" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton loader pour les articles secondaires
+const SecondaryArticleSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="flex gap-3 h-full">
+      <div className="relative h-24 w-32 flex-shrink-0 rounded-md bg-muted" />
+      <div className="flex flex-col space-y-2 flex-1">
+        <div className="h-4 bg-muted-foreground/20 rounded-lg w-full" />
+        <div className="h-4 bg-muted-foreground/20 rounded-lg w-3/4" />
+        <div className="h-3 bg-muted-foreground/10 rounded-lg w-1/2 mt-auto" />
+      </div>
+    </div>
+  </div>
+);
+
+// Skeleton loader pour le carrousel mobile
+const MobileSkeletonItem = () => (
+  <div className="animate-pulse">
+    <div className="h-full">
+      <div className="overflow-hidden rounded-t-lg">
+        <div className="aspect-video bg-muted" />
+      </div>
+      <div className="p-3 space-y-2 border border-t-0 rounded-b-lg border-muted">
+        <div className="h-4 bg-muted-foreground/20 rounded-lg w-full" />
+        <div className="h-3 bg-muted-foreground/10 rounded-lg w-2/3" />
+        <div className="h-3 bg-muted-foreground/10 rounded-lg w-1/3" />
+      </div>
+    </div>
+  </div>
+);
+
 // Composant de l'image principale optimisé pour éviter les re-renders
 const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const [useOriginal, setUseOriginal] = useState(true);
@@ -291,6 +339,40 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
 
   // Titre personnalisé selon le type de données affichées
   const sectionTitle = useSerpResults ? "Résultats" : "À la une";
+
+  // Placeholder pour le chargement (ghost loading)
+  const LoadingPlaceholder = () => (
+    <div>
+      <div className="flex items-center gap-2">
+        <Newspaper className="h-5 w-5 text-primary/50" />
+        <div className="h-6 w-24 bg-muted-foreground/20 rounded-lg animate-pulse" />
+      </div>
+      
+      {/* Desktop placeholder */}
+      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <MainArticleSkeleton />
+        {[...Array(3)].map((_, index) => (
+          <SecondaryArticleSkeleton key={index} />
+        ))}
+      </div>
+      
+      {/* Mobile placeholder */}
+      <div className="md:hidden mt-4">
+        <div className="flex overflow-x-auto gap-3 pb-4">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="w-[240px] flex-shrink-0">
+              <MobileSkeletonItem />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Afficher le placeholder si les données ne sont pas encore chargées
+  if (displayData.length === 0) {
+    return <LoadingPlaceholder />;
+  }
 
   return (
     <motion.div
