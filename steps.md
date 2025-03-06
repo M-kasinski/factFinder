@@ -182,6 +182,14 @@
 - [x] Ajout d'animations avec framer-motion pour une apparition progressive
 - [x] Intégration du composant dans la page de recherche
 
+## Étape : Amélioration des images d'actualités (2025-03-06)
+- [x] Implémentation d'un mécanisme de fallback intelligent pour les images d'actualités
+- [x] Ajout d'un état local pour gérer la transition de l'image originale vers l'image compressée
+- [x] Optimisation du chargement des images avec vérification de la qualité
+- [x] Gestion des erreurs avec fallback automatique vers les images de plus basse résolution
+- [x] Amélioration de l'expérience utilisateur en évitant les images cassées ou non chargées
+- [x] Implémentation d'une solution élégante pour éviter l'affichage d'images floues
+
 ## Étape : Optimisation des performances des composants média (2025-03-06)
 - [x] Correction des erreurs de lint dans le service BraveSearch
 - [x] Implémentation de React.memo pour éviter les re-renders inutiles des composants
@@ -195,6 +203,14 @@
 - [x] Ajout de l'attribut loading="lazy" pour différer le chargement des images hors-écran
 - [x] Élimination du problème de rechargement des images lors de la frappe dans l'input de recherche
 - [x] Optimisation du rendu conditionnel pour réduire la charge de travail du DOM
+
+## Étape : Optimisation de la configuration des images Next.js (2025-03-06)
+- [x] Modification de `next.config.ts` pour accepter les images de toutes les sources
+- [x] Configuration des patterns génériques pour les URLs HTTP et HTTPS
+- [x] Simplification de la gestion des domaines autorisés avec wildcards
+- [x] Amélioration de la compatibilité avec les différentes sources d'images
+- [x] Élimination des restrictions inutiles pour les domaines d'images
+- [x] Optimisation pour une meilleure utilisation du composant Image de Next.js
 
 ## Prochaines étapes
 - [ ] Implémentation d'un système de feedback utilisateur

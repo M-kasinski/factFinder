@@ -3,7 +3,7 @@ import { SearchResult } from "@/types/search";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -27,6 +27,9 @@ interface NewsHighlightsProps {
 
 // Composant de l'image principale optimisé pour éviter les re-renders
 const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
+  const [useOriginal, setUseOriginal] = useState(true);
+  const hasOriginal = article.thumbnail?.original && article.thumbnail.original !== article.thumbnail?.src;
+  
   if (!article.thumbnail?.src) {
     return (
       <div className="absolute inset-0 bg-muted flex items-center justify-center">
@@ -35,14 +38,25 @@ const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
     );
   }
   
+  // Déterminer la source de l'image en fonction de la disponibilité et de l'état
+  const imageSrc = useOriginal && hasOriginal && article.thumbnail.original
+    ? article.thumbnail.original
+    : article.thumbnail.src;
+  
   return (
     <Image
-      src={article.thumbnail.original || article.thumbnail.src}
+      src={imageSrc}
       alt={article.title}
       fill
       priority
       sizes="(max-width: 768px) 100vw, 1200px"
       className="object-cover transition-transform hover:scale-105"
+      onError={() => {
+        // Si on utilisait l'original et qu'il y a une erreur, utiliser l'image compressée
+        if (useOriginal && hasOriginal) {
+          setUseOriginal(false);
+        }
+      }}
     />
   );
 });

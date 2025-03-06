@@ -5,15 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'imgs.search.brave.com',
+        hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: 'm.media-amazon.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'favicons.search.brave.com',
+        protocol: 'http',
+        hostname: '**',
       },
     ],
   },

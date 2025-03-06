@@ -63,6 +63,7 @@ interface BraveSearchResponse {
         path: string;
       };
       thumbnail?: {
+        original: string;
         src?: string;
       };
     }>;
@@ -188,7 +189,7 @@ export async function searchWithBrave(query: string): Promise<{
       },
       thumbnail: news.thumbnail ? {
         src: news.thumbnail.src || "",
-        original: news.thumbnail.src || "",
+        original: news.thumbnail.original || "",
       } : undefined,
       isNews: true, // Indicateur pour identifier les actualités
     })) || [];
