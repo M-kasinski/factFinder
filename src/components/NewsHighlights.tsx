@@ -330,10 +330,10 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
   if (!shouldDisplay) return null;
 
   // Utiliser les résultats SERP ou les actualités selon le cas
-  const displayData = useSerpResults ? serpResults.slice(0, 5) : news;
+  const displayData = useSerpResults ? serpResults: news;
   
   // Limiter à 4 articles max pour l'affichage initial
-  const displayedItems = displayData.slice(0, Math.min(4, displayData.length));
+  const displayedItems = displayData.slice(0, Math.min(5, displayData.length));
   const mainArticle = displayedItems[0];
   const secondaryArticles = displayedItems.slice(1);
 
