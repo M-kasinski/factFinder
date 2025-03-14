@@ -26,6 +26,9 @@ export default function Home() {
         <div className="flex flex-col items-center pt-16 md:pt-0 md:justify-center min-h-[calc(100vh-130px)]">
           <div className="text-center space-y-4 mb-8 md:mb-10">
             <div className="flex items-center justify-center gap-2 md:gap-3 text-primary animate-fade-in">
+              <h1 className="text-3xl md:text-6xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                ClaireVue
+              </h1>
               <Image 
                 src="/clairevue-logo.svg" 
                 alt="ClaireVue Logo" 
@@ -33,12 +36,9 @@ export default function Home() {
                 height={40} 
                 className="md:w-12 md:h-12"
               />
-              <h1 className="text-3xl md:text-6xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                ClaireVue
-              </h1>
             </div>
             <p className="text-lg md:text-2xl font-semibold text-primary/90 max-w-[600px] mx-auto animate-fade-in-up px-2 md:px-4">
-              La clarté pour des recherches qui éclairent votre monde
+            La clarté à chaque recherche
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export default function Home() {
                 </h3>
               </div>
               <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                Trouvez exactement ce que vous cherchez avec une présentation limpide et des résultats triés pour une compréhension immédiate.
+              Trouvez ce que vous cherchez, clairement et rapidement
               </p>
             </div>
             
@@ -75,7 +75,7 @@ export default function Home() {
                 </h3>
               </div>
               <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                Naviguez en toute confiance avec des informations sourcées et des analyses impartiales qui garantissent la fiabilité.
+              Fiez-vous à des sources fiables et impartiales
               </p>
             </div>
             
@@ -89,7 +89,7 @@ export default function Home() {
                 </h3>
               </div>
               <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                Bénéficiez d&apos;informations synthétisées et contextualisées pour des décisions éclairées en un coup d&apos;œil.
+                Informations synthétisées et contextualisées pour des décisions éclairées.
               </p>
             </div>
           </div>
