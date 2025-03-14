@@ -3,14 +3,7 @@ import { SearchResult } from "@/types/search";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -19,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface NewsHighlightsProps {
   news: SearchResult[];
@@ -169,11 +163,12 @@ const SecondaryNewsImage = React.memo(({ article }: { article: SearchResult }) =
 });
 SecondaryNewsImage.displayName = "SecondaryNewsImage";
 
-// Composant d'image pour le carrousel mobile
-const CarouselNewsImage = React.memo(({ article }: { article: SearchResult }) => {
+// Composant d'image pour le scrolling mobile
+const ScrollNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const imageKey = article.url;
+  const [hasError, setHasError] = useState(false);
   
-  if (!article.thumbnail?.src) {
+  if (!article.thumbnail?.src || hasError) {
     return (
       <div className="w-full h-full bg-muted flex items-center justify-center rounded-t-lg">
         <Newspaper className="h-10 w-10 text-muted-foreground/50" />
@@ -190,6 +185,7 @@ const CarouselNewsImage = React.memo(({ article }: { article: SearchResult }) =>
       loading="lazy"
       sizes="(max-width: 768px) 80vw, 0px"
       className="object-cover rounded-t-lg"
+      onError={() => setHasError(true)}
     />
   );
 }, (prevProps, nextProps) => {
@@ -198,7 +194,7 @@ const CarouselNewsImage = React.memo(({ article }: { article: SearchResult }) =>
     prevProps.article.thumbnail?.src === nextProps.article.thumbnail?.src
   );
 });
-CarouselNewsImage.displayName = "CarouselNewsImage";
+ScrollNewsImage.displayName = "ScrollNewsImage";
 
 // Composant pour l'article principal
 const MainArticle = React.memo(({ article }: { article: SearchResult }) => {
@@ -273,19 +269,31 @@ const DesktopView = React.memo(({ mainArticle, secondaryArticles }: {
 DesktopView.displayName = "DesktopView";
 
 // Version mobile optimisée
-const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] }) => (
-  <div className="md:hidden mt-4">
-    <Carousel
-      className="w-full"
-      opts={{
-        align: "start",
-        loop: true
-      }}
-    >
-      <CarouselContent>
-        {displayData.map((article, index) => (
-          <CarouselItem key={article.url} className="basis-5/6 pl-1 first:pl-0">
+const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] }) => {
+  // Filtrer les articles qui ont des miniatures valides pour mobile
+  const [validArticles, setValidArticles] = useState<SearchResult[]>(displayData);
+  
+  // Mettre à jour validArticles quand displayData change
+  useEffect(() => {
+    setValidArticles(displayData.filter(article => article.thumbnail?.src));
+  }, [displayData]);
+  
+  // Gérer les erreurs d'image pour filtrer les articles
+  const handleImageError = (article: SearchResult) => {
+    setValidArticles(current => current.filter(item => item.url !== article.url));
+  };
+  
+  // Si aucun article valide, ne rien afficher
+  if (validArticles.length === 0) return null;
+  
+  return (
+    <div className="md:hidden mt-4">
+      <ScrollArea className="w-full relative" type="scroll">
+        <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
+          {validArticles.map((article, index) => (
             <motion.div
+              key={article.url}
+              className="shrink-0 w-[240px] h-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
@@ -293,7 +301,15 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
               <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block h-full">
                 <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300">
                   <CardHeader className="relative aspect-video p-0">
-                    <CarouselNewsImage article={article} />
+                    <Image
+                      src={article.thumbnail?.src || ''}
+                      alt={article.title}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 768px) 80vw, 0px"
+                      className="object-cover rounded-t-lg"
+                      onError={() => handleImageError(article)}
+                    />
                   </CardHeader>
                   <CardContent className="p-3">
                     <CardTitle className="line-clamp-2 text-sm">
@@ -309,16 +325,13 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
                 </Card>
               </Link>
             </motion.div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <div className="flex justify-end gap-2 mt-2">
-        <CarouselPrevious className="static transform-none" />
-        <CarouselNext className="static transform-none" />
-      </div>
-    </Carousel>
-  </div>
-));
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" className="opacity-100" />
+      </ScrollArea>
+    </div>
+  );
+});
 MobileView.displayName = "MobileView";
 
 function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHighlightsProps) {
@@ -360,13 +373,16 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
       
       {/* Mobile placeholder */}
       <div className="md:hidden mt-4">
-        <div className="flex overflow-x-auto gap-3 pb-4">
-          {[...Array(3)].map((_, index) => (
-            <div key={index} className="w-[240px] flex-shrink-0">
-              <MobileSkeletonItem />
-            </div>
-          ))}
-        </div>
+        <ScrollArea className="w-full relative" type="scroll">
+          <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="w-[240px] flex-shrink-0">
+                <MobileSkeletonItem />
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="opacity-100" />
+        </ScrollArea>
       </div>
     </div>
   );

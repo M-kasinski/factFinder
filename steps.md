@@ -330,4 +330,40 @@
 - [x] Vérification visuelle de l'affichage correct des ellipsis sur les titres tronqués
 - [x] Amélioration de la cohérence visuelle entre les différentes cartes de sources
 
+## Étape : Amélioration de l'affichage des actualités sur mobile (2025-03-07)
+- [x] Remplacement du Carousel par un ScrollArea pour les actualités sur mobile
+- [x] Simplification de l'interface de défilement horizontal pour une meilleure lisibilité
+- [x] Suppression des boutons de navigation précédent/suivant pour un défilement tactile plus intuitif
+- [x] Harmonisation de l'approche avec le composant SourcesComponent
+- [x] Ajout d'une barre de défilement horizontale discrète pour indiquer la position
+- [x] Optimisation du rendu avec React.memo pour éviter les re-renders inutiles
+- [x] Amélioration de l'expérience utilisateur sur les écrans tactiles
+
+## Étape : Harmonisation de l'affichage des vidéos sur mobile (2025-03-07)
+- [x] Remplacement du Carousel par un ScrollArea pour les vidéos sur mobile
+- [x] Application de la même approche de défilement horizontal que pour les actualités et les sources
+- [x] Suppression des boutons de navigation précédent/suivant pour un défilement tactile plus intuitif
+- [x] Ajout d'une barre de défilement horizontale discrète pour indiquer la position
+- [x] Ajout d'animations d'apparition progressive avec délai séquentiel
+- [x] Mise à jour du skeleton loader pour correspondre à la nouvelle interface
+- [x] Amélioration de la cohérence visuelle et fonctionnelle entre tous les composants de l'application
+
+## Étape : Amélioration de la gestion des erreurs d'images dans les actualités sur mobile (2025-03-07)
+- [x] Implémentation d'un filtrage des articles sans miniatures valides sur mobile
+- [x] Gestion des erreurs de chargement d'images pour masquer les articles concernés
+- [x] Ajout d'un état local pour suivre les articles avec des images valides
+- [x] Synchronisation des articles affichés entre desktop et mobile
+- [x] Optimisation de l'expérience utilisateur en évitant d'afficher des cartes sans images
+- [x] Mise en place d'un filtre préalable des articles sans images dès le chargement initial
+- [x] Ajout d'une condition pour masquer complètement la section si aucun article valide n'est disponible
+
+## Étape : Extension de la gestion des erreurs d'images aux vidéos (2025-03-07)
+- [x] Application de la même approche de filtrage des miniatures invalides aux vidéos
+- [x] Implémentation de la détection d'erreurs d'images dans les composants VideoThumbnail
+- [x] Création d'un filtrage distinct pour les vidéos en version desktop et mobile
+- [x] Gestion dynamique des erreurs de chargement d'images sur mobile avec suppressions automatiques
+- [x] Amélioration de l'expérience utilisateur en évitant d'afficher des vidéos sans miniatures
+- [x] Optimisation des Hooks React pour respecter les règles d'appel (pas de hooks conditionnels)
+- [x] Masquage automatique de la section si aucune vidéo valide n'est disponible sur les deux versions
+
 ## Prochaines étapes
