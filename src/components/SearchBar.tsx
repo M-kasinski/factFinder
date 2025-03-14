@@ -44,23 +44,23 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-            className="w-full py-2 md:py-3 pl-3 md:pl-4 pr-20 md:pr-24 rounded-full focus:outline-none text-base md:text-lg bg-transparent"
+            className="w-full py-3 md:py-4 pl-4 md:pl-5 pr-20 md:pr-24 rounded-full focus:outline-none text-lg md:text-xl bg-transparent"
             placeholder="Posez votre question..."
           />
 
           <div className="absolute inset-y-0 right-1 md:right-2 flex items-center space-x-1 md:space-x-2">
             <button 
               type="button"
-              className="p-1.5 md:p-2 hover:bg-accent rounded-full"
+              className="p-2 md:p-2.5 hover:bg-accent rounded-full"
               onClick={() => console.log('Voice search not implemented')}
             >
-              <Mic className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+              <Mic className="h-5 w-5 md:h-6 md:w-6 text-primary" />
             </button>
             <button 
               type="submit"
-              className="p-1.5 md:p-2 hover:bg-accent rounded-full"
+              className="p-2 md:p-2.5 hover:bg-accent rounded-full"
             >
-              <Search className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground hover:text-primary transition-colors" />
+              <Search className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground hover:text-primary transition-colors" />
             </button>
           </div>
         </div>

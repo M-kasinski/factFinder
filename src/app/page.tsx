@@ -35,7 +35,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="w-full max-w-[90%] md:max-w-2xl mx-auto transform transition-all duration-200 hover:scale-105 animate-fade-in-up delay-100 mb-8 md:mb-12">
+          <div className="w-full max-w-[98%] md:max-w-2xl mx-auto transform transition-all duration-200 hover:scale-105 animate-fade-in-up delay-100 mb-8 md:mb-12 px-1 md:px-0">
             <SearchBar
               onSearch={handleSearch}
               value={searchValue}
