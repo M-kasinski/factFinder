@@ -93,10 +93,11 @@ const MobileSkeletonItem = () => (
 // Composant de l'image principale optimisé pour éviter les re-renders
 const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const [useOriginal, setUseOriginal] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const hasOriginal = article.thumbnail?.original && article.thumbnail.original !== article.thumbnail?.src;
   const imageKey = `${article.url}-${useOriginal ? 'original' : 'compressed'}`;
   
-  if (!article.thumbnail?.src) {
+  if (!article.thumbnail?.src || hasError) {
     return (
       <div className="absolute inset-0 bg-muted flex items-center justify-center">
         <Newspaper className="h-12 w-12 text-muted-foreground/50" />
@@ -119,9 +120,10 @@ const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
       sizes="(max-width: 768px) 100vw, 1200px"
       className="object-cover transition-transform hover:scale-105"
       onError={() => {
-        // Si on utilisait l'original et qu'il y a une erreur, utiliser l'image compressée
         if (useOriginal && hasOriginal) {
           setUseOriginal(false);
+        } else {
+          setHasError(true);
         }
       }}
     />
