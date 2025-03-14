@@ -121,22 +121,33 @@ MoreSourcesCard.displayName = 'MoreSourcesCard';
 
 // Skeleton loader pour les sources
 const SourcesSkeleton = () => (
-  <div>
-    <div className="flex items-center gap-2 mb-4">
-      <Globe className="h-5 w-5 text-primary/50" />
+  <div className="space-y-3">
+    <div className="flex items-center gap-2">
+      <Globe className="h-5 w-5 text-primary/40" />
       <div className="h-6 w-28 bg-muted-foreground/20 rounded-lg animate-pulse" />
     </div>
     
-    <div className="flex overflow-x-auto gap-3 pb-4">
-      {[...Array(5)].map((_, index) => (
-        <div 
-          key={index} 
-          className="animate-pulse flex-shrink-0 flex flex-col items-center"
-        >
-          <div className="h-12 w-12 rounded-full bg-muted mb-2" />
-          <div className="h-3 bg-muted-foreground/20 rounded w-20" />
-        </div>
-      ))}
+    <div className="relative overflow-x-auto">
+      <div className="flex gap-3 pb-4">
+        {[...Array(4)].map((_, index) => (
+          <div 
+            key={index} 
+            className="animate-pulse shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[90px] border border-border rounded-lg bg-muted relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-muted-foreground/10 to-transparent" />
+            <div className="p-3 h-full flex flex-col relative z-10">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-muted-foreground/20 flex-shrink-0" />
+                <div className="h-4 bg-muted-foreground/20 rounded-md w-3/4" />
+              </div>
+              <div className="mt-2 space-y-2 flex-1">
+                <div className="h-3 bg-muted-foreground/10 rounded-md w-full" />
+                <div className="h-3 bg-muted-foreground/10 rounded-md w-3/4" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 );

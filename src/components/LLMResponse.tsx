@@ -13,20 +13,23 @@ interface LLMResponseProps {
 
 // Skeleton loader pour la réponse LLM
 const LLMResponseSkeleton = () => (
-  <div className="animate-pulse">
-    <div className="flex items-center gap-2 mb-4">
-      <BrainCircuit className="h-5 w-5 text-primary/50" />
+  <div className="animate-pulse space-y-4">
+    <div className="flex items-center gap-2">
+      <BrainCircuit className="h-5 w-5 text-primary/40" />
       <div className="h-6 w-36 bg-muted-foreground/20 rounded-lg" />
     </div>
     
-    <div className="space-y-3 pl-8 border-l-2 border-primary/30">
-      <div className="h-4 bg-muted-foreground/10 rounded w-full" />
-      <div className="h-4 bg-muted-foreground/10 rounded w-full" />
-      <div className="h-4 bg-muted-foreground/10 rounded w-11/12" />
-      <div className="h-4 bg-muted-foreground/10 rounded w-3/4" />
-      <div className="space-y-2 pt-2">
-        <div className="h-4 bg-muted-foreground/10 rounded w-full" />
-        <div className="h-4 bg-muted-foreground/10 rounded w-5/6" />
+    <div className="rounded-lg border border-border p-6 bg-muted relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-t from-muted-foreground/10 to-transparent" />
+      <div className="relative z-10 space-y-3">
+        <div className="h-5 bg-muted-foreground/20 rounded-md w-3/4" />
+        <div className="h-4 bg-muted-foreground/10 rounded-md w-full" />
+        <div className="h-4 bg-muted-foreground/10 rounded-md w-11/12" />
+        <div className="h-4 bg-muted-foreground/10 rounded-md w-3/4" />
+        <div className="pt-2 space-y-2">
+          <div className="h-4 bg-muted-foreground/10 rounded-md w-full" />
+          <div className="h-4 bg-muted-foreground/10 rounded-md w-5/6" />
+        </div>
       </div>
     </div>
   </div>

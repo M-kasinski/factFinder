@@ -29,7 +29,7 @@ export async function fetchSearchResults(query: string) {
   // Créer un streamable value avec un état initial
   const streamable = createStreamableValue<SearchResults>({
     results: [],
-    messages: "Recherche en cours...",
+    messages: "",
     videos: [],
     showVideos: false,
     news: [],
@@ -50,7 +50,7 @@ export async function fetchSearchResults(query: string) {
       // Mettre à jour le streamable avec les résultats de recherche, vidéos et news
       streamable.update({
         results: searchResults,
-        messages: "Analyse des résultats...",
+        messages: "",
         videos: [],
         showVideos: false,
         news: [],
