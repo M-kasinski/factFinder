@@ -313,4 +313,21 @@
 - [x] Filtrage des résultats SERP pour ne garder que ceux qui ont des images (thumbnail)
 - [x] Utilisation de l'image source comme image originale pour améliorer la qualité visuelle des résultats web
 
+## Étape : Optimisation du composant Sources (2025-03-07)
+- [x] Amélioration de l'alignement du favicon avec le titre du site
+- [x] Réduction de la hauteur des cartes sources pour un affichage plus compact
+- [x] Modification du comportement de collapse des titres (passage de line-clamp-2 à line-clamp-1)
+- [x] Harmonisation du squelette de chargement (loading skeleton) avec le composant réel
+- [x] Réduction de la taille des éléments (favicon, padding, espacement)
+- [x] Correction de l'alignement vertical des éléments pour une meilleure présentation
+- [x] Optimisation générale de l'affichage pour une expérience utilisateur plus cohérente
+
+## Étape : Correction de l'affichage des ellipsis et alignement des icônes (2025-03-07)
+- [x] Remplacement de line-clamp-1 overflow-ellipsis par truncate pour assurer l'affichage des points de suspension
+- [x] Ajustement de l'alignement vertical des icônes (passage de mt-[2px] à mt-0.5)
+- [x] Harmonisation de tous les composants pour maintenir le même alignement visuel
+- [x] Mise à jour du skeleton loader avec les mêmes ajustements
+- [x] Vérification visuelle de l'affichage correct des ellipsis sur les titres tronqués
+- [x] Amélioration de la cohérence visuelle entre les différentes cartes de sources
+
 ## Prochaines étapes

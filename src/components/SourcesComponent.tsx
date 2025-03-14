@@ -49,17 +49,17 @@ SourceFavicon.displayName = 'SourceFavicon';
 // Composant mémorisé pour une carte source individuelle
 const SourceCard = React.memo(({ source, cardClasses }: { source: SearchResult, cardClasses: string }) => (
   <Card className={cardClasses}>
-    <CardContent className="p-3 h-full">
+    <CardContent className="p-2 h-full">
       <a href={source.url} target="_blank" rel="noopener noreferrer" className="block h-full">
-        <div className="flex items-center gap-2 h-full">
-          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <div className="flex items-start gap-2 h-full">
+          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
             <SourceFavicon source={source} />
           </div>
-          <div className="min-w-0 flex-1 flex flex-col justify-between h-full">
-            <h3 className="text-xs font-medium line-clamp-2 leading-tight">
+          <div className="min-w-0 flex-1 flex flex-col justify-between h-full mt-1">
+            <h3 className="text-xs font-medium truncate leading-tight">
               {source.title}
             </h3>
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-1">
               <span className="truncate">{source.source || getSiteName(source.url)}</span>
               <span className="text-muted-foreground/60 flex-shrink-0">•</span>
               <span className="flex-shrink-0">{source.date}</span>
@@ -86,16 +86,16 @@ const MoreSourcesCard = React.memo(({
     className={`${cardClasses} cursor-pointer`}
     onClick={onShowAll}
   >
-    <CardContent className="p-3 h-full">
-      <div className="flex items-center gap-3 h-full">
-        <div className="relative w-6 h-6 flex-shrink-0">
+    <CardContent className="p-2 h-full">
+      <div className="flex items-start gap-3 h-full">
+        <div className="relative w-5 h-5 flex-shrink-0 mt-1">
           <div className="absolute inset-0">
             {hiddenSources.slice(0, 3).map((source, index) => (
               <div
                 key={source.url}
-                className="absolute w-6 h-6 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center"
+                className="absolute w-5 h-5 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center"
                 style={{
-                  left: `${index * 4}px`,
+                  left: `${index * 3}px`,
                   top: `${index * 2}px`,
                   zIndex: 3 - index,
                 }}
@@ -106,10 +106,10 @@ const MoreSourcesCard = React.memo(({
           </div>
         </div>
         <div className="flex-1 min-w-0 flex flex-col justify-center">
-          <p className="text-xs font-medium">
+          <p className="text-xs font-medium mt-1">
             +{hiddenSources.length} sources
           </p>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-[10px] text-muted-foreground">
             Voir tous les résultats
           </p>
         </div>
@@ -132,16 +132,15 @@ const SourcesSkeleton = () => (
         {[...Array(4)].map((_, index) => (
           <div 
             key={index} 
-            className="animate-pulse shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[90px] border border-border rounded-lg bg-muted relative overflow-hidden"
+            className="animate-pulse shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] border border-border rounded-lg bg-muted relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-muted-foreground/10 to-transparent" />
-            <div className="p-3 h-full flex flex-col relative z-10">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-muted-foreground/20 flex-shrink-0" />
+            <div className="p-2 h-full flex flex-col relative z-10">
+              <div className="flex items-start gap-2">
+                <div className="w-5 h-5 rounded-full bg-muted-foreground/20 flex-shrink-0 mt-0.5" />
                 <div className="h-4 bg-muted-foreground/20 rounded-md w-3/4" />
               </div>
-              <div className="mt-2 space-y-2 flex-1">
-                <div className="h-3 bg-muted-foreground/10 rounded-md w-full" />
+              <div className="mt-2 flex-1">
                 <div className="h-3 bg-muted-foreground/10 rounded-md w-3/4" />
               </div>
             </div>
@@ -188,7 +187,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   const visibleSources = results.slice(0, 3);
   const hiddenSources = results.slice(3);
 
-  const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[90px] dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 hover:bg-accent/50 transition-colors";
+  const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 hover:bg-accent/50 transition-colors";
 
   return (
     <div className="space-y-3">
