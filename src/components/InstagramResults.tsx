@@ -3,14 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
 interface InstagramResultsProps {
   results: SearchResult[];
@@ -23,14 +16,14 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 const InstagramItem = React.memo(({ result }: { result: SearchResult }) => {
@@ -40,8 +33,8 @@ const InstagramItem = React.memo(({ result }: { result: SearchResult }) => {
         <div className="flex p-4">
           <div className="flex-shrink-0 mr-4">
             <div className="relative w-10 h-10">
-              <Image 
-                src="/Instagram_Glyph_Gradient.svg" 
+              <Image
+                src="/Instagram_Glyph_Gradient.svg"
                 alt="Instagram"
                 fill
                 className="object-contain"
@@ -51,26 +44,42 @@ const InstagramItem = React.memo(({ result }: { result: SearchResult }) => {
           <div className="flex-1 min-w-0">
             <div className="mb-1">
               <CardDescription className="text-xs font-medium">
-                {result.meta_url?.hostname?.replace('www.', '') || 'instagram.com'}
+                {result.meta_url?.hostname?.replace("www.", "") ||
+                  "instagram.com"}
               </CardDescription>
             </div>
-            <CardTitle className="text-sm font-medium line-clamp-2 mb-1">{result.title}</CardTitle>
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{result.description}</p>
+            <CardTitle className="text-sm font-medium line-clamp-2 mb-1">
+              {result.title}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+              {result.description}
+            </p>
             <div className="flex items-center">
-              <Link 
-                href={result.url} 
-                target="_blank" 
+              <Link
+                href={result.url}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs inline-flex items-center gap-1 text-primary hover:underline"
               >
                 Voir le post
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M7 17L17 7" />
                   <path d="M7 7h10v10" />
                 </svg>
               </Link>
               {result.age && (
-                <span className="text-xs text-muted-foreground ml-auto">{result.age}</span>
+                <span className="text-xs text-muted-foreground ml-auto">
+                  {result.age}
+                </span>
               )}
             </div>
           </div>
@@ -88,7 +97,7 @@ const InstagramSkeleton = () => (
       <div className="h-6 w-6 rounded-full bg-muted-foreground/20" />
       <div className="h-6 w-40 bg-muted-foreground/20 rounded-lg" />
     </div>
-    
+
     <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
       {[...Array(3)].map((_, index) => (
         <div key={index} className="border rounded-lg p-4">
@@ -107,16 +116,20 @@ const InstagramSkeleton = () => (
   </div>
 );
 
-function InstagramResultsComponent({ results, isVisible }: InstagramResultsProps) {
+function InstagramResultsComponent({
+  results,
+  isVisible,
+}: InstagramResultsProps) {
   // État de chargement
   const [isLoading, setIsLoading] = React.useState(true);
-  
+
   // Filtrer uniquement les résultats Instagram
-  const instagramResults = results.filter(result => 
-    result.meta_url?.hostname?.includes('instagram') || 
-    result.url.includes('instagram')
+  const instagramResults = results.filter(
+    (result) =>
+      result.meta_url?.hostname?.includes("instagram") ||
+      result.url.includes("instagram")
   );
-  
+
   // Utiliser useEffect pour simuler le temps de chargement
   React.useEffect(() => {
     if (results.length > 0) {
@@ -126,12 +139,12 @@ function InstagramResultsComponent({ results, isVisible }: InstagramResultsProps
       return () => clearTimeout(timer);
     }
   }, [results]);
-  
+
   // Afficher le skeleton loader pendant le chargement
   if (isLoading && isVisible) {
     return <InstagramSkeleton />;
   }
-  
+
   // Ne rien afficher s'il n'y a pas de résultats Instagram ou si le composant ne doit pas être visible
   if (!isVisible || instagramResults.length === 0) return null;
 
@@ -144,11 +157,11 @@ function InstagramResultsComponent({ results, isVisible }: InstagramResultsProps
     >
       <div className="flex items-center gap-2">
         <div className="relative w-6 h-6">
-          <Image 
-            src="/Instagram_Glyph_Gradient.svg" 
+          <Image
+            src="/Instagram_Glyph_Gradient.svg"
             alt="Instagram Logo"
             width={24}
-            height={24} 
+            height={24}
             className="object-contain"
           />
         </div>
@@ -165,9 +178,12 @@ function InstagramResultsComponent({ results, isVisible }: InstagramResultsProps
 }
 
 // Utiliser React.memo avec une fonction de comparaison personnalisée pour le composant principal
-export const InstagramResults = React.memo(InstagramResultsComponent, (prevProps, nextProps) => {
-  return (
-    prevProps.isVisible === nextProps.isVisible &&
-    prevProps.results === nextProps.results
-  );
-}); 
+export const InstagramResults = React.memo(
+  InstagramResultsComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.isVisible === nextProps.isVisible &&
+      prevProps.results === nextProps.results
+    );
+  }
+);

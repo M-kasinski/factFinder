@@ -7,7 +7,7 @@ export function Footer() {
         <div className="flex items-center justify-center text-sm text-muted-foreground">
           <span>Créé avec</span>
           <Heart className="h-4 w-4 mx-1 text-red-500 fill-red-500 animate-pulse" />
-          <span>pour transformer le web en contenu viral</span>
+          <span>parce que vous méritez mieux que Google</span>
         </div>
         <div className="text-sm text-muted-foreground">
           © 2025 FactFinder

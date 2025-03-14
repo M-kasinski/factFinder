@@ -421,25 +421,21 @@
 - [x] Optimisation de l'affichage avec une grille responsive pour différentes tailles d'écran
 - [x] Suppression définitive du problème d'affichage des placeholders pour les images Instagram
 
-## Ajout d'un footer moderne
+## Amélioration du texte du footer
 
-- [x] Création d'un composant Footer réutilisable avec une conception moderne et tendance
-- [x] Intégration d'une icône cœur animée dans le footer avec un texte stylisé
-- [x] Inclusion de la signature "Créé avec ❤️ pour transformer le web en contenu viral"
-- [x] Ajout du copyright "© 2025 FactFinder"
-- [x] Modification du layout principal pour inclure le footer sur toutes les pages
-- [x] Restructuration des pages existantes pour s'adapter à la nouvelle structure de layout
-- [x] Optimisation de l'affichage du footer sur les appareils mobiles avec un design responsive
-- [x] Amélioration de l'expérience utilisateur avec une présentation visuelle cohérente
+- [x] Modification du texte du footer pour mieux correspondre à la mission d'un moteur de recherche
+- [x] Remplacement de "transformer le web en contenu viral" par "pour une recherche web européenne fiable"
+- [x] Conservation de l'icône cœur et de l'animation
+- [x] Harmonisation du message avec l'identité de FactFinder en tant que moteur de recherche européen
+- [x] Amélioration de la cohérence entre le texte du footer et le slogan "Make European Search Great Again"
 
-## Correction de la mise en page du footer
+## Ajout d'une touche d'humour au footer
 
-- [x] Correction du problème où le footer prenait trop d'espace sur la page d'accueil
-- [x] Optimisation de la structure Flexbox pour une meilleure distribution de l'espace
-- [x] Ajout d'un espace de padding en bas des pages pour éviter la superposition avec le footer
-- [x] Modification des classes de hauteur pour garantir un affichage correct sur tous les écrans
-- [x] Ajustement de la hauteur minimale du contenu principal pour maintenir le centrage vertical
-- [x] Amélioration de la gestion des espaces dans le layout principal
-- [x] Uniformisation de l'approche sur les pages de recherche et d'accueil
+- [x] Modification du texte du footer pour un ton plus ludique et décalé
+- [x] Remplacement du texte par "parce que vous méritez mieux que Google"
+- [x] Introduction d'une touche d'humour pour se démarquer des moteurs de recherche traditionnels
+- [x] Positionnement de FactFinder comme une alternative amusante et audacieuse à Google
+- [x] Conservation de l'icône cœur animée pour maintenir l'aspect chaleureux et sympathique
+- [x] Création d'une identité de marque plus mémorable grâce à l'humour et à l'audace
 
 ## Prochaines étapes
