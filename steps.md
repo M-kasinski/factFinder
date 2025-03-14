@@ -439,3 +439,86 @@
 - [x] Création d'une identité de marque plus mémorable grâce à l'humour et à l'audace
 
 ## Prochaines étapes
+
+# Rebranding de FactFinder vers ClaireVue
+
+## Étape 1 : Planification du rebranding
+- [x] Analyse de l'identité actuelle de FactFinder
+- [x] Définition de la nouvelle identité "ClaireVue"
+- [x] Choix du nouveau slogan "La clarté à chaque recherche"
+- [x] Préparation d'un plan de migration en 4 MVP
+
+## MVP 1 : Version rebrandée de base
+- [x] Création d'un nouveau logo pour ClaireVue
+  - Création d'un logo SVG représentant une loupe stylisée
+  - Stockage du logo dans public/clairevue-logo.svg
+  - Création d'un favicon SVG temporaire
+- [x] Définition d'une nouvelle palette de couleurs
+  - Passage à une palette de bleus clairs évoquant la clarté
+  - Mise à jour des variables dans globals.css avec des teintes de bleu
+  - Ajout d'animations CSS pour les effets de transition
+- [x] Mise à jour de l'en-tête et du pied de page
+  - Mise à jour du nom dans la page d'accueil
+  - Changement des dégradés de couleur pour utiliser la nouvelle palette
+  - Modification du message dans le footer
+- [x] Modification des métadonnées et du favicon
+  - Mise à jour du titre et de la description pour refléter la nouvelle marque
+  - Ajout de la référence au favicon SVG dans layout.tsx
+- [x] Mise à jour du nom du projet
+  - Changement du nom dans package.json de "factfinder" à "clairevue"
+
+## MVP 2 : Interface modernisée
+- [x] Refonte de la barre de recherche
+  - Ajout d'un effet de transparence subtil avec backdrop-blur
+  - Amélioration des transitions et animations
+  - Mise à jour du texte du placeholder
+  - Optimisation de l'accessibilité avec des attributs aria-label
+  - Utilisation de la nouvelle palette de couleurs
+- [x] Mise à jour des icônes
+  - Remplacement de l'icône Brain par un logo moderne avec loupe
+  - Utilisation d'icônes plus pertinentes sur toutes les pages
+  - Application cohérente des styles d'icônes dans tous les composants
+- [x] Refonte des cartes de fonctionnalités
+  - Ajout d'un effet de transparence avec backdrop-blur
+  - Amélioration des effets de survol
+  - Encapsulation des icônes dans des cercles colorés
+  - Optimisation des espacements et des marges
+  - Utilisation cohérente de la nouvelle palette de couleurs
+- [x] Modernisation de la section "Analyse"
+  - Harmonisation du design des cartes LLMResponse et Sources
+  - Application des effets de transparence et backdrop-blur
+  - Utilisation de gradients de texte pour les titres
+  - Refonte des skeletons de chargement avec la nouvelle palette
+  - Amélioration des transitions et animations
+- [x] Harmonisation graphique de toutes les pages
+  - Cohérence visuelle entre la page d'accueil et la page de recherche
+  - Remplacement de tous les éléments "FactFinder" par "ClaireVue"
+  - Mise à jour des dégradés de fond avec les nouvelles couleurs
+  - Application uniforme de la nouvelle palette aux éléments d'interface
+
+## MVP 3 : Développement des fonctionnalités
+- [ ] Création d'une fonction "Résumé IA"
+- [ ] Implémentation du résumé dans la page de recherche
+- [ ] Tests et validation des résumés générés
+
+## Amélioration de l'expérience utilisateur et du message de marque
+- [x] Modernisation des cartes de fonctionnalités sur la page d'accueil
+  - Restructuration avec des titres et paragraphes explicatifs
+  - Ajout d'effets de survol améliorés (scale, shadow, couleurs)
+  - Application cohérente des gradients sur les titres
+  - Amélioration de l'espacement et de la hiérarchie visuelle
+- [x] Amélioration des messages de marque
+  - Mise à jour du slogan principal pour plus d'impact
+  - Création de nouveaux messages alignés avec l'identité "Vision claire"
+  - Développement de descriptions détaillées pour chaque fonctionnalité
+  - Optimisation des microtextes pour l'engagement utilisateur
+- [x] Utilisation d'icônes plus significatives
+  - Remplacement par des icônes plus pertinentes (Eye, Shield, BarChart)
+  - Alignement avec les concepts de clarté, fiabilité et analyse
+- [x] Optimisation de l'affichage mobile
+  - Amélioration de l'espacement vertical pour éviter l'écrasement du contenu
+  - Ajustement des tailles de texte et d'icônes pour une meilleure lisibilité sur mobile
+  - Correction de l'alignement du footer et amélioration de son affichage sur mobile
+  - Réduction des marges latérales pour maximiser l'espace d'affichage
+  - Ajout d'un padding en haut pour éviter le chevauchement avec la barre de navigation
+  - Meilleure organisation des cartes de fonctionnalités sur petit écran

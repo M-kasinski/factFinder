@@ -16,8 +16,13 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FactFinder - Moteur de recherche intelligent",
-  description: "Un moteur de recherche alimenté par un LLM et des sources Web",
+  title: "ClaireVue - La clarté à chaque recherche",
+  description: "Un moteur de recherche français qui offre des résultats clairs, sourcés et impartiaux",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' }
+    ]
+  }
 };
 
 export default function RootLayout({

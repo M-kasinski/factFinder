@@ -12,11 +12,12 @@ import { RelatedQuestions } from "@/components/RelatedQuestions";
 import { NewsHighlights } from "@/components/NewsHighlights";
 import { InstagramResults } from "@/components/InstagramResults";
 import { toast } from "sonner";
-import { Brain, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SourcesComponent from "@/components/SourcesComponent";
 import { fetchSearchResults } from "@/app/actions";
 import { SearchResult } from "@/types/search";
+import Image from "next/image";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -135,15 +136,20 @@ function SearchPageContent() {
               variant="ghost"
               size="icon"
               onClick={() => router.push("/")}
-              className="hover:bg-accent rounded-full"
+              className="hover:bg-primary/10 rounded-full transition-colors"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5 text-primary" />
             </Button>
 
-            <div className="flex items-center gap-3">
-              <Brain className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold tracking-tighter">
-                FactFinder
+            <div className="flex items-center gap-2.5">
+              <Image 
+                src="/clairevue-logo.svg" 
+                alt="ClaireVue Logo" 
+                width={32} 
+                height={32}
+              />
+              <h1 className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                ClaireVue
               </h1>
             </div>
           </div>
@@ -160,18 +166,18 @@ function SearchPageContent() {
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl mb-8">
-        <NewsHighlights 
-              news={news} 
-              isVisible={isLoading || showNews} 
-              serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
-            />
+          <NewsHighlights 
+            news={news} 
+            isVisible={isLoading || showNews} 
+            serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
+          />
          
           <LLMResponse
             isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
           />
-           <SourcesComponent
+          <SourcesComponent
             results={results}
             isLoading={isLoading}
             onShowAll={() => setIsDrawerOpen(true)}
@@ -184,7 +190,6 @@ function SearchPageContent() {
           />
           
           <>
-            
             <VideoCarousel 
               videos={videos} 
               isVisible={isLoading || showVideos} 
@@ -207,7 +212,7 @@ function SearchPageContent() {
         className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl"
         aria-hidden="true"
       >
-        <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
+        <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
       </div>
     </div>
   );

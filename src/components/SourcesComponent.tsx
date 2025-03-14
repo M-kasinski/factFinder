@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe } from 'lucide-react';
+import { Globe, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -83,7 +83,7 @@ const MoreSourcesCard = React.memo(({
   onShowAll: () => void 
 }) => (
   <Card 
-    className={`${cardClasses} cursor-pointer`}
+    className={`${cardClasses} cursor-pointer hover:bg-primary/5 transition-colors`}
     onClick={onShowAll}
   >
     <CardContent className="p-2 h-full">
@@ -106,10 +106,10 @@ const MoreSourcesCard = React.memo(({
           </div>
         </div>
         <div className="flex-1 min-w-0 flex flex-col justify-center">
-          <p className="text-xs font-medium mt-1">
+          <p className="text-xs font-medium mt-1 text-foreground">
             +{hiddenSources.length} sources
           </p>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[10px] text-primary/70">
             Voir tous les résultats
           </p>
         </div>
@@ -123,8 +123,10 @@ MoreSourcesCard.displayName = 'MoreSourcesCard';
 const SourcesSkeleton = () => (
   <div className="space-y-3">
     <div className="flex items-center gap-2">
-      <Globe className="h-5 w-5 text-primary/40" />
-      <div className="h-6 w-28 bg-muted-foreground/20 rounded-lg animate-pulse" />
+      <div className="p-1.5 rounded-full bg-primary/10">
+        <LinkIcon className="h-3.5 w-3.5 text-primary/70" />
+      </div>
+      <div className="h-6 w-28 bg-primary/10 rounded-lg animate-pulse" />
     </div>
     
     <div className="relative overflow-x-auto">
@@ -132,16 +134,16 @@ const SourcesSkeleton = () => (
         {[...Array(4)].map((_, index) => (
           <div 
             key={index} 
-            className="animate-pulse shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] border border-border rounded-lg bg-muted relative overflow-hidden"
+            className="animate-pulse shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] border border-primary/10 rounded-lg bg-card/70 backdrop-blur-sm relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-muted-foreground/10 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent" />
             <div className="p-2 h-full flex flex-col relative z-10">
               <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-full bg-muted-foreground/20 flex-shrink-0 mt-0.5" />
-                <div className="h-4 bg-muted-foreground/20 rounded-md w-3/4" />
+                <div className="w-5 h-5 rounded-full bg-primary/10 flex-shrink-0 mt-0.5" />
+                <div className="h-4 bg-primary/10 rounded-md w-3/4" />
               </div>
               <div className="mt-2 flex-1">
-                <div className="h-3 bg-muted-foreground/10 rounded-md w-3/4" />
+                <div className="h-3 bg-primary/5 rounded-md w-3/4" />
               </div>
             </div>
           </div>
@@ -187,12 +189,19 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   const visibleSources = results.slice(0, 3);
   const hiddenSources = results.slice(3);
 
-  const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] dark:bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 hover:bg-accent/50 transition-colors";
+  const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Sources</h2>
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <div className="p-1.5 rounded-full bg-primary/10 text-primary">
+            <LinkIcon className="h-3.5 w-3.5" />
+          </div>
+          <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            Sources
+          </span>
+        </h2>
       </div>
 
       <ScrollArea className="w-full relative" type="scroll">
