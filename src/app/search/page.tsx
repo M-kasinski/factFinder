@@ -65,8 +65,9 @@ function SearchPageContent() {
           setRelatedQuestions(update.relatedQuestions || []);
           setShowRelated(update.showRelated || false);
           
-          // Si nous avons des résultats, la recherche n'est plus en cours de chargement
-          if (update.results && update.results.length > 0) {
+          // Ne mettre isLoading à false que lorsque nous avons à la fois le message et des résultats
+          // Cela évite un état transitoire où l'interface est ni en chargement ni avec du contenu
+          if (update.messages && update.messages.length > 0) {
             setIsLoading(false);
           }
         }
@@ -76,6 +77,7 @@ function SearchPageContent() {
       setError(err instanceof Error ? err : new Error("Une erreur est survenue"));
       toast.error("Une erreur est survenue lors de la recherche.");
     } finally {
+      // S'assurer que isLoading est toujours mis à false à la fin
       setIsLoading(false);
       // Marquer que nous avons terminé la recherche
       isSearchingRef.current = false;

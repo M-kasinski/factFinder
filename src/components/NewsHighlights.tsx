@@ -44,16 +44,16 @@ const item = {
 
 // Skeleton loader pour l'article principal
 const MainArticleSkeleton = () => (
-  <div className="col-span-2 animate-pulse">
-    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-muted">
+  <div className="col-span-2 pr-4 animate-pulse">
+    <div className="relative aspect-[3/2] max-w-xl w-[90%] overflow-hidden rounded-lg bg-muted">
       <div className="absolute inset-0 bg-gradient-to-t from-muted-foreground/10 to-transparent" />
-      <div className="absolute bottom-0 p-4 space-y-3 w-full">
-        <div className="h-6 bg-muted-foreground/20 rounded-lg w-3/4" />
-        <div className="h-4 bg-muted-foreground/10 rounded-lg w-full" />
-        <div className="h-4 bg-muted-foreground/10 rounded-lg w-2/3" />
-        <div className="flex gap-2 mt-2">
-          <div className="h-5 w-20 bg-primary/30 rounded-full" />
-          <div className="h-5 w-12 bg-muted-foreground/20 rounded-full" />
+      <div className="absolute bottom-0 p-3 space-y-2 w-full">
+        <div className="h-5 bg-muted-foreground/20 rounded-lg w-3/4" />
+        <div className="h-3 bg-muted-foreground/10 rounded-lg w-full" />
+        <div className="h-3 bg-muted-foreground/10 rounded-lg w-2/3" />
+        <div className="flex gap-2 mt-1">
+          <div className="h-4 w-16 bg-primary/30 rounded-full" />
+          <div className="h-4 w-10 bg-muted-foreground/20 rounded-full" />
         </div>
       </div>
     </div>
@@ -205,15 +205,15 @@ const MainArticle = React.memo(({ article }: { article: SearchResult }) => {
   if (!article) return null;
   
   return (
-    <motion.div className="col-span-2" variants={item}>
+    <motion.div className="col-span-2 pr-4" variants={item}>
       <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block">
-        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
+        <div className="relative aspect-[3/2] max-w-xl w-[90%] overflow-hidden rounded-lg">
           <MainNewsImage article={article} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-          <div className="absolute bottom-0 p-4 text-white">
-            <h3 className="text-xl font-bold">{article.title}</h3>
-            <p className="mt-1 text-sm opacity-90 line-clamp-2">{article.description}</p>
-            <div className="mt-2 flex items-center gap-2">
+          <div className="absolute bottom-0 p-3 text-white">
+            <h3 className="text-lg font-bold">{article.title}</h3>
+            <p className="mt-1 text-xs opacity-90 line-clamp-2">{article.description}</p>
+            <div className="mt-1 flex items-center gap-2">
               <span className="text-xs bg-primary/70 px-2 py-0.5 rounded-full">
                 {article.meta_url?.hostname || 'Source'}
               </span>
