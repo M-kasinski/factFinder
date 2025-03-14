@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Footer } from "@/components/Footer";
+import { Analytics } from '@vercel/analytics/next';
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -34,8 +35,9 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="flex-1 flex flex-col">
+          <main className="flex-1 flex flex-col">    
             {children}
+            <Analytics />
           </main>
           <Footer />
           <Toaster richColors closeButton position="top-center" />
