@@ -3,6 +3,7 @@ import { ThemeProvider } from "./theme-provider";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import { Footer } from "@/components/Footer";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -26,9 +27,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
+      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <main className="flex-1 flex flex-col">
+            {children}
+          </main>
+          <Footer />
           <Toaster richColors closeButton position="top-center" />
         </ThemeProvider>
       </body>

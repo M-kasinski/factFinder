@@ -384,4 +384,62 @@
 - [x] Suppression du composant MobileSkeletonItem devenu obsolète
 - [x] Mise à jour des skeletons de chargement pour correspondre à la nouvelle structure
 
+## Étape : Amélioration de la gestion de l'article principal en version desktop (2025-03-07)
+- [x] Modification du comportement pour supprimer l'article principal s'il n'a pas d'image valide
+- [x] Mise en place d'un mécanisme de promotion du premier article secondaire valide en article principal
+- [x] Adaptation de la liste des articles secondaires pour éviter les doublons après promotion
+- [x] Suppression intelligente des articles sans image plutôt que l'affichage de placeholders peu esthétiques
+- [x] Harmonisation du comportement entre les versions mobile et desktop
+- [x] Optimisation de l'expérience utilisateur avec une présentation plus soignée
+- [x] Amélioration de la qualité visuelle globale de la section actualités
+
+## Étape : Élimination complète des placeholders pour les images manquantes (2025-03-07)
+- [x] Suppression du code affichant les placeholders (icône de journal) pour les images manquantes
+- [x] Modification du composant MainNewsImage pour retourner null au lieu d'un placeholder
+- [x] Simplification de la vérification de la validité de l'article principal
+- [x] Renforcement du filtrage pour éviter tout affichage d'article sans image valide
+- [x] Optimisation de la logique de remontée des articles secondaires en principal
+- [x] Élimination des derniers cas où un placeholder pourrait apparaître
+- [x] Amélioration de l'apparence générale en s'assurant qu'aucun espace vide n'est affiché 
+
+## Étape : Renforcement du filtrage des images invalides (2025-03-07)
+- [x] Implémentation d'un filtrage plus strict dans NewsHighlightsComponent
+- [x] Vérification que les URL d'images commencent par "http" pour éviter les données invalides
+- [x] Contrôle de type pour s'assurer que les sources d'images sont des chaînes de caractères valides
+- [x] Filtrage proactif des résultats avant toute tentative d'affichage
+- [x] Multiple couches de filtrage à différents niveaux (composant principal, sous-composants, composants d'image)
+- [x] Vérification redondante pour garantir qu'aucun résultat sans image valide n'est affiché
+- [x] Optimisation du comportement des tags "as string" pour éviter les erreurs TypeScript
+
+## Étape : Traitement spécial des résultats Instagram (2025-03-07)
+- [x] Création d'un nouveau composant InstagramResults pour afficher les résultats Instagram sans images
+- [x] Implémentation d'un filtrage des résultats Instagram dans NewsHighlightsComponent
+- [x] Utilisation d'un affichage simplifié basé sur des cartes textuelles pour les résultats Instagram
+- [x] Intégration du nouveau composant InstagramResults dans la page de recherche après la section LLMResponse
+- [x] Séparation claire des résultats Instagram des autres types de résultats
+- [x] Amélioration de l'expérience utilisateur en évitant les placeholders d'images problématiques
+- [x] Optimisation de l'affichage avec une grille responsive pour différentes tailles d'écran
+- [x] Suppression définitive du problème d'affichage des placeholders pour les images Instagram
+
+## Ajout d'un footer moderne
+
+- [x] Création d'un composant Footer réutilisable avec une conception moderne et tendance
+- [x] Intégration d'une icône cœur animée dans le footer avec un texte stylisé
+- [x] Inclusion de la signature "Créé avec ❤️ pour transformer le web en contenu viral"
+- [x] Ajout du copyright "© 2025 FactFinder"
+- [x] Modification du layout principal pour inclure le footer sur toutes les pages
+- [x] Restructuration des pages existantes pour s'adapter à la nouvelle structure de layout
+- [x] Optimisation de l'affichage du footer sur les appareils mobiles avec un design responsive
+- [x] Amélioration de l'expérience utilisateur avec une présentation visuelle cohérente
+
+## Correction de la mise en page du footer
+
+- [x] Correction du problème où le footer prenait trop d'espace sur la page d'accueil
+- [x] Optimisation de la structure Flexbox pour une meilleure distribution de l'espace
+- [x] Ajout d'un espace de padding en bas des pages pour éviter la superposition avec le footer
+- [x] Modification des classes de hauteur pour garantir un affichage correct sur tous les écrans
+- [x] Ajustement de la hauteur minimale du contenu principal pour maintenir le centrage vertical
+- [x] Amélioration de la gestion des espaces dans le layout principal
+- [x] Uniformisation de l'approche sur les pages de recherche et d'accueil
+
 ## Prochaines étapes

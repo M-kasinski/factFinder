@@ -72,33 +72,36 @@ const SecondaryArticleSkeleton = () => (
 const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const [useOriginal, setUseOriginal] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const hasOriginal = article.thumbnail?.original && article.thumbnail.original !== article.thumbnail?.src;
+  
+  // S'assurer que thumbnail existe avant d'accéder à ses propriétés
+  const hasOriginal = article.thumbnail?.original && article.thumbnail.original !== article.thumbnail.src;
   const imageKey = `${article.url}-${useOriginal ? 'original' : 'compressed'}`;
   
-  if (!article.thumbnail?.src || hasError) {
-    return (
-      <div className="absolute inset-0 bg-muted flex items-center justify-center">
-        <Newspaper className="h-12 w-12 text-muted-foreground/50" />
-      </div>
-    );
+  // Vérification plus stricte de la validité de l'image
+  const sourceValid = article.thumbnail?.src && typeof article.thumbnail.src === 'string' && article.thumbnail.src.startsWith('http');
+  const originalValid = article.thumbnail?.original && typeof article.thumbnail.original === 'string' && article.thumbnail.original.startsWith('http');
+  
+  if (!sourceValid || hasError) {
+    // Ne jamais afficher de placeholder, retourner null
+    return null;
   }
   
   // Déterminer la source de l'image en fonction de la disponibilité et de l'état
-  const imageSrc = useOriginal && hasOriginal && article.thumbnail.original
+  const imageSrc = useOriginal && hasOriginal && originalValid && article.thumbnail?.original
     ? article.thumbnail.original
-    : article.thumbnail.src;
+    : article.thumbnail?.src;
   
   return (
     <Image
       key={imageKey}
-      src={imageSrc}
+      src={imageSrc as string}
       alt={article.title}
       fill
       priority
       sizes="(max-width: 768px) 100vw, 1200px"
       className="object-cover transition-transform hover:scale-105"
       onError={() => {
-        if (useOriginal && hasOriginal) {
+        if (useOriginal && hasOriginal && originalValid) {
           setUseOriginal(false);
         } else {
           setHasError(true);
@@ -121,18 +124,17 @@ const SecondaryNewsImage = React.memo(({ article }: { article: SearchResult }) =
   const imageKey = article.url;
   const [hasError, setHasError] = useState(false);
   
-  if (!article.thumbnail?.src || hasError) {
-    return (
-      <div className="h-full w-full bg-muted flex items-center justify-center">
-        <Newspaper className="h-6 w-6 text-muted-foreground/50" />
-      </div>
-    );
+  // Vérification plus stricte de la validité de l'image
+  const sourceValid = article.thumbnail?.src && typeof article.thumbnail.src === 'string' && article.thumbnail.src.startsWith('http');
+  
+  if (!sourceValid || hasError) {
+    return null; // Ne plus afficher de placeholder
   }
   
   return (
     <Image
       key={imageKey}
-      src={article.thumbnail.src}
+      src={article.thumbnail?.src as string}
       alt={article.title}
       fill
       loading="lazy"
@@ -154,18 +156,17 @@ const ScrollNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const imageKey = article.url;
   const [hasError, setHasError] = useState(false);
   
-  if (!article.thumbnail?.src || hasError) {
-    return (
-      <div className="w-full h-full bg-muted flex items-center justify-center rounded-t-lg">
-        <Newspaper className="h-10 w-10 text-muted-foreground/50" />
-      </div>
-    );
+  // Vérification plus stricte de la validité de l'image
+  const sourceValid = article.thumbnail?.src && typeof article.thumbnail.src === 'string' && article.thumbnail.src.startsWith('http');
+  
+  if (!sourceValid || hasError) {
+    return null; // Ne plus afficher de placeholder
   }
   
   return (
     <Image
       key={imageKey}
-      src={article.thumbnail.src}
+      src={article.thumbnail?.src as string}
       alt={article.title}
       fill
       loading="lazy"
@@ -184,7 +185,7 @@ ScrollNewsImage.displayName = "ScrollNewsImage";
 
 // Composant pour l'article principal
 const MainArticle = React.memo(({ article }: { article: SearchResult }) => {
-  if (!article) return null;
+  if (!article || !article.thumbnail?.src) return null;
   
   return (
     <motion.div className="col-span-2 pr-4" variants={item}>
@@ -246,15 +247,30 @@ const DesktopView = React.memo(({ mainArticle, secondaryArticles }: {
   secondaryArticles: SearchResult[];
 }) => {
   // Filtrer les articles secondaires qui ont des miniatures valides
-  const validSecondaryArticles = secondaryArticles.filter(article => article.thumbnail?.src);
+  const validSecondaryArticles = secondaryArticles.filter(article => 
+    article.thumbnail?.src && article.thumbnail.src.startsWith('http')
+  );
   
-  // Si aucun article valide (y compris le principal), ne rien afficher
-  if (!mainArticle?.thumbnail?.src && validSecondaryArticles.length === 0) return null;
+  // Filtrer l'article principal s'il n'a pas d'image valide
+  const validMainArticle = mainArticle?.thumbnail?.src && mainArticle.thumbnail.src.startsWith('http') 
+    ? mainArticle 
+    : null;
+  
+  // Si aucun article valide, ne rien afficher
+  if (!validMainArticle && validSecondaryArticles.length === 0) return null;
+  
+  // Utiliser le premier article secondaire valide comme article principal si l'article principal n'a pas d'image valide
+  const displayedMainArticle = validMainArticle || (validSecondaryArticles.length > 0 ? validSecondaryArticles[0] : null);
+  
+  // Retirer l'article secondaire utilisé comme article principal des articles secondaires
+  const remainingSecondaryArticles = validMainArticle 
+    ? validSecondaryArticles 
+    : validSecondaryArticles.slice(1);
 
   return (
     <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-      {mainArticle?.thumbnail?.src && <MainArticle article={mainArticle} />}
-      {validSecondaryArticles.map((article) => (
+      {displayedMainArticle && <MainArticle article={displayedMainArticle} />}
+      {remainingSecondaryArticles.map((article) => (
         <SecondaryArticle key={article.url} article={article} />
       ))}
     </div>
@@ -264,12 +280,16 @@ DesktopView.displayName = "DesktopView";
 
 // Version mobile optimisée
 const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] }) => {
-  // Filtrer les articles qui ont des miniatures valides pour mobile
-  const [validArticles, setValidArticles] = useState<SearchResult[]>(displayData);
+  // Filtrer les articles qui ont des miniatures valides pour mobile avec un filtrage encore plus strict
+  const [validArticles, setValidArticles] = useState<SearchResult[]>([]);
   
-  // Mettre à jour validArticles quand displayData change
+  // Mettre à jour validArticles quand displayData change avec un filtre plus strict
   useEffect(() => {
-    setValidArticles(displayData.filter(article => article.thumbnail?.src));
+    setValidArticles(displayData.filter(
+      article => article.thumbnail?.src && 
+                 typeof article.thumbnail.src === 'string' && 
+                 article.thumbnail.src.startsWith('http')
+    ));
   }, [displayData]);
   
   // Gérer les erreurs d'image pour filtrer les articles
@@ -284,42 +304,49 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
     <div className="md:hidden mt-4">
       <ScrollArea className="w-full relative" type="scroll">
         <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
-          {validArticles.map((article, index) => (
-            <motion.div
-              key={article.url}
-              className="shrink-0 w-[240px] h-full"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block h-full">
-                <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col">
-                  <CardHeader className="relative aspect-video p-0 flex-shrink-0">
-                    <Image
-                      src={article.thumbnail?.src || ''}
-                      alt={article.title}
-                      fill
-                      loading="lazy"
-                      sizes="(max-width: 768px) 80vw, 0px"
-                      className="object-cover rounded-t-lg"
-                      onError={() => handleImageError(article)}
-                    />
-                  </CardHeader>
-                  <CardContent className="p-3 flex-grow">
-                    <CardTitle className="line-clamp-2 text-sm">
-                      {article.title}
-                    </CardTitle>
-                    <CardDescription className="line-clamp-1 mt-1 text-xs">
-                      {article.meta_url?.hostname || 'Source'}
-                    </CardDescription>
-                  </CardContent>
-                  <CardFooter className="p-3 pt-0 text-xs text-muted-foreground h-8 flex-shrink-0">
-                    {article.age || <span className="opacity-0">·</span>}
-                  </CardFooter>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
+          {validArticles.map((article, index) => {
+            // Vérification supplémentaire pour s'assurer que l'URL est valide
+            if (!article.thumbnail?.src || !article.thumbnail.src.startsWith('http')) {
+              return null;
+            }
+            
+            return (
+              <motion.div
+                key={article.url}
+                className="shrink-0 w-[240px] h-full"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block h-full">
+                  <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col">
+                    <CardHeader className="relative aspect-video p-0 flex-shrink-0">
+                      <Image
+                        src={article.thumbnail.src as string}
+                        alt={article.title}
+                        fill
+                        loading="lazy"
+                        sizes="(max-width: 768px) 80vw, 0px"
+                        className="object-cover rounded-t-lg"
+                        onError={() => handleImageError(article)}
+                      />
+                    </CardHeader>
+                    <CardContent className="p-3 flex-grow">
+                      <CardTitle className="line-clamp-2 text-sm">
+                        {article.title}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-1 mt-1 text-xs">
+                        {article.meta_url?.hostname || 'Source'}
+                      </CardDescription>
+                    </CardContent>
+                    <CardFooter className="p-3 pt-0 text-xs text-muted-foreground h-8 flex-shrink-0">
+                      {article.age || <span className="opacity-0">·</span>}
+                    </CardFooter>
+                  </Card>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
         <ScrollBar orientation="horizontal" className="opacity-100" />
       </ScrollArea>
@@ -338,17 +365,23 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
   // Ne rien afficher si le composant ne doit pas être visible
   if (!shouldDisplay) return null;
 
+  // Filtrer les résultats Instagram
+  const filterInstagram = (items: SearchResult[]) => items.filter(item => 
+    !(item.meta_url?.hostname?.includes('instagram') || item.url.includes('instagram'))
+  );
+
   // Utiliser les résultats SERP ou les actualités selon le cas
-  const displayData = useSerpResults ? serpResults: news;
+  const allDisplayData = useSerpResults 
+    ? filterInstagram(serpResults)
+    : filterInstagram(news);
   
-  // Limiter à 4 articles max pour l'affichage initial
-  const displayedItems = displayData.slice(0, Math.min(5, displayData.length));
-  const mainArticle = displayedItems[0];
-  const secondaryArticles = displayedItems.slice(1);
-
-  // Titre personnalisé selon le type de données affichées
-  const sectionTitle = useSerpResults ? "Résultats" : "À la une";
-
+  // NOUVEAU: Filtrer strictement tous les résultats sans image valide
+  const validDisplayData = allDisplayData.filter(item => 
+    item.thumbnail?.src && 
+    typeof item.thumbnail.src === 'string' && 
+    item.thumbnail.src.startsWith('http')
+  );
+  
   // Placeholder pour le chargement (ghost loading)
   const LoadingPlaceholder = () => (
     <div>
@@ -391,10 +424,18 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
     </div>
   );
 
-  // Afficher le placeholder si les données ne sont pas encore chargées
-  if (displayData.length === 0) {
+  // Afficher le placeholder si les données ne sont pas encore chargées ou si les données ne sont pas valides
+  if (allDisplayData.length === 0 || validDisplayData.length === 0) {
     return <LoadingPlaceholder />;
   }
+  
+  // Limiter à 4 articles max pour l'affichage initial
+  const displayedItems = validDisplayData.slice(0, Math.min(5, validDisplayData.length));
+  const mainArticle = displayedItems[0];
+  const secondaryArticles = displayedItems.slice(1);
+
+  // Titre personnalisé selon le type de données affichées
+  const sectionTitle = useSerpResults ? "Résultats" : "À la une";
 
   return (
     <motion.div
@@ -409,7 +450,7 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
       </div>
 
       <DesktopView mainArticle={mainArticle} secondaryArticles={secondaryArticles} />
-      <MobileView displayData={displayData} />
+      <MobileView displayData={validDisplayData} />
     </motion.div>
   );
 }

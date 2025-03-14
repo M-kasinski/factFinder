@@ -10,6 +10,7 @@ import { ResponsiveSearchDrawer } from "@/components/ResponsiveSearchDrawer";
 import { VideoCarousel } from "@/components/VideoCarousel";
 import { RelatedQuestions } from "@/components/RelatedQuestions";
 import { NewsHighlights } from "@/components/NewsHighlights";
+import { InstagramResults } from "@/components/InstagramResults";
 import { toast } from "sonner";
 import { Brain, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -126,8 +127,8 @@ function SearchPageContent() {
   }, [searchParams, currentQuery, performSearch]);
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="flex flex-col gap-6 py-4">
+    <div className="container mx-auto px-4 py-4 pb-16 flex-1">
+      <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
@@ -158,41 +159,47 @@ function SearchPageContent() {
           />
         </div>
 
-        <div className="mt-8 space-y-6 max-w-4xl">
-          <SourcesComponent
-            results={results}
-            isLoading={isLoading}
-            onShowAll={() => setIsDrawerOpen(true)}
-          />
+        <div className="mt-8 space-y-6 max-w-4xl mb-8">
+        <NewsHighlights 
+              news={news} 
+              isVisible={isLoading || showNews} 
+              serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
+            />
+         
           <LLMResponse
             isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
           />
+           <SourcesComponent
+            results={results}
+            isLoading={isLoading}
+            onShowAll={() => setIsDrawerOpen(true)}
+          />
           
-          {/* {(isLoading || showNews || showVideos || showRelated) && ( */}
-            <>
-              <NewsHighlights 
-                news={news} 
-                isVisible={isLoading || showNews} 
-                serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
-              />
-              <VideoCarousel 
-                videos={videos} 
-                isVisible={isLoading || showVideos} 
-              />
-              <RelatedQuestions 
-                questions={relatedQuestions} 
-                isVisible={isLoading || showRelated}
-                onQuestionClick={handleSearch}
-              />
-              <ResponsiveSearchDrawer
-                isOpen={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
-                results={results}
-              />
-            </>
-          {/* )} */}
+          {/* Ajout du composant InstagramResults */}
+          <InstagramResults 
+            results={results}
+            isVisible={!isLoading && results.length > 0}
+          />
+          
+          <>
+            
+            <VideoCarousel 
+              videos={videos} 
+              isVisible={isLoading || showVideos} 
+            />
+            <RelatedQuestions 
+              questions={relatedQuestions} 
+              isVisible={isLoading || showRelated}
+              onQuestionClick={handleSearch}
+            />
+            <ResponsiveSearchDrawer
+              isOpen={isDrawerOpen}
+              onClose={() => setIsDrawerOpen(false)}
+              results={results}
+            />
+          </>
         </div>
       </div>
 

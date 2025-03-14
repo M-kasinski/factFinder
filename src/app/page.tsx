@@ -16,13 +16,13 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen overflow-hidden">
-      <div className="container relative h-full mx-auto px-4">
+    <div className="flex-1 flex flex-col">
+      <div className="container relative flex-1 mx-auto px-4 pb-16">
         <div className="absolute top-4 right-4">
           <ThemeToggle />
         </div>
 
-        <div className="h-full flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-150px)]">
           <div className="text-center space-y-4 mb-6 md:mb-8">
             <div className="flex items-center justify-center gap-2 md:gap-3 text-primary animate-fade-in">
               <Brain className="h-8 w-8 md:h-12 md:w-12" />
@@ -85,6 +85,6 @@ export default function Home() {
           <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" />
         </div>
       </div>
-    </main>
+    </div>
   );
 }
