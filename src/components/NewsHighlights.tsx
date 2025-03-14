@@ -68,22 +68,6 @@ const SecondaryArticleSkeleton = () => (
   </div>
 );
 
-// Skeleton loader pour le carrousel mobile
-const MobileSkeletonItem = () => (
-  <div className="animate-pulse">
-    <div className="h-full">
-      <div className="overflow-hidden rounded-t-lg">
-        <div className="aspect-video bg-muted" />
-      </div>
-      <div className="p-3 space-y-2 border border-t-0 rounded-b-lg border-muted">
-        <div className="h-4 bg-muted-foreground/20 rounded-lg w-full" />
-        <div className="h-3 bg-muted-foreground/10 rounded-lg w-2/3" />
-        <div className="h-3 bg-muted-foreground/10 rounded-lg w-1/3" />
-      </div>
-    </div>
-  </div>
-);
-
 // Composant de l'image principale optimisé pour éviter les re-renders
 const MainNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const [useOriginal, setUseOriginal] = useState(true);
@@ -135,8 +119,9 @@ MainNewsImage.displayName = "MainNewsImage";
 // Composant d'image secondaire optimisé
 const SecondaryNewsImage = React.memo(({ article }: { article: SearchResult }) => {
   const imageKey = article.url;
+  const [hasError, setHasError] = useState(false);
   
-  if (!article.thumbnail?.src) {
+  if (!article.thumbnail?.src || hasError) {
     return (
       <div className="h-full w-full bg-muted flex items-center justify-center">
         <Newspaper className="h-6 w-6 text-muted-foreground/50" />
@@ -153,6 +138,7 @@ const SecondaryNewsImage = React.memo(({ article }: { article: SearchResult }) =
       loading="lazy"
       sizes="(max-width: 768px) 100vw, 128px"
       className="object-cover"
+      onError={() => setHasError(true)}
     />
   );
 }, (prevProps, nextProps) => {
@@ -258,14 +244,22 @@ SecondaryArticle.displayName = "SecondaryArticle";
 const DesktopView = React.memo(({ mainArticle, secondaryArticles }: { 
   mainArticle: SearchResult; 
   secondaryArticles: SearchResult[];
-}) => (
-  <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-    {mainArticle && <MainArticle article={mainArticle} />}
-    {secondaryArticles.map((article) => (
-      <SecondaryArticle key={article.url} article={article} />
-    ))}
-  </div>
-));
+}) => {
+  // Filtrer les articles secondaires qui ont des miniatures valides
+  const validSecondaryArticles = secondaryArticles.filter(article => article.thumbnail?.src);
+  
+  // Si aucun article valide (y compris le principal), ne rien afficher
+  if (!mainArticle?.thumbnail?.src && validSecondaryArticles.length === 0) return null;
+
+  return (
+    <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      {mainArticle?.thumbnail?.src && <MainArticle article={mainArticle} />}
+      {validSecondaryArticles.map((article) => (
+        <SecondaryArticle key={article.url} article={article} />
+      ))}
+    </div>
+  );
+});
 DesktopView.displayName = "DesktopView";
 
 // Version mobile optimisée
@@ -299,8 +293,8 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
               transition={{ delay: index * 0.05 }}
             >
               <Link href={article.url} target="_blank" rel="noopener noreferrer" className="block h-full">
-                <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300">
-                  <CardHeader className="relative aspect-video p-0">
+                <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col">
+                  <CardHeader className="relative aspect-video p-0 flex-shrink-0">
                     <Image
                       src={article.thumbnail?.src || ''}
                       alt={article.title}
@@ -311,7 +305,7 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
                       onError={() => handleImageError(article)}
                     />
                   </CardHeader>
-                  <CardContent className="p-3">
+                  <CardContent className="p-3 flex-grow">
                     <CardTitle className="line-clamp-2 text-sm">
                       {article.title}
                     </CardTitle>
@@ -319,8 +313,8 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
                       {article.meta_url?.hostname || 'Source'}
                     </CardDescription>
                   </CardContent>
-                  <CardFooter className="p-3 pt-0 text-xs text-muted-foreground">
-                    {article.age}
+                  <CardFooter className="p-3 pt-0 text-xs text-muted-foreground h-8 flex-shrink-0">
+                    {article.age || <span className="opacity-0">·</span>}
                   </CardFooter>
                 </Card>
               </Link>
@@ -377,7 +371,17 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
           <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
             {[...Array(3)].map((_, index) => (
               <div key={index} className="w-[240px] flex-shrink-0">
-                <MobileSkeletonItem />
+                <div className="h-full">
+                  <div className="overflow-hidden rounded-t-lg">
+                    <div className="aspect-video bg-muted" />
+                  </div>
+                  <div className="p-3 space-y-2 border border-t-0 rounded-b-lg border-muted">
+                    <div className="h-4 bg-muted-foreground/20 rounded-lg w-full" />
+                    <div className="h-3 bg-muted-foreground/10 rounded-lg w-2/3" />
+                    <div className="h-3 bg-muted-foreground/10 rounded-lg w-1/3" />
+                    <div className="h-2" /> {/* Espace supplémentaire pour correspondre à la hauteur du footer */}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

@@ -366,4 +366,22 @@
 - [x] Optimisation des Hooks React pour respecter les règles d'appel (pas de hooks conditionnels)
 - [x] Masquage automatique de la section si aucune vidéo valide n'est disponible sur les deux versions
 
+## Étape : Uniformisation de la gestion des erreurs d'images sur toutes les plateformes (2025-03-07)
+- [x] Ajout de la détection d'erreurs d'images pour les articles secondaires en version desktop
+- [x] Filtrage des articles secondaires sans miniatures valides dans la vue desktop
+- [x] Implémentation d'un placeholder pour les images secondaires qui échouent au chargement
+- [x] Extension du masquage conditionnel à la vue desktop pour éviter l'affichage d'une section vide
+- [x] Harmonisation complète de la gestion des erreurs d'images entre mobile et desktop
+- [x] Amélioration de l'expérience utilisateur en évitant d'afficher des liens avec des images cassées
+- [x] Vérification du bon fonctionnement des filtres d'images sur tous les types de composants
+
+## Étape : Uniformisation des hauteurs des cartes sur mobile (2025-03-07)
+- [x] Restructuration des cartes d'actualités et de vidéos sur mobile avec un layout Flexbox
+- [x] Implémentation d'une hauteur fixe pour les CardFooter contenant les dates
+- [x] Ajout d'un caractère invisible pour maintenir la hauteur des cartes sans date
+- [x] Utilisation des propriétés flex-grow et flex-shrink pour mieux contrôler la distribution de l'espace
+- [x] Harmonisation visuelle entre les différents composants (NewsHighlights et VideoCarousel)
+- [x] Suppression du composant MobileSkeletonItem devenu obsolète
+- [x] Mise à jour des skeletons de chargement pour correspondre à la nouvelle structure
+
 ## Prochaines étapes

@@ -180,8 +180,8 @@ function VideoCarouselComponent({ videos, isVisible }: VideoCarouselProps) {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link href={video.url} target="_blank" rel="noopener noreferrer" className="block h-full">
-                    <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300">
-                      <CardHeader className="relative aspect-video p-0">
+                    <Card className="h-full hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col">
+                      <CardHeader className="relative aspect-video p-0 flex-shrink-0">
                         <Image
                           src={video.thumbnail?.src || ''}
                           alt={video.title}
@@ -197,7 +197,7 @@ function VideoCarouselComponent({ videos, isVisible }: VideoCarouselProps) {
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent className="p-3">
+                      <CardContent className="p-3 flex-grow">
                         <CardTitle className="line-clamp-2 text-sm">
                           {video.title}
                         </CardTitle>
@@ -205,8 +205,8 @@ function VideoCarouselComponent({ videos, isVisible }: VideoCarouselProps) {
                           {video.description}
                         </CardDescription>
                       </CardContent>
-                      <CardFooter className="p-3 pt-0 text-xs text-muted-foreground">
-                        {video.age}
+                      <CardFooter className="p-3 pt-0 text-xs text-muted-foreground h-8 flex-shrink-0">
+                        {video.age || <span className="opacity-0">·</span>}
                       </CardFooter>
                     </Card>
                   </Link>
