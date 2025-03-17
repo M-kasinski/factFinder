@@ -1,5 +1,5 @@
 import { SearchResult } from "@/types/search";
-
+import { decode } from "html-entities";
 // Type pour les résultats de Brave Search
 interface BraveSearchResponse {
   web: {
@@ -127,10 +127,10 @@ export async function searchWithBrave(query: string): Promise<{
 
     // Traiter les résultats web
     const searchResults: SearchResult[] = braveData.web.results.map(result => ({
-      title: result.title,
+      title: decode(result.title),
       url: result.url,
       date: result.age,
-      description: result.description,
+      description: decode(result.description),
       extra_snippet: result.extra_snippets,
       age: result.age,
       meta_url: {
@@ -151,10 +151,10 @@ export async function searchWithBrave(query: string): Promise<{
 
     // Extraire les vidéos si elles existent
     const videoResults: SearchResult[] = braveData.videos?.results.map(video => ({
-      title: video.title,
+      title: decode(video.title),
       url: video.url,
       date: video.age || video.page_age || "",
-      description: video.description || "",
+      description: decode(video.description || ""),
       extra_snippet: [], // Champ requis par le type SearchResult
       age: video.age || video.page_age || "",
       meta_url: {
@@ -172,10 +172,10 @@ export async function searchWithBrave(query: string): Promise<{
 
     // Extraire les actualités (news) si elles existent
     const newsResults: SearchResult[] = braveData.news?.results.map(news => ({
-      title: news.title,
+      title: decode(news.title),
       url: news.url,
       date: news.page_age || "",
-      description: news.description,
+      description: decode(news.description),
       extra_snippet: [], // Champ requis par le type SearchResult
       age: news.page_age || "",
       meta_url: {
