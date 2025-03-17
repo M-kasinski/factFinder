@@ -28,7 +28,7 @@ function SearchPageContent() {
   const [searchValue, setSearchValue] = useState(initialQuery);
   const isSearchingRef = useRef(false);
   const isInitialRenderRef = useRef(true);
-  
+
   // États pour stocker les résultats de recherche
   const [results, setResults] = useState<SearchResult[]>([]);
   const [messages, setMessages] = useState("");
@@ -44,16 +44,16 @@ function SearchPageContent() {
   // Fonction pour effectuer la recherche avec useCallback
   const performSearch = useCallback(async (query: string) => {
     if (!query.trim() || isSearchingRef.current) return;
-    
+
     // Marquer que nous sommes en train de rechercher pour éviter les doublons
     isSearchingRef.current = true;
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Appel à la fonction de recherche avec streaming
       const streamableValue = await fetchSearchResults(query);
-      
+
       // Utiliser readStreamableValue pour lire les mises à jour du streamable
       for await (const update of readStreamableValue(streamableValue)) {
         if (update) {
@@ -66,7 +66,7 @@ function SearchPageContent() {
           setShowNews(update.showNews || false);
           setRelatedQuestions(update.relatedQuestions || []);
           setShowRelated(update.showRelated || false);
-          
+
           // Ne mettre isLoading à false que lorsque nous avons à la fois le message et des résultats
           // Cela évite un état transitoire où l'interface est ni en chargement ni avec du contenu
           if (update.messages && update.messages.length > 0) {
@@ -76,7 +76,9 @@ function SearchPageContent() {
       }
     } catch (err) {
       console.error("Error performing search:", err);
-      setError(err instanceof Error ? err : new Error("Une erreur est survenue"));
+      setError(
+        err instanceof Error ? err : new Error("Une erreur est survenue")
+      );
       toast.error("Une erreur est survenue lors de la recherche.");
     } finally {
       // S'assurer que isLoading est toujours mis à false à la fin
@@ -88,15 +90,15 @@ function SearchPageContent() {
 
   const handleSearch = (query: string) => {
     if (!query.trim() || query === currentQuery) return;
-    
+
     // Mettre à jour l'URL avec la nouvelle requête
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
     router.push(newUrl);
-    
+
     // Mettre à jour les états locaux
     setCurrentQuery(query);
     setSearchValue(query);
-    
+
     // Effectuer la recherche
     performSearch(query);
   };
@@ -110,7 +112,7 @@ function SearchPageContent() {
   // Un seul useEffect pour gérer les changements d'URL et la recherche initiale
   useEffect(() => {
     const query = searchParams.get("q") || "";
-    
+
     // Si c'est le premier rendu et qu'il y a une requête, déclencher la recherche
     if (isInitialRenderRef.current && query) {
       isInitialRenderRef.current = false;
@@ -142,10 +144,10 @@ function SearchPageContent() {
             </Button>
 
             <div className="flex items-center gap-2.5">
-              <Image 
-                src="/clairevue-logo.svg" 
-                alt="ClaireVue Logo" 
-                width={32} 
+              <Image
+                src="/clairevue-logo.svg"
+                alt="ClaireVue Logo"
+                width={32}
                 height={32}
               />
               <h1 className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
@@ -158,20 +160,14 @@ function SearchPageContent() {
         </div>
 
         <div className="w-full max-w-2xl">
-          <SearchBar 
-            onSearch={handleSearch} 
+          <SearchBar
+            onSearch={handleSearch}
             value={searchValue}
             onChange={setSearchValue}
           />
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl mb-8">
-          <NewsHighlights 
-            news={news} 
-            isVisible={isLoading || showNews} 
-            serpResults={news.length === 0 ? results.filter(result => result.thumbnail?.src).slice(0, 5) : undefined} 
-          />
-         
           <LLMResponse
             isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
@@ -182,20 +178,28 @@ function SearchPageContent() {
             isLoading={isLoading}
             onShowAll={() => setIsDrawerOpen(true)}
           />
-          
+          <NewsHighlights
+            news={news}
+            isVisible={isLoading || showNews}
+            serpResults={
+              news.length === 0
+                ? results.filter((result) => result.thumbnail?.src).slice(0, 5)
+                : undefined
+            }
+          />
           {/* Ajout du composant InstagramResults */}
-          <InstagramResults 
+          <InstagramResults
             results={results}
             isVisible={!isLoading && results.length > 0}
           />
-          
+
           <>
-            <VideoCarousel 
-              videos={videos} 
-              isVisible={isLoading || showVideos} 
+            <VideoCarousel
+              videos={videos}
+              isVisible={isLoading || showVideos}
             />
-            <RelatedQuestions 
-              questions={relatedQuestions} 
+            <RelatedQuestions
+              questions={relatedQuestions}
               isVisible={isLoading || showRelated}
               onQuestionClick={handleSearch}
             />

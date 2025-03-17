@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { SearchResult } from "@/types/search";
+import { motion } from "framer-motion";
 
 interface SourcesComponentProps {
   results: SearchResult[];
@@ -192,11 +193,16 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
 
   return (
-    <div className="space-y-3">
+    <motion.div 
+      className="space-y-3"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
+    >
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold flex items-center gap-2">
-          <div className="p-1.5 rounded-full bg-primary/10 text-primary">
-            <LinkIcon className="h-3.5 w-3.5" />
+          <div className="p-2 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+            <LinkIcon className="h-4 w-4" />
           </div>
           <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             Sources
@@ -224,7 +230,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
         </div>
         <ScrollBar orientation="horizontal" className="opacity-100" />
       </ScrollArea>
-    </div>
+    </motion.div>
   );
 });
 
