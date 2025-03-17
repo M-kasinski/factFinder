@@ -172,7 +172,9 @@ function SearchPageContent() {
             isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
-            results={results}
+            results={results.filter(
+              (result) => !result.meta_url?.hostname?.includes("instagram")
+            )}
           />
           {!isLoading && (
             <>
@@ -187,11 +189,7 @@ function SearchPageContent() {
               />
             </>
           )}
-          <NewsHighlights
-            news={news}
-            isVisible={isLoading || showNews}
-          />
-          
+          <NewsHighlights news={news} isVisible={isLoading || showNews} />
 
           <>
             <VideoCarousel

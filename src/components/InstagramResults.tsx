@@ -27,6 +27,7 @@ const item = {
 };
 
 const InstagramItem = React.memo(({ result }: { result: SearchResult }) => {
+  console.log(result);
   return (
     <motion.div variants={item} className="w-full">
       <Card className="hover:border-primary/30 hover:shadow-md transition-all duration-300">
@@ -126,8 +127,7 @@ function InstagramResultsComponent({
   // Filtrer uniquement les résultats Instagram
   const instagramResults = results.filter(
     (result) =>
-      result.meta_url?.hostname?.includes("instagram") ||
-      result.url.includes("instagram")
+      result.meta_url?.hostname?.includes("instagram")
   );
 
   // Utiliser useEffect pour simuler le temps de chargement
