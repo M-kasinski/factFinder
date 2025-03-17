@@ -174,16 +174,19 @@ function SearchPageContent() {
             streamingContent={messages}
             results={results}
           />
-          <SourcesComponent
-            results={results}
-            isLoading={isLoading}
-            onShowAll={() => setIsDrawerOpen(true)}
-          />
-          {/* Ajout du composant InstagramResults */}
-          <InstagramResults
-            results={results}
-            isVisible={!isLoading && results.length > 0}
-          />
+          {!isLoading && (
+            <>
+              <SourcesComponent
+                results={results}
+                isLoading={isLoading}
+                onShowAll={() => setIsDrawerOpen(true)}
+              />
+              <InstagramResults
+                results={results}
+                isVisible={results.length > 0}
+              />
+            </>
+          )}
           <NewsHighlights
             news={news}
             isVisible={isLoading || showNews}

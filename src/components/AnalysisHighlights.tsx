@@ -201,6 +201,66 @@ const SecondaryArticle = ({ article }: { article: SearchResult }) => {
   );
 };
 
+// Composant pour le placeholder de chargement
+const LoadingPlaceholder = () => (
+  <div className="space-y-6">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2 animate-pulse">
+        <div className="p-2 rounded-full bg-primary/10">
+          <Lightbulb className="h-4 w-4 text-primary/50" />
+        </div>
+        <div className="h-6 w-48 bg-primary/10 rounded-lg" />
+      </div>
+      <div className="animate-pulse">
+        <div className="h-9 w-40 bg-primary/5 rounded-lg" />
+      </div>
+    </div>
+
+    <Card className="overflow-hidden bg-card/90 backdrop-blur-sm border-primary/10">
+      <div className="grid md:grid-cols-7 gap-6 p-6">
+        {/* Section analyse LLM (4 colonnes) */}
+        <div className="md:col-span-4 space-y-4 animate-pulse">
+          <div className="h-4 bg-primary/10 rounded w-3/4" />
+          <div className="h-4 bg-primary/5 rounded w-full" />
+          <div className="h-4 bg-primary/5 rounded w-5/6" />
+          <div className="h-4 bg-primary/5 rounded w-4/5" />
+        </div>
+
+        {/* Section image principale (3 colonnes) */}
+        <div className="md:col-span-3">
+          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg bg-muted/50">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            <div className="absolute bottom-0 p-3 space-y-2 w-full">
+              <div className="h-5 bg-white/20 rounded w-3/4" />
+              <div className="h-3 bg-white/10 rounded w-full" />
+              <div className="h-3 bg-white/10 rounded w-2/3" />
+              <div className="flex gap-2 mt-2">
+                <div className="h-4 w-20 bg-primary/30 rounded-full" />
+                <div className="h-4 w-16 bg-white/20 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[...Array(3)].map((_, index) => (
+        <div key={index} className="animate-pulse">
+          <div className="flex gap-4">
+            <div className="relative h-24 w-32 flex-shrink-0 rounded-md bg-muted/50" />
+            <div className="flex flex-col flex-grow gap-2">
+              <div className="h-4 bg-primary/10 rounded w-3/4" />
+              <div className="h-3 bg-primary/5 rounded w-full" />
+              <div className="h-3 bg-primary/5 rounded w-1/2 mt-auto" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export function AnalysisHighlights({ 
   isLoading, 
   onShowResults,
@@ -221,8 +281,13 @@ export function AnalysisHighlights({
     item.thumbnail.src.startsWith('http')
   );
 
-  // Si aucun résultat valide, ne rien afficher
-  if (validResults.length === 0) return null;
+  // Si aucun résultat valide et pas de chargement, ne rien afficher
+  if (validResults.length === 0 && !isLoading) return null;
+
+  // Afficher le placeholder pendant le chargement
+  if (isLoading && !streamingContent) {
+    return <LoadingPlaceholder />;
+  }
 
   const mainArticle = validResults[0];
   const secondaryArticles = validResults.slice(1);
