@@ -4,13 +4,13 @@ import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
-import { LLMResponse } from "@/components/LLMResponse";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ResponsiveSearchDrawer } from "@/components/ResponsiveSearchDrawer";
 import { VideoCarousel } from "@/components/VideoCarousel";
 import { RelatedQuestions } from "@/components/RelatedQuestions";
 import { NewsHighlights } from "@/components/NewsHighlights";
 import { InstagramResults } from "@/components/InstagramResults";
+import { AnalysisHighlights } from "@/components/AnalysisHighlights";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -168,30 +168,27 @@ function SearchPageContent() {
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl mb-8">
-          <LLMResponse
+          <AnalysisHighlights
             isLoading={isLoading}
             onShowResults={() => setIsDrawerOpen(true)}
             streamingContent={messages}
+            results={results}
           />
           <SourcesComponent
             results={results}
             isLoading={isLoading}
             onShowAll={() => setIsDrawerOpen(true)}
           />
-          <NewsHighlights
-            news={news}
-            isVisible={isLoading || showNews}
-            serpResults={
-              news.length === 0
-                ? results.filter((result) => result.thumbnail?.src).slice(0, 5)
-                : undefined
-            }
-          />
           {/* Ajout du composant InstagramResults */}
           <InstagramResults
             results={results}
             isVisible={!isLoading && results.length > 0}
           />
+          <NewsHighlights
+            news={news}
+            isVisible={isLoading || showNews}
+          />
+          
 
           <>
             <VideoCarousel

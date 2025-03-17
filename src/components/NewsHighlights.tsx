@@ -17,7 +17,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 interface NewsHighlightsProps {
   news: SearchResult[];
   isVisible: boolean;
-  serpResults?: SearchResult[]; // Ajouter les résultats SERP comme prop optionnelle
 }
 
 // Animation variants
@@ -355,25 +354,16 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
 });
 MobileView.displayName = "MobileView";
 
-function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHighlightsProps) {
-  // Vérifier si nous devons utiliser les résultats SERP (pas d'actualités)
-  const useSerpResults = news.length === 0 && serpResults.length > 0;
-  
-  // Déterminer si le composant doit être visible
-  const shouldDisplay = isVisible || useSerpResults;
-  
-  // Ne rien afficher si le composant ne doit pas être visible
-  if (!shouldDisplay) return null;
+function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
+  // Ne rien afficher si le composant ne doit pas être visible ou s'il n'y a pas d'actualités
+  if (!isVisible || news.length === 0) return null;
 
   // Filtrer les résultats Instagram
   const filterInstagram = (items: SearchResult[]) => items.filter(item => 
     !(item.meta_url?.hostname?.includes('instagram') || item.url.includes('instagram'))
   );
 
-  // Utiliser les résultats SERP ou les actualités selon le cas
-  const allDisplayData = useSerpResults 
-    ? filterInstagram(serpResults)
-    : filterInstagram(news);
+  const allDisplayData = filterInstagram(news);
   
   // NOUVEAU: Filtrer strictement tous les résultats sans image valide
   const validDisplayData = allDisplayData.filter(item => 
@@ -434,8 +424,7 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
   const mainArticle = displayedItems[0];
   const secondaryArticles = displayedItems.slice(1);
 
-  // Titre personnalisé selon le type de données affichées
-  const sectionTitle = useSerpResults ? "Résultats" : "À la une";
+  const sectionTitle = "À la une";
 
   return (
     <motion.div
@@ -459,7 +448,6 @@ function NewsHighlightsComponent({ news, isVisible, serpResults = [] }: NewsHigh
 export const NewsHighlights = React.memo(NewsHighlightsComponent, (prevProps, nextProps) => {
   return (
     prevProps.isVisible === nextProps.isVisible &&
-    prevProps.news === nextProps.news &&
-    prevProps.serpResults === nextProps.serpResults
+    prevProps.news === nextProps.news
   );
 }); 

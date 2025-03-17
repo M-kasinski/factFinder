@@ -542,3 +542,13 @@
   - Standardisation des espacements et des marges
   - Amélioration de l'expérience utilisateur avec des transitions fluides
   - Création d'une identité visuelle cohérente pour la section Analyse
+
+## Étape : Création du composant AnalysisHighlights (2025-03-07)
+- [x] Création d'un nouveau composant combinant LLMResponse et NewsHighlights
+- [x] Implémentation d'un layout en grille pour afficher l'analyse et l'article principal côte à côte
+- [x] Ajout d'un badge "IA" avec effet de gradient et icône Sparkles
+- [x] Harmonisation du style avec les autres composants (transparence, backdrop-blur, transitions)
+- [x] Optimisation de l'affichage des images et du contenu
+- [x] Amélioration de l'expérience utilisateur avec des animations fluides
+- [x] Gestion intelligente des résultats sans images valides
+- [x] Adaptation responsive pour les différentes tailles d'écran
