@@ -498,8 +498,24 @@
 
 ## MVP 3 : Développement des fonctionnalités
 - [ ] Création d'une fonction "Résumé IA"
-- [ ] Implémentation du résumé dans la page de recherche
-- [ ] Tests et validation des résumés générés
+
+## Étape : Implémentation d'un système d'onglets pour les résultats de recherche (2025-03-07)
+- [x] Installation du package @radix-ui/react-tabs pour créer un composant Tabs
+- [x] Création d'un composant UI pour les onglets dans src/components/ui/tabs.tsx
+- [x] Développement du composant SearchResultTabs qui regroupe les résultats
+- [x] Ajout d'onglets "Réponse" et "Sources" pour organiser l'information
+- [x] Intégration des SerpLinks dans l'onglet "Sources" avec badge de comptage
+- [x] Adaptation du composant SourcesComponent pour supporter un mode compact
+- [x] Remplacement des composants indépendants dans la page de recherche par le système d'onglets
+- [x] Dépréciation progressive du composant ResponsiveSearchDrawer au profit des onglets
+- [x] Amélioration de l'UX en centralisant les résultats dans une interface unifiée
+- [x] Conservation de l'apparence visuelle cohérente avec le thème ClaireVue
+- [x] Optimisation du mode d'affichage des sources : masquage des autres composants lorsque l'onglet "Sources" est actif
+- [x] Amélioration du défilement pour l'onglet Sources en utilisant le défilement naturel de la page au lieu d'un conteneur de défilement distinct
+- [x] Refonte de l'affichage des sources selon un format de moteur de recherche traditionnel (1 résultat par ligne)
+- [x] Ajout d'indices numériques pour chaque résultat et alternance de couleurs pour une meilleure lisibilité
+- [x] Uniformisation de la hauteur des résultats de recherche pour une présentation plus cohérente
+- [x] Optimisation de l'affichage des descriptions pour éviter les coupures de phrases (passage à 3 lignes)
 
 ## Amélioration de l'expérience utilisateur et du message de marque
 - [x] Modernisation des cartes de fonctionnalités sur la page d'accueil
@@ -552,3 +568,11 @@
 - [x] Amélioration de l'expérience utilisateur avec des animations fluides
 - [x] Gestion intelligente des résultats sans images valides
 - [x] Adaptation responsive pour les différentes tailles d'écran
+
+## Amélioration de l'interactivité des résultats de recherche (2023-06-03)
+
+- [x] Rendre toute la zone de chaque résultat de recherche cliquable
+- [x] Appliquer un effet de survol uniforme à toute la zone du résultat
+- [x] Amélioration de la transition avec une durée de 300ms
+- [x] Ajout d'un effet de groupe pour que l'effet de survol soit cohérent sur tous les éléments
+- [x] Suppression des effets de survol redondants dans le composant SerpLink

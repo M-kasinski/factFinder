@@ -8,8 +8,9 @@ import { motion } from "framer-motion";
 
 interface SourcesComponentProps {
   results: SearchResult[];
-  onShowAll: () => void;
+  onShowAll?: () => void;
   isLoading?: boolean;
+  compact?: boolean;
 }
 
 // Fonction utilitaire pour obtenir le nom du site à partir d'une URL
@@ -157,7 +158,8 @@ const SourcesSkeleton = () => (
 const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({ 
   results = [], 
   onShowAll,
-  isLoading = false 
+  isLoading = false,
+  compact = false
 }) => {
   // Afficher le skeleton loader pendant le chargement
   if (isLoading) {
@@ -187,8 +189,10 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   // Ne rien afficher s'il n'y a pas de domaines uniques
   if (!sortedDomains.length) return null;
 
-  const visibleSources = results.slice(0, 3);
-  const hiddenSources = results.slice(3);
+  // Limiter le nombre de sources visibles en fonction du mode
+  const maxVisible = compact ? 3 : 3;
+  const visibleSources = results.slice(0, maxVisible);
+  const hiddenSources = compact ? [] : results.slice(maxVisible);
 
   const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
 
@@ -220,7 +224,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
             />
           ))}
 
-          {hiddenSources.length > 0 && (
+          {hiddenSources.length > 0 && onShowAll && (
             <MoreSourcesCard 
               hiddenSources={hiddenSources}
               cardClasses={cardClasses}

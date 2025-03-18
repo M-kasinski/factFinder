@@ -5,16 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { ResponsiveSearchDrawer } from "@/components/ResponsiveSearchDrawer";
+// import { ResponsiveSearchDrawer } from "@/components/ResponsiveSearchDrawer"; // Deprecated
 import { VideoCarousel } from "@/components/VideoCarousel";
 import { RelatedQuestions } from "@/components/RelatedQuestions";
 import { NewsHighlights } from "@/components/NewsHighlights";
-import { InstagramResults } from "@/components/InstagramResults";
-import { AnalysisHighlights } from "@/components/AnalysisHighlights";
+import { SearchResultTabs } from "@/components/SearchResultTabs";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import SourcesComponent from "@/components/SourcesComponent";
 import { fetchSearchResults } from "@/app/actions";
 import { SearchResult } from "@/types/search";
 import Image from "next/image";
@@ -23,11 +21,11 @@ function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
   const isSearchingRef = useRef(false);
   const isInitialRenderRef = useRef(true);
+  const [activeTab, setActiveTab] = useState("response"); // Ajout d'un état pour suivre l'onglet actif
 
   // États pour stocker les résultats de recherche
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -129,6 +127,11 @@ function SearchPageContent() {
     }
   }, [searchParams, currentQuery, performSearch]);
 
+  // Gestionnaire pour le changement d'onglet
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="container mx-auto px-4 py-4 pb-16 flex-1">
       <div className="flex flex-col gap-6">
@@ -168,45 +171,38 @@ function SearchPageContent() {
         </div>
 
         <div className="mt-8 space-y-6 max-w-4xl mb-8">
-          <AnalysisHighlights
+          <SearchResultTabs
+            results={results}
             isLoading={isLoading}
-            onShowResults={() => setIsDrawerOpen(true)}
+            messages={messages}
             streamingContent={messages}
-            results={results.filter(
-              (result) => !result.meta_url?.hostname?.includes("instagram")
-            )}
+            onTabChange={handleTabChange}
           />
-          {!isLoading && (
+          
+          {/* N'afficher les composants additionnels que lorsque l'onglet "response" est actif */}
+          {activeTab === "response" && (
             <>
-              <SourcesComponent
-                results={results}
-                isLoading={isLoading}
-                onShowAll={() => setIsDrawerOpen(true)}
+              <NewsHighlights news={news} isVisible={isLoading || showNews} />
+
+              <VideoCarousel
+                videos={videos}
+                isVisible={isLoading || showVideos}
               />
-              <InstagramResults
-                results={results}
-                isVisible={results.length > 0}
+              
+              <RelatedQuestions
+                questions={relatedQuestions}
+                isVisible={isLoading || showRelated}
+                onQuestionClick={handleSearch}
               />
             </>
           )}
-          <NewsHighlights news={news} isVisible={isLoading || showNews} />
-
-          <>
-            <VideoCarousel
-              videos={videos}
-              isVisible={isLoading || showVideos}
-            />
-            <RelatedQuestions
-              questions={relatedQuestions}
-              isVisible={isLoading || showRelated}
-              onQuestionClick={handleSearch}
-            />
-            <ResponsiveSearchDrawer
-              isOpen={isDrawerOpen}
-              onClose={() => setIsDrawerOpen(false)}
-              results={results}
-            />
-          </>
+          
+          {/* Drawer déprécié, remplacé par les onglets */}
+          {/* <ResponsiveSearchDrawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            results={results}
+          /> */}
         </div>
       </div>
 

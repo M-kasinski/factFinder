@@ -93,7 +93,7 @@ const SerpLinkComponent = ({ title, date, description, onClick, meta_url, profil
   return (
     <div 
       onClick={onClick}
-      className="max-w-2xl cursor-pointer hover:bg-accent p-3 rounded-lg transition-colors"
+      className="max-w-2xl w-full p-3 rounded-lg"
     >
       <div className="flex items-start gap-4">
         <div className="flex-1 min-w-0">
