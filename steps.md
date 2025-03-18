@@ -576,3 +576,34 @@
 - [x] Amélioration de la transition avec une durée de 300ms
 - [x] Ajout d'un effet de groupe pour que l'effet de survol soit cohérent sur tous les éléments
 - [x] Suppression des effets de survol redondants dans le composant SerpLink
+
+## Simplification de l'affichage des sources (2023-06-03)
+
+- [x] Suppression de la numérotation des sources dans l'onglet "Sources"
+- [x] Nettoyage de la présentation pour un affichage plus épuré
+- [x] Meilleure cohérence visuelle avec les autres éléments de l'interface
+- [x] Élimination des distractions visuelles pour se concentrer sur les informations essentielles
+
+## Amélioration de l'ergonomie de l'interface (2023-06-03)
+
+- [x] Repositionnement des onglets (tabs) pour les rapprocher de la barre de recherche
+- [x] Réduction de l'espace vertical entre la barre de recherche et les onglets
+- [x] Limitation de la largeur des onglets pour s'aligner avec la barre de recherche
+- [x] Amélioration de la cohérence visuelle et de l'expérience utilisateur
+
+## Amélioration des onglets dans le style de Google (2023-06-03)
+
+- [x] Refonte complète des onglets pour ressembler à l'interface de Google Search
+- [x] Suppression du fond et des bordures au profit d'un design plus épuré
+- [x] Ajout d'un indicateur actif sous forme de ligne colorée sous l'onglet actif
+- [x] Animation fluide de transition entre les onglets
+- [x] Ajout d'onglets supplémentaires désactivés (Images, Vidéos, Actualités) pour une apparence plus complète
+- [x] Harmonisation du style avec les conventions de design des moteurs de recherche modernes
+- [x] Amélioration de l'espacement vertical pour une meilleure lisibilité
+
+## Correction du scroll vertical indésirable (2023-06-03)
+
+- [x] Ajout de la classe `overflow-y-hidden` à la liste des onglets pour empêcher le défilement vertical
+- [x] Implémentation correcte de la classe `no-scrollbar` dans le fichier CSS global
+- [x] Utilisation de webkit-scrollbar, ms-overflow-style et scrollbar-width pour une compatibilité multi-navigateurs
+- [x] Élimination du petit espace de défilement vertical tout en conservant le défilement horizontal

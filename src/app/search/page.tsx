@@ -170,7 +170,7 @@ function SearchPageContent() {
           />
         </div>
 
-        <div className="mt-8 space-y-6 max-w-4xl mb-8">
+        <div className="mt-2 w-full max-w-2xl">
           <SearchResultTabs
             results={results}
             isLoading={isLoading}
@@ -178,7 +178,9 @@ function SearchPageContent() {
             streamingContent={messages}
             onTabChange={handleTabChange}
           />
-          
+        </div>
+
+        <div className="mt-4 space-y-6 max-w-4xl mb-8">
           {/* N'afficher les composants additionnels que lorsque l'onglet "response" est actif */}
           {activeTab === "response" && (
             <>

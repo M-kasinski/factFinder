@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lightbulb, Link } from "lucide-react";
+import { Lightbulb, Link, Search, Image, Video, Newspaper } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { SerpLink } from "./SerpLink";
 import { AnalysisHighlights } from "./AnalysisHighlights";
@@ -69,29 +69,56 @@ export function SearchResultTabs({
       onValueChange={setActiveTab}
       className="w-full"
     >
-      <TabsList className="grid grid-cols-2 mb-6 bg-card/80 backdrop-blur-sm">
+      <TabsList className="flex w-full justify-start space-x-6 border-b border-border bg-transparent p-0 shadow-none overflow-x-auto overflow-y-hidden no-scrollbar">
         <TabsTrigger 
           value="response" 
-          className="flex items-center gap-2 data-[state=active]:text-primary data-[state=active]:font-medium"
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
           <Lightbulb className="h-4 w-4" />
-          <span>Réponse</span>
+          <span>IA</span>
+          <div className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100" data-state={activeTab === "response" ? "active" : "inactive"}></div>
         </TabsTrigger>
         <TabsTrigger 
           value="sources" 
-          className="flex items-center gap-2 data-[state=active]:text-primary data-[state=active]:font-medium"
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
-          <Link className="h-4 w-4" />
+          <Search className="h-4 w-4" />
           <span>Sources</span>
           {sourceCount > 0 && (
-            <span className="ml-1.5 rounded-full bg-primary/15 px-2 py-0.5 text-xs text-primary">
-              {sourceCount}
+            <span className="ml-1 text-xs text-muted-foreground">
+              ({sourceCount})
             </span>
           )}
+          <div className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100" data-state={activeTab === "sources" ? "active" : "inactive"}></div>
+        </TabsTrigger>
+        {/* Ces onglets sont désactivés mais affichés pour ressembler au style de Google */}
+        <TabsTrigger 
+          value="images" 
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none opacity-60 cursor-not-allowed pointer-events-none"
+          disabled
+        >
+          <Image className="h-4 w-4" />
+          <span>Images</span>
+        </TabsTrigger>
+        <TabsTrigger 
+          value="videos" 
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none opacity-60 cursor-not-allowed pointer-events-none"
+          disabled
+        >
+          <Video className="h-4 w-4" />
+          <span>Vidéos</span>
+        </TabsTrigger>
+        <TabsTrigger 
+          value="news" 
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none opacity-60 cursor-not-allowed pointer-events-none"
+          disabled
+        >
+          <Newspaper className="h-4 w-4" />
+          <span>Actualités</span>
         </TabsTrigger>
       </TabsList>
       
-      <TabsContent value="response" className="focus-visible:outline-none focus-visible:ring-0">
+      <TabsContent value="response" className="mt-6 focus-visible:outline-none focus-visible:ring-0">
         <div className="space-y-6">
           <AnalysisHighlights
             isLoading={isLoading}
@@ -117,40 +144,31 @@ export function SearchResultTabs({
         </div>
       </TabsContent>
       
-      <TabsContent value="sources" className="focus-visible:outline-none focus-visible:ring-0">
-        <div className="border rounded-lg overflow-hidden bg-card/80 backdrop-blur-sm max-w-5xl mx-auto">
-          <div className="p-4 border-b">
-            <h3 className="font-medium text-sm flex items-center gap-2">
-              <Link className="h-4 w-4 text-primary" />
-              <span>Toutes les sources ({sourceCount})</span>
-            </h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              Liste complète des sources trouvées pour votre recherche
+      <TabsContent value="sources" className="mt-6 focus-visible:outline-none focus-visible:ring-0">
+        <div className="overflow-hidden max-w-5xl mx-auto">
+          <div className="flex flex-col mb-4">
+            <p className="text-xs text-muted-foreground">
+               {sourceCount} résultats trouvés pour votre recherche
             </p>
           </div>
           
           {results.length > 0 ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col space-y-6">
               {results.map((result, index) => (
                 <div 
                   key={result.url || index} 
-                  className={`relative border-b last:border-b-0 border-border ${index % 2 === 0 ? 'bg-muted/10' : ''} hover:bg-accent/30 transition-colors group cursor-pointer`}
+                  className="relative group cursor-pointer"
                   onClick={() => window.open(result.url, '_blank')}
                 >
-                  <div className="absolute left-4 top-4 w-6 h-6 flex items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-medium group-hover:bg-primary/20 transition-colors">
-                    {index + 1}
-                  </div>
-                  <div className="pl-12">
-                    <SerpLink
-                      {...formatResult(result)}
-                      onClick={undefined}
-                    />
-                  </div>
+                  <SerpLink
+                    {...formatResult(result)}
+                    onClick={undefined}
+                  />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="p-6 text-center text-muted-foreground flex flex-col items-center gap-2">
+            <div className="py-8 text-center text-muted-foreground flex flex-col items-center gap-2">
               <Link className="h-8 w-8 text-muted-foreground/50" />
               <p>Aucun résultat disponible</p>
             </div>

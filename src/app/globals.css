@@ -95,3 +95,15 @@ body {
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease forwards;
 }
+
+/* Masquer les barres de défilement tout en permettant le scroll */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
