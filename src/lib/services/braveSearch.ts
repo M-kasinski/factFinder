@@ -127,6 +127,7 @@ export async function searchWithBrave(query: string): Promise<{
 
     // Traiter les résultats web
     const searchResults: SearchResult[] = braveData.web.results.map(result => ({
+      query, // Ajouter la requête utilisée pour ces résultats
       title: decode(result.title),
       url: result.url,
       date: result.age,
@@ -151,6 +152,7 @@ export async function searchWithBrave(query: string): Promise<{
 
     // Extraire les vidéos si elles existent
     const videoResults: SearchResult[] = braveData.videos?.results.map(video => ({
+      query, // Ajouter la requête utilisée pour ces résultats
       title: decode(video.title),
       url: video.url,
       date: video.age || video.page_age || "",
@@ -172,6 +174,7 @@ export async function searchWithBrave(query: string): Promise<{
 
     // Extraire les actualités (news) si elles existent
     const newsResults: SearchResult[] = braveData.news?.results.map(news => ({
+      query, // Ajouter la requête utilisée pour ces résultats
       title: decode(news.title),
       url: news.url,
       date: news.page_age || "",

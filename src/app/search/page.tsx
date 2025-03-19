@@ -11,6 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchSearchResults } from "@/app/actions";
 import { SearchResult } from "@/types/search";
+import { YouTubeVideoItem } from "@/types/youtube";
 import Image from "next/image";
 
 function SearchPageContent() {
@@ -31,6 +32,8 @@ function SearchPageContent() {
   const [showNews, setShowNews] = useState(false);
   const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
   const [showRelated, setShowRelated] = useState(false);
+  const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideoItem[]>([]);
+  const [showYouTube, setShowYouTube] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -59,6 +62,8 @@ function SearchPageContent() {
           setShowNews(update.showNews || false);
           setRelatedQuestions(update.relatedQuestions || []);
           setShowRelated(update.showRelated || false);
+          setYoutubeVideos(update.youtubeVideos || []);
+          setShowYouTube(update.showYouTube || false);
 
           // Ne mettre isLoading à false que lorsque nous avons à la fois le message et des résultats
           // Cela évite un état transitoire où l'interface est ni en chargement ni avec du contenu
@@ -172,6 +177,8 @@ function SearchPageContent() {
             showVideos={isLoading || showVideos}
             relatedQuestions={relatedQuestions}
             showRelated={isLoading || showRelated}
+            youtubeVideos={youtubeVideos}
+            showYouTube={isLoading || showYouTube}
             onQuestionClick={handleSearch}
           />
         </div>

@@ -18,6 +18,7 @@ export interface SearchResult {
     path: string;
   };
   isNews?: boolean;
+  query?: string; // Terme de recherche utilisé pour obtenir ce résultat
 }
 
 export interface SearchState {
