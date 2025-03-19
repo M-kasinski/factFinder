@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Mic } from "lucide-react";
+import { useState, useRef } from "react";
+import { Search, X } from "lucide-react";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -18,6 +18,7 @@ interface SearchBarProps {
 
 export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +40,7 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
           } transition-all duration-300 bg-background/80`}>
           
           <input
+            ref={inputRef}
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -49,14 +51,20 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
           />
 
           <div className="absolute inset-y-0 right-1.5 md:right-2.5 flex items-center space-x-1.5 md:space-x-2.5">
-            <button 
-              type="button"
-              className="p-2 md:p-2.5 hover:bg-primary/10 rounded-full transition-colors"
-              onClick={() => console.log('Voice search not implemented')}
-              aria-label="Recherche vocale"
-            >
-              <Mic className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-            </button>
+            {value && (
+              <button 
+                type="button"
+                className="p-2 md:p-2.5 hover:bg-primary/10 rounded-full transition-colors"
+                onClick={() => {
+                  onChange('');
+                  // Mettre le focus sur l'input après avoir effacé
+                  setTimeout(() => inputRef.current?.focus(), 0);
+                }}
+                aria-label="Effacer la recherche"
+              >
+                <X className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+              </button>
+            )}
             <button 
               type="submit"
               className="p-2 md:p-2.5 hover:bg-primary/10 rounded-full transition-colors"
