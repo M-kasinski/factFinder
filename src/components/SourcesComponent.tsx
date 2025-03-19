@@ -2,7 +2,6 @@ import React from 'react';
 import { Globe, LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { SearchResult } from "@/types/search";
 import { motion } from "framer-motion";
 
@@ -10,7 +9,6 @@ interface SourcesComponentProps {
   results: SearchResult[];
   onShowAll?: () => void;
   isLoading?: boolean;
-  compact?: boolean;
 }
 
 // Fonction utilitaire pour obtenir le nom du site à partir d'une URL
@@ -131,12 +129,12 @@ const SourcesSkeleton = () => (
       <div className="h-6 w-28 bg-primary/10 rounded-lg animate-pulse" />
     </div>
     
-    <div className="relative overflow-x-auto">
-      <div className="flex gap-3 pb-4">
+    <div className="w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         {[...Array(4)].map((_, index) => (
           <div 
             key={index} 
-            className="animate-pulse shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] border border-primary/10 rounded-lg bg-card/70 backdrop-blur-sm relative overflow-hidden"
+            className="animate-pulse w-full h-[70px] border border-primary/10 rounded-lg bg-card/70 backdrop-blur-sm relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent" />
             <div className="p-2 h-full flex flex-col relative z-10">
@@ -158,8 +156,7 @@ const SourcesSkeleton = () => (
 const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({ 
   results = [], 
   onShowAll,
-  isLoading = false,
-  compact = false
+  isLoading = false
 }) => {
   // Afficher le skeleton loader pendant le chargement
   if (isLoading) {
@@ -189,12 +186,20 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   // Ne rien afficher s'il n'y a pas de domaines uniques
   if (!sortedDomains.length) return null;
 
-  // Limiter le nombre de sources visibles en fonction du mode
-  const maxVisible = compact ? 3 : 3;
+  // Toujours afficher exactement 3 sources + bouton voir plus
+  const maxVisible = 3;
   const visibleSources = results.slice(0, maxVisible);
-  const hiddenSources = compact ? [] : results.slice(maxVisible);
+  const hiddenSources = results.slice(maxVisible);
 
-  const cardClasses = "shrink-0 w-[210px] sm:w-[180px] md:w-[200px] lg:w-[210px] h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
+  // Utiliser une largeur fixe pour chaque carte, qui s'adapte à la taille de l'écran
+  const cardClasses = "w-full h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
+
+  // Fonction pour rediriger vers l'onglet Sources
+  const handleShowMore = () => {
+    if (onShowAll) {
+      onShowAll();
+    }
+  };
 
   return (
     <motion.div 
@@ -214,8 +219,8 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
         </h2>
       </div>
 
-      <ScrollArea className="w-full relative" type="scroll">
-        <div className="flex gap-2 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
+      <div className="w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {visibleSources.map((source) => (
             <SourceCard 
               key={source.url} 
@@ -224,16 +229,15 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
             />
           ))}
 
-          {hiddenSources.length > 0 && onShowAll && (
+          {hiddenSources.length > 0 && (
             <MoreSourcesCard 
               hiddenSources={hiddenSources}
               cardClasses={cardClasses}
-              onShowAll={onShowAll}
+              onShowAll={handleShowMore}
             />
           )}
         </div>
-        <ScrollBar orientation="horizontal" className="opacity-100" />
-      </ScrollArea>
+      </div>
     </motion.div>
   );
 });

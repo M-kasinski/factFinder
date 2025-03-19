@@ -5,10 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
-// import { ResponsiveSearchDrawer } from "@/components/ResponsiveSearchDrawer"; // Deprecated
-import { VideoCarousel } from "@/components/VideoCarousel";
-import { RelatedQuestions } from "@/components/RelatedQuestions";
-import { NewsHighlights } from "@/components/NewsHighlights";
 import { SearchResultTabs } from "@/components/SearchResultTabs";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
@@ -25,7 +21,6 @@ function SearchPageContent() {
   const [searchValue, setSearchValue] = useState(initialQuery);
   const isSearchingRef = useRef(false);
   const isInitialRenderRef = useRef(true);
-  const [activeTab, setActiveTab] = useState("response"); // Ajout d'un état pour suivre l'onglet actif
 
   // États pour stocker les résultats de recherche
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -127,15 +122,10 @@ function SearchPageContent() {
     }
   }, [searchParams, currentQuery, performSearch]);
 
-  // Gestionnaire pour le changement d'onglet
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-  };
-
   return (
-    <div className="container mx-auto px-4 py-4 pb-16 flex-1">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
+    <div className="w-full mx-auto px-4 py-4 pb-16 flex-1">
+      <div className="flex flex-col gap-6 max-w-[1400px] mx-auto">
+        <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -162,7 +152,7 @@ function SearchPageContent() {
           <ThemeToggle />
         </div>
 
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-3xl mx-auto">
           <SearchBar
             onSearch={handleSearch}
             value={searchValue}
@@ -170,42 +160,23 @@ function SearchPageContent() {
           />
         </div>
 
-        <div className="mt-2 w-full max-w-2xl">
+        <div className="mt-2 w-full max-w-3xl mx-auto">
           <SearchResultTabs
             results={results}
             isLoading={isLoading}
             messages={messages}
             streamingContent={messages}
-            onTabChange={handleTabChange}
+            news={news}
+            showNews={isLoading || showNews}
+            videos={videos}
+            showVideos={isLoading || showVideos}
+            relatedQuestions={relatedQuestions}
+            showRelated={isLoading || showRelated}
+            onQuestionClick={handleSearch}
           />
         </div>
 
-        <div className="mt-4 space-y-6 max-w-4xl mb-8">
-          {/* N'afficher les composants additionnels que lorsque l'onglet "response" est actif */}
-          {activeTab === "response" && (
-            <>
-              <NewsHighlights news={news} isVisible={isLoading || showNews} />
-
-              <VideoCarousel
-                videos={videos}
-                isVisible={isLoading || showVideos}
-              />
-              
-              <RelatedQuestions
-                questions={relatedQuestions}
-                isVisible={isLoading || showRelated}
-                onQuestionClick={handleSearch}
-              />
-            </>
-          )}
-          
-          {/* Drawer déprécié, remplacé par les onglets */}
-          {/* <ResponsiveSearchDrawer
-            isOpen={isDrawerOpen}
-            onClose={() => setIsDrawerOpen(false)}
-            results={results}
-          /> */}
-        </div>
+        {/* Le contenu supplémentaire est maintenant géré directement dans SearchResultTabs */}
       </div>
 
       <div

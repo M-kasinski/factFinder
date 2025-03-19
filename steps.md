@@ -607,3 +607,81 @@
 - [x] Implémentation correcte de la classe `no-scrollbar` dans le fichier CSS global
 - [x] Utilisation de webkit-scrollbar, ms-overflow-style et scrollbar-width pour une compatibilité multi-navigateurs
 - [x] Élimination du petit espace de défilement vertical tout en conservant le défilement horizontal
+
+## Création d'un nouvel onglet "Réponse" (2023-06-03)
+
+- [x] Ajout d'un troisième onglet "Réponse" à l'interface de recherche
+- [x] Séparation claire entre l'onglet "IA" (avec AnalysisHighlights) et l'onglet "Réponse" (LLM + Sources)
+- [x] Organisation de l'onglet "Réponse" avec le composant SourcesComponent suivi de la réponse LLM
+- [x] Utilisation de l'icône MessageSquare pour représenter cet onglet
+- [x] Conservation des autres onglets et de leur fonctionnalité existante
+- [x] Amélioration de la navigation entre les différentes vues des résultats
+
+## Amélioration de l'affichage des sources dans les onglets (2023-06-03)
+
+- [x] Correction du comportement du bouton "Voir plus" dans l'onglet "Réponse"
+- [x] Implémentation d'un mode d'affichage avancé pour montrer jusqu'à 8 sources sans changer d'onglet
+- [x] Ajout d'un bouton "Voir moins" pour réduire l'affichage après expansion
+- [x] Comportement différencié entre les onglets "IA" (redirection vers Sources) et "Réponse" (expansion locale)
+- [x] Augmentation du nombre de sources visibles par défaut dans l'onglet "Réponse" (4 au lieu de 3)
+- [x] Meilleure expérience utilisateur en évitant les changements d'onglets inutiles
+
+## Standardisation de l'affichage des sources (2023-06-03)
+
+- [x] Simplification du composant SourcesComponent pour afficher exactement 3 sources + bouton "voir plus"
+- [x] Uniformisation du comportement du bouton "voir plus" pour toujours rediriger vers l'onglet Sources
+- [x] Suppression de la logique conditionnelle en fonction du mode compact/non-compact
+- [x] Élimination du bouton "voir moins" devenu inutile
+- [x] Amélioration de la cohérence de l'interface utilisateur entre tous les onglets
+- [x] Suppression des paramètres non utilisés pour un code plus propre
+
+## Optimisation de l'affichage des sources sur desktop (2023-06-03)
+
+- [x] Amélioration de la visibilité du quatrième élément (bouton "voir plus")
+- [x] Réduction de la largeur des cartes individuelles pour un meilleur affichage (de 210px à 180px)
+- [x] Remplacement du composant ScrollArea par une div native avec overflow-x-auto
+- [x] Augmentation de la largeur maximale du conteneur parent à 95vw
+- [x] Optimisation des marges et du padding pour un meilleur espacement
+- [x] Élimination des contraintes qui limitaient la visibilité de tous les éléments
+- [x] Simplification du code en supprimant les dépendances inutiles
+
+## Optimisation de l'interface responsive pour les sources (2023-06-03)
+
+- [x] Suppression de la barre de défilement horizontal sur desktop pour les sources
+- [x] Conservation du défilement horizontal uniquement sur mobile avec `overflow-x-auto`
+- [x] Utilisation de `flex-wrap` sur desktop pour afficher les sources sur plusieurs lignes
+- [x] Augmentation de la largeur des conteneurs sur desktop (max-w-7xl)
+- [x] Élargissement des cartes de sources en desktop pour utiliser l'espace disponible
+- [x] Augmentation de l'espacement entre les cartes sur desktop (`gap-4` au lieu de `gap-2`)
+- [x] Application du centrage horizontal avec `mx-auto` pour améliorer l'équilibre visuel
+- [x] Adaptation intelligente entre l'affichage mobile (scrollable) et desktop (multi-lignes)
+
+## Refonte complète du composant Sources avec layout en grille (2023-06-03)
+
+- [x] Remplacement complet du système flex par un layout en grille (grid) pour un affichage plus fiable
+- [x] Utilisation de `grid-cols-1 sm:grid-cols-2 md:grid-cols-4` pour garantir l'affichage de tous les éléments
+- [x] Adaptation des cartes pour utiliser toute la largeur disponible dans chaque cellule de la grille
+- [x] Élimination des problèmes de débordement et d'espacement irrégulier
+- [x] Mise à jour du skeleton loader pour correspondre au nouveau format
+- [x] Suppression des comportements responsives complexes qui causaient des problèmes
+- [x] Meilleure adaptation aux différentes tailles d'écran avec des breakpoints standards
+
+## Correction de l'architecture de l'interface et élimination des doublons (2023-06-04)
+
+- [x] Refonte de l'architecture des composants dans la page de recherche
+- [x] Déplacement de tous les composants de contenu (NewsHighlights, VideoCarousel, RelatedQuestions) dans SearchResultTabs
+- [x] Élimination de la duplication des sections de contenu entre les différents onglets
+- [x] Passage de toutes les données nécessaires via props au composant SearchResultTabs
+- [x] Organisation cohérente du contenu avec une séparation claire entre les onglets
+- [x] Amélioration de la maintenabilité en centralisant la gestion de l'interface
+- [x] Élimination des imports inutilisés et nettoyage du code
+
+## Amélioration de l'alignement et de la cohérence visuelle (2023-06-04)
+
+- [x] Unification de l'alignement entre l'en-tête, la barre de recherche et les onglets
+- [x] Ajout de `mx-auto` et `max-w-3xl` à l'en-tête pour l'aligner parfaitement avec les éléments suivants
+- [x] Correction du conteneur principal avec `mx-auto` pour un centrage parfait
+- [x] Optimisation des espacements entre les éléments (space-y-8) pour une meilleure respiration visuelle
+- [x] Réduction des espacements entre les résultats de recherche dans l'onglet Sources pour une densité d'information optimale
+- [x] Simplification de la structure des conteneurs pour éliminer les propriétés redondantes
+- [x] Amélioration générale de la cohérence visuelle entre tous les éléments de l'interface

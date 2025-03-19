@@ -1,13 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lightbulb, Link, Search, Image, Video, Newspaper } from "lucide-react";
+import { Lightbulb, Link, Search, Image, Video, Newspaper, MessageSquare } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { SerpLink } from "./SerpLink";
 import { AnalysisHighlights } from "./AnalysisHighlights";
 import SourcesComponent from "./SourcesComponent";
 import { InstagramResults } from "./InstagramResults";
 import { SearchResult } from "@/types/search";
+import { LLMResponse } from "./LLMResponse";
+import { NewsHighlights } from "./NewsHighlights";
+import { VideoCarousel } from "./VideoCarousel";
+import { RelatedQuestions } from "./RelatedQuestions";
 
 interface SearchResultTabsProps {
   results: SearchResult[];
@@ -15,6 +19,13 @@ interface SearchResultTabsProps {
   messages: string;
   streamingContent?: string;
   onTabChange?: (tab: string) => void;
+  news?: SearchResult[];
+  showNews?: boolean;
+  videos?: SearchResult[];
+  showVideos?: boolean;
+  relatedQuestions?: string[];
+  showRelated?: boolean;
+  onQuestionClick?: (query: string) => void;
 }
 
 export function SearchResultTabs({ 
@@ -22,7 +33,14 @@ export function SearchResultTabs({
   isLoading, 
   messages,
   streamingContent,
-  onTabChange
+  onTabChange,
+  news = [],
+  showNews = false,
+  videos = [],
+  showVideos = false,
+  relatedQuestions = [],
+  showRelated = false,
+  onQuestionClick
 }: SearchResultTabsProps) {
   const [activeTab, setActiveTab] = useState("response");
   const [renderedResults, setRenderedResults] = useState<SearchResult[]>([]);
@@ -34,7 +52,7 @@ export function SearchResultTabs({
     }
   }, [results]);
 
-  // Appeler le callback quand l'onglet change
+  // Appeler le callback quand l'onglet change si disponible
   useEffect(() => {
     if (onTabChange) {
       onTabChange(activeTab);
@@ -79,6 +97,14 @@ export function SearchResultTabs({
           <div className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100" data-state={activeTab === "response" ? "active" : "inactive"}></div>
         </TabsTrigger>
         <TabsTrigger 
+          value="answer" 
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
+        >
+          <MessageSquare className="h-4 w-4" />
+          <span>Réponse</span>
+          <div className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100" data-state={activeTab === "answer" ? "active" : "inactive"}></div>
+        </TabsTrigger>
+        <TabsTrigger 
           value="sources" 
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
@@ -119,7 +145,7 @@ export function SearchResultTabs({
       </TabsList>
       
       <TabsContent value="response" className="mt-6 focus-visible:outline-none focus-visible:ring-0">
-        <div className="space-y-6">
+        <div className="space-y-8">
           <AnalysisHighlights
             isLoading={isLoading}
             streamingContent={streamingContent || messages}
@@ -130,22 +156,48 @@ export function SearchResultTabs({
           
           {!isLoading && (
             <>
-              <SourcesComponent
-                results={results}
-                isLoading={isLoading}
-                compact={true}
-              />
               <InstagramResults
                 results={results}
                 isVisible={results.length > 0}
+              />
+              
+              <NewsHighlights 
+                news={news} 
+                isVisible={showNews} 
+              />
+              
+              <VideoCarousel
+                videos={videos}
+                isVisible={showVideos}
+              />
+              
+              <RelatedQuestions
+                questions={relatedQuestions}
+                isVisible={showRelated}
+                onQuestionClick={onQuestionClick || (() => {})}
               />
             </>
           )}
         </div>
       </TabsContent>
       
+      <TabsContent value="answer" className="mt-6 focus-visible:outline-none focus-visible:ring-0">
+        <div className="space-y-8">
+          <SourcesComponent
+            results={results}
+            isLoading={isLoading}
+            onShowAll={() => setActiveTab("sources")}
+          />
+          
+          <LLMResponse 
+            isLoading={isLoading}
+            streamingContent={streamingContent || messages}
+          />
+        </div>
+      </TabsContent>
+      
       <TabsContent value="sources" className="mt-6 focus-visible:outline-none focus-visible:ring-0">
-        <div className="overflow-hidden max-w-5xl mx-auto">
+        <div>
           <div className="flex flex-col mb-4">
             <p className="text-xs text-muted-foreground">
                {sourceCount} résultats trouvés pour votre recherche
@@ -153,7 +205,7 @@ export function SearchResultTabs({
           </div>
           
           {results.length > 0 ? (
-            <div className="flex flex-col space-y-6">
+            <div className="flex flex-col space-y-4">
               {results.map((result, index) => (
                 <div 
                   key={result.url || index} 

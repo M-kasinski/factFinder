@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="flex-1 flex flex-col">    
+          <main className="flex-1 flex flex-col w-full">    
             {children}
             <Analytics />
           </main>
