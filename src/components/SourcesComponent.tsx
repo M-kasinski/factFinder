@@ -220,21 +220,24 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
       </div>
 
       <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="flex overflow-x-auto pb-2 gap-3 snap-x snap-mandatory no-scrollbar">
           {visibleSources.map((source) => (
-            <SourceCard 
-              key={source.url} 
-              source={source} 
-              cardClasses={cardClasses} 
-            />
+            <div key={source.url} className="flex-shrink-0 w-[250px] snap-start">
+              <SourceCard 
+                source={source} 
+                cardClasses={cardClasses} 
+              />
+            </div>
           ))}
 
           {hiddenSources.length > 0 && (
-            <MoreSourcesCard 
-              hiddenSources={hiddenSources}
-              cardClasses={cardClasses}
-              onShowAll={handleShowMore}
-            />
+            <div className="flex-shrink-0 w-[250px] snap-start">
+              <MoreSourcesCard 
+                hiddenSources={hiddenSources}
+                cardClasses={cardClasses}
+                onShowAll={handleShowMore}
+              />
+            </div>
           )}
         </div>
       </div>

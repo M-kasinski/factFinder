@@ -27,7 +27,6 @@ const item = {
 };
 
 const InstagramItem = React.memo(({ result }: { result: SearchResult }) => {
-  console.log(result);
   return (
     <motion.div variants={item} className="w-full">
       <Card className="hover:border-primary/30 hover:shadow-md transition-all duration-300">
@@ -165,7 +164,7 @@ function InstagramResultsComponent({
             className="object-contain"
           />
         </div>
-        <h2 className="text-lg font-semibold">Résultats Instagram</h2>
+        <h2 className="text-lg font-semibold">Instagram</h2>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">

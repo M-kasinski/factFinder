@@ -248,14 +248,14 @@
 - [x] Résolution définitive du problème de décalage de la page lors de l'ouverture des résultats
 - [x] Adaptation du design pour correspondre à l'interface générale de l'application
 
-## Étape : Optimisation du Drawer avec des styles CSS personnalisés (2025-03-06)
-- [x] Retour à l'utilisation du composant Drawer de shadcn/ui pour une meilleure expérience utilisateur
-- [x] Application de styles CSS personnalisés via les attributs data pour isoler le Drawer
-- [x] Utilisation des sélecteurs CSS [vaul-drawer] pour cibler précisément les éléments du Drawer
-- [x] Correction du problème de décalage de la page par positionnement fixe forcé
-- [x] Amélioration de la gestion du défilement pour limiter le scroll au contenu du Drawer
-- [x] Optimisation du comportement du Drawer pour apparaître depuis le bas sans affecter la mise en page
-- [x] Conservation de l'expérience utilisateur familière du pattern Drawer sur mobile
+## Étape : Amélioration du défilement horizontal du composant Sources sur mobile (2025-03-07)
+- [x] Remplacement de la grille responsive par un conteneur à défilement horizontal
+- [x] Utilisation de la classe `no-scrollbar` pour masquer la barre de défilement tout en permettant le défilement
+- [x] Implémentation du défilement tactile fluide avec `snap-x` pour un arrêt précis sur chaque carte
+- [x] Uniformisation de la largeur des cartes de sources à 250px pour une meilleure expérience sur mobile
+- [x] Ajout de la classe `snap-mandatory` pour garantir l'alignement lors du défilement
+- [x] Conservation de la présentation visuelle des sources identique sur desktop et mobile
+- [x] Optimisation de l'interaction tactile pour une expérience utilisateur améliorée
 
 ## Étape : Amélioration de l'affichage des questions connexes sur mobile (2025-03-06)
 - [x] Correction du problème de débordement des questions connexes sur les écrans mobiles
