@@ -699,36 +699,24 @@
 - [x] Simplification de la structure des conteneurs pour éliminer les propriétés redondantes
 - [x] Amélioration générale de la cohérence visuelle entre tous les éléments de l'interface
 
-## Harmonisation visuelle entre les composants RelatedQuestions et AnalysisHighlights (2023-06-04)
-- [x] Application du même style de fond et de bordure au composant RelatedQuestions que celui utilisé dans AnalysisHighlights
-- [x] Remplacement de la bordure standard par `border-primary/10 hover:border-primary/20` pour une cohérence visuelle
-- [x] Utilisation de `bg-card/90 backdrop-blur-sm` pour l'effet de transparence et de flou d'arrière-plan
-- [x] Harmonisation des transitions avec `duration-300` pour des animations fluides
-- [x] Amélioration de l'effet de survol avec une transition vers `bg-card` identique à AnalysisHighlights
-- [x] Création d'une identité visuelle cohérente à travers toute l'application
-- [x] Standardisation des effets de transparence et de flou pour une expérience utilisateur harmonieuse
+## Implémentation du mode automatique et intelligent pour les onglets (2023-06-05)
 
-## Amélioration des coins arrondis pour une meilleure cohérence visuelle (2023-06-04)
-- [x] Passage de `rounded-md` à `rounded-lg` dans le composant RelatedQuestions pour harmoniser avec AnalysisHighlights
-- [x] Ajout de `overflow-hidden` pour garantir que les coins arrondis s'appliquent correctement au contenu
-- [x] Amélioration de l'esthétique générale des cartes avec des coins plus arrondis
-- [x] Uniformisation du style de border-radius à travers toute l'application
-- [x] Création d'une cohérence visuelle plus forte entre tous les éléments de l'interface
+- [x] Création d'un hook personnalisé `useInitialTab` pour déterminer l'onglet initial en fonction du contenu de la requête
+- [x] Implémentation de la logique de détection:
+  - Si la requête contient un "?", activation de l'onglet "answer"
+  - Si la requête ne contient qu'un seul mot, activation de l'onglet "sources"
+  - Pour tous les autres types de requêtes, affichage par défaut de l'onglet "response"
+- [x] Intégration du hook dans la page de recherche avec gestion de l'état de l'onglet actif
+- [x] Ajout des propriétés `activeTab` et `onTabChange` à l'interface du composant `SearchResultTabs`
+- [x] Mise en place d'une gestion propre de l'état local et des props dans le composant
+- [x] Préservation totale du style et de l'apparence de l'interface utilisateur existante
+- [x] Création d'une architecture évolutive permettant de modifier facilement l'algorithme de détection à l'avenir
 
-## Amélioration de l'affichage des sources sur desktop et mobile (2023-06-04)
-- [x] Correction de l'affichage des sources pour supprimer la duplication de contenu
-- [x] Utilisation d'une grille responsive sur desktop avec 3-4 colonnes selon la taille d'écran
-- [x] Conservation du défilement horizontal sur mobile uniquement avec snap-points
-- [x] Optimisation du code en supprimant les blocs redondants
-- [x] Amélioration de la visibilité des sources sur desktop, sans défilement horizontal
-- [x] Utilisation de classes conditionnelles `hidden sm:grid` et `sm:hidden flex` pour gérer responsivité
-- [x] Maintien de la largeur fixe des cartes sur mobile pour une meilleure expérience tactile
-- [x] Préservation du bouton "voir plus" dans les deux modes d'affichage
+## Amélioration du hook useInitialTab pour l'analyse des requêtes (2023-06-05)
 
-## Améliorations de l'affichage des sources pour une meilleure lisibilité (2023-06-04)
-- [x] Réduction de la largeur des cartes sur mobile de 250px à 200px pour un meilleur aperçu
-- [x] Passage du titre des sources de `truncate` à `line-clamp-2` pour afficher deux lignes avec ellipsis
-- [x] Amélioration de la lisibilité des titres en permettant plus de contenu visible
-- [x] Adaptation du composant pour une densité d'information optimale sur les petits écrans
-- [x] Conservation de l'effet de défilement fluide avec snap-points sur mobile
-- [x] Optimisation de l'espace disponible sans surcharger visuellement l'interface
+- [x] Correction du hook useInitialTab pour analyser à nouveau la requête à chaque changement significatif
+- [x] Remplacement du mécanisme `hasAnalyzedRef` par un suivi de la requête précédente via `previousQueryRef`
+- [x] Mise en place d'une vérification pour éviter les analyses redondantes des requêtes identiques
+- [x] Conservation de la même logique d'analyse pour déterminer l'onglet approprié
+- [x] Amélioration de l'expérience utilisateur en adaptant automatiquement l'onglet actif à chaque nouvelle recherche
+- [x] Optimisation du code pour une meilleure lisibilité et maintenance

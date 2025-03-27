@@ -13,6 +13,7 @@ import { fetchSearchResults } from "@/app/actions";
 import { SearchResult } from "@/types/search";
 import { YouTubeVideoItem } from "@/types/youtube";
 import Image from "next/image";
+import { useInitialTab } from "@/hooks/useInitialTab";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -36,6 +37,17 @@ function SearchPageContent() {
   const [showYouTube, setShowYouTube] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("response");
+
+  // Utilise notre hook personnalisé pour déterminer l'onglet initial
+  const initialTab = useInitialTab(currentQuery);
+
+  // Met à jour activeTab quand initialTab change
+  useEffect(() => {
+    if (initialTab && currentQuery) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab, currentQuery]);
 
   // Fonction pour effectuer la recherche avec useCallback
   const performSearch = useCallback(async (query: string) => {
@@ -170,7 +182,6 @@ function SearchPageContent() {
             results={results}
             isLoading={isLoading}
             messages={messages}
-            streamingContent={messages}
             news={news}
             showNews={isLoading || showNews}
             videos={videos}
@@ -180,6 +191,8 @@ function SearchPageContent() {
             youtubeVideos={youtubeVideos}
             showYouTube={isLoading || showYouTube}
             onQuestionClick={handleSearch}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
           />
         </div>
 

@@ -41,6 +41,7 @@ interface SearchResultTabsProps {
   youtubeVideos?: YouTubeVideoItem[];
   showYouTube?: boolean;
   onQuestionClick?: (query: string) => void;
+  activeTab?: string;
 }
 
 export function SearchResultTabs({
@@ -58,8 +59,9 @@ export function SearchResultTabs({
   youtubeVideos = [],
   showYouTube = false,
   onQuestionClick,
+  activeTab = "response",
 }: SearchResultTabsProps) {
-  const [activeTab, setActiveTab] = useState("response");
+  const [localActiveTab, setLocalActiveTab] = useState(activeTab);
 
   // États pour les vidéos YouTube
   const [youtubeLoaded, setYoutubeLoaded] = useState(false);
@@ -93,6 +95,11 @@ export function SearchResultTabs({
     }
   }, [youtubeVideos, showYouTube]);
 
+  // Mettre à jour l'onglet local si la prop activeTab change
+  useEffect(() => {
+    setLocalActiveTab(activeTab);
+  }, [activeTab]);
+
   // Fonction pour charger les vidéos YouTube
   const loadYouTubeVideos = useCallback(async () => {
     if (!currentQuery || loadingYoutube || youtubeLoaded) return;
@@ -120,7 +127,7 @@ export function SearchResultTabs({
   // Gérer le changement d'onglet
   const handleTabChange = useCallback(
     (tab: string) => {
-      setActiveTab(tab);
+      setLocalActiveTab(tab);
 
       // Si on active l'onglet YouTube et que les vidéos n'ont pas encore été chargées
       if (tab === "youtube" && !youtubeLoaded && !loadingYoutube) {
@@ -163,7 +170,7 @@ export function SearchResultTabs({
   return (
     <Tabs
       defaultValue="response"
-      value={activeTab}
+      value={localActiveTab}
       onValueChange={handleTabChange}
       className="w-full"
     >
@@ -176,7 +183,7 @@ export function SearchResultTabs({
           <span>IA</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
-            data-state={activeTab === "response" ? "active" : "inactive"}
+            data-state={localActiveTab === "response" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
         <TabsTrigger
@@ -187,7 +194,7 @@ export function SearchResultTabs({
           <span>Réponse</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
-            data-state={activeTab === "answer" ? "active" : "inactive"}
+            data-state={localActiveTab === "answer" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
         <TabsTrigger
@@ -203,7 +210,7 @@ export function SearchResultTabs({
           )}
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
-            data-state={activeTab === "sources" ? "active" : "inactive"}
+            data-state={localActiveTab === "sources" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
         <TabsTrigger
@@ -214,7 +221,7 @@ export function SearchResultTabs({
           <span>YouTube</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
-            data-state={activeTab === "youtube" ? "active" : "inactive"}
+            data-state={localActiveTab === "youtube" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
         <TabsTrigger
@@ -278,7 +285,7 @@ export function SearchResultTabs({
           <SourcesComponent
             results={results}
             isLoading={isLoading}
-            onShowAll={() => setActiveTab("sources")}
+            onShowAll={() => setLocalActiveTab("sources")}
           />
 
           <LLMResponse
