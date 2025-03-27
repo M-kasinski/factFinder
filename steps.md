@@ -714,3 +714,21 @@
 - [x] Amélioration de l'esthétique générale des cartes avec des coins plus arrondis
 - [x] Uniformisation du style de border-radius à travers toute l'application
 - [x] Création d'une cohérence visuelle plus forte entre tous les éléments de l'interface
+
+## Amélioration de l'affichage des sources sur desktop et mobile (2023-06-04)
+- [x] Correction de l'affichage des sources pour supprimer la duplication de contenu
+- [x] Utilisation d'une grille responsive sur desktop avec 3-4 colonnes selon la taille d'écran
+- [x] Conservation du défilement horizontal sur mobile uniquement avec snap-points
+- [x] Optimisation du code en supprimant les blocs redondants
+- [x] Amélioration de la visibilité des sources sur desktop, sans défilement horizontal
+- [x] Utilisation de classes conditionnelles `hidden sm:grid` et `sm:hidden flex` pour gérer responsivité
+- [x] Maintien de la largeur fixe des cartes sur mobile pour une meilleure expérience tactile
+- [x] Préservation du bouton "voir plus" dans les deux modes d'affichage
+
+## Améliorations de l'affichage des sources pour une meilleure lisibilité (2023-06-04)
+- [x] Réduction de la largeur des cartes sur mobile de 250px à 200px pour un meilleur aperçu
+- [x] Passage du titre des sources de `truncate` à `line-clamp-2` pour afficher deux lignes avec ellipsis
+- [x] Amélioration de la lisibilité des titres en permettant plus de contenu visible
+- [x] Adaptation du composant pour une densité d'information optimale sur les petits écrans
+- [x] Conservation de l'effet de défilement fluide avec snap-points sur mobile
+- [x] Optimisation de l'espace disponible sans surcharger visuellement l'interface

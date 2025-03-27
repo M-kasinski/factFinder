@@ -56,7 +56,7 @@ const SourceCard = React.memo(({ source, cardClasses }: { source: SearchResult, 
             <SourceFavicon source={source} />
           </div>
           <div className="min-w-0 flex-1 flex flex-col justify-between h-full mt-1">
-            <h3 className="text-xs font-medium truncate leading-tight">
+            <h3 className="text-xs font-medium line-clamp-2 leading-tight">
               {source.title}
             </h3>
             <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-1">
@@ -220,9 +220,27 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
       </div>
 
       <div className="w-full">
-        <div className="flex overflow-x-auto pb-2 gap-3 snap-x snap-mandatory no-scrollbar">
+        <div className="hidden sm:grid sm:grid-cols-3 md:grid-cols-4 gap-3">
           {visibleSources.map((source) => (
-            <div key={source.url} className="flex-shrink-0 w-[250px] snap-start">
+            <SourceCard
+              key={source.url}
+              source={source}
+              cardClasses={cardClasses}
+            />
+          ))}
+
+          {hiddenSources.length > 0 && (
+            <MoreSourcesCard
+              hiddenSources={hiddenSources}
+              cardClasses={cardClasses}
+              onShowAll={handleShowMore}
+            />
+          )}
+        </div>
+        
+        <div className="sm:hidden flex overflow-x-auto pb-2 gap-3 snap-x snap-mandatory no-scrollbar">
+          {visibleSources.map((source) => (
+            <div key={source.url} className="flex-shrink-0 w-[200px] snap-start">
               <SourceCard 
                 source={source} 
                 cardClasses={cardClasses} 
@@ -231,7 +249,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
           ))}
 
           {hiddenSources.length > 0 && (
-            <div className="flex-shrink-0 w-[250px] snap-start">
+            <div className="flex-shrink-0 w-[200px] snap-start">
               <MoreSourcesCard 
                 hiddenSources={hiddenSources}
                 cardClasses={cardClasses}
