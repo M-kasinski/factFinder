@@ -698,3 +698,19 @@
 - [x] Réduction des espacements entre les résultats de recherche dans l'onglet Sources pour une densité d'information optimale
 - [x] Simplification de la structure des conteneurs pour éliminer les propriétés redondantes
 - [x] Amélioration générale de la cohérence visuelle entre tous les éléments de l'interface
+
+## Harmonisation visuelle entre les composants RelatedQuestions et AnalysisHighlights (2023-06-04)
+- [x] Application du même style de fond et de bordure au composant RelatedQuestions que celui utilisé dans AnalysisHighlights
+- [x] Remplacement de la bordure standard par `border-primary/10 hover:border-primary/20` pour une cohérence visuelle
+- [x] Utilisation de `bg-card/90 backdrop-blur-sm` pour l'effet de transparence et de flou d'arrière-plan
+- [x] Harmonisation des transitions avec `duration-300` pour des animations fluides
+- [x] Amélioration de l'effet de survol avec une transition vers `bg-card` identique à AnalysisHighlights
+- [x] Création d'une identité visuelle cohérente à travers toute l'application
+- [x] Standardisation des effets de transparence et de flou pour une expérience utilisateur harmonieuse
+
+## Amélioration des coins arrondis pour une meilleure cohérence visuelle (2023-06-04)
+- [x] Passage de `rounded-md` à `rounded-lg` dans le composant RelatedQuestions pour harmoniser avec AnalysisHighlights
+- [x] Ajout de `overflow-hidden` pour garantir que les coins arrondis s'appliquent correctement au contenu
+- [x] Amélioration de l'esthétique générale des cartes avec des coins plus arrondis
+- [x] Uniformisation du style de border-radius à travers toute l'application
+- [x] Création d'une cohérence visuelle plus forte entre tous les éléments de l'interface

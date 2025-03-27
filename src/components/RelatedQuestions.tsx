@@ -67,14 +67,14 @@ export function RelatedQuestions({ questions, isVisible, onQuestionClick }: Rela
           <motion.div key={index} variants={item}>
             <div 
               className={cn(
-                "border rounded-md",
-                "border-input hover:border-primary/30 transition-colors"
+                "border rounded-lg overflow-hidden",
+                "border-primary/10 hover:border-primary/20 transition-all duration-300"
               )}
             >
               <button
                 className={cn(
                   "w-full px-4 py-3 flex justify-between items-start text-left", 
-                  "bg-background hover:bg-primary/5 transition-colors"
+                  "bg-card/90 backdrop-blur-sm hover:bg-card transition-all duration-300"
                 )}
                 onClick={() => onQuestionClick(question)}
               >

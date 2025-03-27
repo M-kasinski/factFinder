@@ -3,4 +3,5 @@ le gestionnaire de paquets est pnpm
 l'objectif est de créer un moteur de recherche avec un LLM et des sources Web en Next.js App Router + shadcn/ui + Tailwind.
 
 il faut toujours allimenter l'historique de création pour suivre chaque étape de la création du projet. 
- - Crééer ou allimenter le fichier à la racine du projet avec le nom de l'étape de la création du projet. nom du fichier: steps.md
+ - Créer ou allimenter le fichier à la racine du projet avec le nom de l'étape de la création du projet. nom du fichier: steps.md
+ - ne pas lancer de "pnpm dev" car l'app tourne avec un hot reload avec Next
