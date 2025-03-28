@@ -80,7 +80,7 @@ const arePropsEqual = (prevProps: SerpLinkProps, nextProps: SerpLinkProps) => {
   return (
     prevProps.title === nextProps.title &&
     prevProps.url === nextProps.url &&
-    prevProps.date === nextProps.date &&
+    // prevProps.date === nextProps.date && // Supprimé car date n'est plus utilisé
     prevProps.description === nextProps.description &&
     prevProps.meta_url?.favicon === nextProps.meta_url?.favicon &&
     prevProps.profile?.name === nextProps.profile?.name &&
@@ -88,32 +88,54 @@ const arePropsEqual = (prevProps: SerpLinkProps, nextProps: SerpLinkProps) => {
   );
 };
 
+// Fonction pour formater l'URL en breadcrumb
+const formatUrlAsBreadcrumb = (url: string) => {
+  try {
+    const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split('/').filter(part => part !== '');
+    // Affiche le nom d'hôte et les parties du chemin
+    return `${parsedUrl.hostname} ${pathParts.length > 0 ? '› ' + pathParts.join(' › ') : ''}`;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) { 
+    // Retourne l'URL telle quelle si elle est invalide
+    return url;
+  }
+};
+
 // Composant principal SerpLink mémorisé
-const SerpLinkComponent = ({ title, date, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) => {
+// Supprimer 'date' de la déstructuration des props
+const SerpLinkComponent = ({ title, url, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) => {
+  // Utilise la fonction pour formater l'URL
+  const breadcrumbUrl = formatUrlAsBreadcrumb(url);
+
   return (
-    <div 
-      onClick={onClick}
-      className="max-w-2xl w-full p-3 rounded-lg"
+    // Remplacer div par a et ajouter href, target, rel
+    <a 
+      href={url}
+      target="_blank" // Ouvre dans un nouvel onglet
+      rel="noopener noreferrer" // Pour la sécurité
+      onClick={onClick} // Garde le onClick s'il a une fonction spécifique
+      className="block max-w-2xl w-full p-3 rounded-lg hover:bg-muted/50 transition-colors duration-150" // Ajout de block et styles de survol
     >
       <div className="flex items-start gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="flex items-center gap-2 min-w-0">
-              {meta_url?.favicon && (
-                <Favicon favicon={meta_url.favicon} profileName={profile?.name || ""} />
-              )}
-              {profile?.name}
+          {/* Section Profile Name (si présent) - Favicon et Date supprimés */}
+          {profile?.name && (
+            <div className="text-sm mb-1"> 
+              {profile.name}
             </div>
-            {date && (
-              <>
-                <span className="text-muted-foreground/60 flex-shrink-0">-</span>
-                <span className="text-muted-foreground flex-shrink-0">{date}</span>
-              </>
+          )}
+
+          {/* Breadcrumb URL avec Favicon */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground truncate mt-1">
+            {meta_url?.favicon && (
+              <Favicon favicon={meta_url.favicon} profileName={profile?.name || ""} />
             )}
+            <span>{breadcrumbUrl}</span> {/* Envelopper le texte dans un span pour un meilleur alignement */}
           </div>
 
           {/* Title */}
-          <h3 className="text-xl text-primary hover:underline mt-1 font-normal line-clamp-2">
+          <h3 className="text-lg text-primary hover:underline mt-1 font-medium line-clamp-2"> {/* Taille ajustée et poids de police */}
             {title}
           </h3>
 
@@ -128,9 +150,9 @@ const SerpLinkComponent = ({ title, date, description, onClick, meta_url, profil
           <Thumbnail src={thumbnail.src} title={title} />
         )}
       </div>
-    </div>
+    </a> // Ajout de la balise fermante <a> ici
   );
 };
 
 // Export du composant mémorisé
-export const SerpLink = memo(SerpLinkComponent, arePropsEqual); 
+export const SerpLink = memo(SerpLinkComponent, arePropsEqual);
