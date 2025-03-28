@@ -9,10 +9,11 @@ export function Footer() {
           <Heart className="h-4 w-4 mx-1 text-red-500 fill-red-500 animate-pulse" />
           <span>parce que vous méritez une recherche claire et transparente</span>
         </div>
-        <div className="text-sm text-muted-foreground mt-1 md:mt-0">
-          © 2025 ClaireVue
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1 md:mt-0">
+          <a href="/cgu" className="hover:underline">CGU</a> 
+          <span>© 2025 ClaireVue</span>
         </div>
       </div>
     </footer>
   );
-} 
+}

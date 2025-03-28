@@ -65,16 +65,16 @@ export function RelatedQuestions({ questions, isVisible, onQuestionClick }: Rela
       <div className="grid gap-3 w-full">
         {questions.map((question, index) => (
           <motion.div key={index} variants={item}>
+            {/* Appliquer les styles de la carte principale d'AnalysisHighlights */}
             <div 
               className={cn(
-                "border rounded-md",
-                "border-input hover:border-primary/30 transition-colors"
+                "rounded-md border border-primary/10 hover:border-primary/20 transition-all duration-300 overflow-hidden" // Ajout de overflow-hidden pour le backdrop-blur
               )}
             >
               <button
                 className={cn(
                   "w-full px-4 py-3 flex justify-between items-start text-left", 
-                  "bg-background hover:bg-primary/5 transition-colors"
+                  "bg-card/90 backdrop-blur-sm hover:bg-card transition-all duration-300" // Styles de fond et de survol mis à jour
                 )}
                 onClick={() => onQuestionClick(question)}
               >
@@ -91,4 +91,4 @@ export function RelatedQuestions({ questions, isVisible, onQuestionClick }: Rela
       </div>
     </motion.div>
   );
-} 
+}

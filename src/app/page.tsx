@@ -51,7 +51,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-5 w-full max-w-5xl mx-auto animate-fade-in-up delay-200 px-2 md:px-4 pb-10">
-            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 flex flex-col">
+            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-[0_0_15px_#4B9FFF4D] hover:scale-[1.02] transition-all duration-300 flex flex-col">
               <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
                 <div className="p-2.5 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                   <Eye className="h-5 w-5 md:h-6 md:w-6" />
@@ -65,7 +65,7 @@ export default function Home() {
               </p>
             </div>
             
-            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 flex flex-col">
+            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-[0_0_15px_#4B9FFF4D] hover:scale-[1.02] transition-all duration-300 flex flex-col">
               <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
                 <div className="p-2.5 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                   <Shield className="h-5 w-5 md:h-6 md:w-6" />
@@ -79,7 +79,7 @@ export default function Home() {
               </p>
             </div>
             
-            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 flex flex-col">
+            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-[0_0_15px_#4B9FFF4D] hover:scale-[1.02] transition-all duration-300 flex flex-col">
               <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
                 <div className="p-2.5 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                   <BarChart className="h-5 w-5 md:h-6 md:w-6" />
@@ -99,14 +99,14 @@ export default function Home() {
           className="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl"
           aria-hidden="true"
         >
-          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
+          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
         </div>
 
         <div
           className="absolute inset-x-0 bottom-0 -z-10 transform-gpu overflow-hidden blur-3xl"
           aria-hidden="true"
         >
-          <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" />
+          <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" />
         </div>
       </div>
     </div>
