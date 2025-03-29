@@ -6,9 +6,13 @@ import { searchWithBrave } from "@/lib/services/braveSearch";
 import { createYouTubeService } from "@/lib/services/youtube/youtubeService";
 import { createStreamableValue } from "ai/rsc";
 import {
-  streamLLMResponse,
-  generateRelatedQuestions,
+  streamLLMResponse as streamCerebrasLLMResponse,
+  generateRelatedQuestions as generateCerebrasRelatedQuestions,
 } from "@/lib/services/cerebrasLLM";
+import {
+  streamLLMResponse as streamGeminiLLMResponse,
+  generateRelatedQuestions as generateGeminiRelatedQuestions,
+} from "@/lib/services/geminiLLM";
 
 /**
  * Type pour les résultats de recherche
@@ -71,6 +75,125 @@ export async function fetchYouTubeResults(query: string) {
 }
 
 /**
+ * Fonction pour récupérer les résultats de recherche avec streaming en utilisant Gemini
+ */
+export async function fetchGeminiLLMResponse(query: string) {
+  // Créer un streamable value avec un état initial
+  const streamable = createStreamableValue<SearchResults>({
+    results: [],
+    messages: "",
+    videos: [],
+    showVideos: false,
+    news: [],
+    showNews: false,
+    relatedQuestions: [],
+    showRelated: false,
+    youtubeVideos: [],
+    showYouTube: false,
+  });
+
+  // Lancer la recherche en arrière-plan
+  (async () => {
+    try {
+      // Appel au service de recherche principal seulement
+      const searchResponse = await searchWithBrave(query);
+      
+      const searchResults = searchResponse.results;
+      const videoResults = searchResponse.videos || [];
+      const newsResults = searchResponse.news || [];
+      
+      // Pas de chargement des vidéos YouTube initialement
+      const youtubeVideos: YouTubeVideoItem[] = [];
+
+      // Mettre à jour le streamable avec les résultats de recherche initiaux
+      streamable.update({
+        results: searchResults,
+        messages: "",
+        videos: videoResults, // Afficher les vidéos Brave si disponibles
+        showVideos: videoResults.length > 0,
+        news: newsResults, // Afficher les news Brave si disponibles
+        showNews: newsResults.length > 0,
+        relatedQuestions: [],
+        showRelated: false,
+        youtubeVideos,
+        showYouTube: false, // YouTube non chargé initialement
+      });
+
+      // Utiliser la version streaming du LLM Gemini
+      const llmStream = streamGeminiLLMResponse(query, searchResults);
+
+      // Variable pour accumuler le texte généré
+      let accumulatedText = "";
+
+      // Lire le stream chunk par chunk
+      const reader = llmStream.textStream.getReader();
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            break;
+          }
+
+          // Accumuler le texte
+          accumulatedText += value;
+
+          // Mettre à jour le streamable avec le texte accumulé
+          streamable.update({
+            results: searchResults,
+            messages: accumulatedText,
+            videos: videoResults,
+            showVideos: videoResults.length > 0,
+            news: newsResults,
+            showNews: newsResults.length > 0,
+            relatedQuestions: [],
+            showRelated: false,
+            youtubeVideos,
+            showYouTube: false,
+          });
+        }
+
+        // Générer des questions connexes une fois que le LLM Gemini a terminé
+        const relatedQuestions = await generateGeminiRelatedQuestions(
+          query,
+          accumulatedText
+        );
+
+        // Marquer le streamable comme terminé avec toutes les données
+        streamable.done({
+          results: searchResults,
+          messages: accumulatedText,
+          videos: videoResults,
+          showVideos: videoResults.length > 0,
+          news: newsResults,
+          showNews: newsResults.length > 0,
+          relatedQuestions,
+          showRelated: relatedQuestions.length > 0,
+          youtubeVideos,
+          showYouTube: false, // Toujours false ici car non chargé
+        });
+      } catch (readerError) {
+        console.error("Error reading Gemini LLM stream:", readerError);
+        streamable.error(
+          readerError instanceof Error
+            ? readerError
+            : new Error("Erreur lors de la lecture du stream LLM Gemini")
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching Gemini search results:", error);
+      streamable.error(
+        error instanceof Error ? error : new Error("Une erreur est survenue lors de la recherche Gemini")
+      );
+    }
+  })();
+
+  // Retourner la valeur streamable
+  return streamable.value;
+}
+
+/**
  * Fonction pour récupérer les résultats de recherche avec streaming
  */
 export async function fetchSearchResults(query: string) {
@@ -115,8 +238,8 @@ export async function fetchSearchResults(query: string) {
         showYouTube: youtubeVideos.length > 0,
       });
 
-      // Utiliser la version streaming du LLM
-      const llmStream = streamLLMResponse(query, searchResults);
+      // Utiliser la version streaming du LLM Cerebras
+      const llmStream = streamCerebrasLLMResponse(query, searchResults);
 
       // Variable pour accumuler le texte généré
       let accumulatedText = "";
@@ -150,8 +273,8 @@ export async function fetchSearchResults(query: string) {
           });
         }
 
-        // Générer des questions connexes une fois que le LLM a terminé
-        const relatedQuestions = await generateRelatedQuestions(
+        // Générer des questions connexes une fois que le LLM Cerebras a terminé
+        const relatedQuestions = await generateCerebrasRelatedQuestions(
           query,
           accumulatedText
         );

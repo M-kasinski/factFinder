@@ -720,3 +720,9 @@
 - [x] Conservation de la même logique d'analyse pour déterminer l'onglet approprié
 - [x] Amélioration de l'expérience utilisateur en adaptant automatiquement l'onglet actif à chaque nouvelle recherche
 - [x] Optimisation du code pour une meilleure lisibilité et maintenance
+
+## Étape : Correction de l'intégration Gemini (2025-03-04)
+- [x] Correction des problèmes de compatibilité de types avec @ai-sdk/google
+- [x] Migration vers le modèle gemini-pro pour une meilleure stabilité
+- [x] Mise à jour des commentaires et de la documentation
+- [x] Optimisation du code pour une meilleure maintenabilité
