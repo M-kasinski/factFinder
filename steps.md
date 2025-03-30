@@ -726,3 +726,14 @@
 - [x] Migration vers le modèle gemini-pro pour une meilleure stabilité
 - [x] Mise à jour des commentaires et de la documentation
 - [x] Optimisation du code pour une meilleure maintenabilité
+
+## Étape : Implémentation de l'internationalisation avec i18next (2025-03-30)
+- [x] Installation des packages i18next, react-i18next, i18next-http-backend et i18next-browser-languagedetector
+- [x] Création de la structure des fichiers de traduction dans public/locales/
+- [x] Configuration du client i18next avec support navigateur et détection automatique de la langue
+- [x] Création d'un composant I18nProvider pour gérer l'internationalisation
+- [x] Correction des problèmes d'hydratation SSR/CSR avec stratégie de rendu conditionnel
+- [x] Mise en place d'une API route pour servir les fichiers de traduction
+- [x] Implémentation d'un ClientLayout pour éviter les erreurs d'hydratation des composants avec textes traduits
+- [x] Restructuration de l'initialisation i18next pour éviter l'exécution côté serveur
+- [x] Amélioration des composants pour utiliser les traductions avec useTranslation hook
