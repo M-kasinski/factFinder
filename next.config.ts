@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Note: Next.js 13+ utilise le routage basé sur l'app directory
+  // Donc la configuration i18n est gérée différemment par notre code
 };
 
 export default nextConfig;

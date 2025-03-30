@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Search, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -9,26 +10,15 @@ interface SearchBarProps {
   onChange: (value: string) => void;
 }
 
-// const suggestions = [
-//   "Actualités UE",
-//   "Politique européenne",
-//   "Commission européenne",
-//   "Parlement européen"
-// ];
-
 export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation("common");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(value);
   };
-
-  // const handleSuggestionClick = (suggestion: string) => {
-  //   setQuery(suggestion);
-  //   onSearch(suggestion);
-  // };
 
   return (
     <div className="w-full">
@@ -47,7 +37,7 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             className="w-full py-3.5 md:py-4.5 pl-5 md:pl-6 pr-20 md:pr-24 rounded-full focus:outline-none text-lg md:text-xl bg-transparent"
-            placeholder="Recherchez avec clarté..."
+            placeholder={t("searchPlaceholder")}
           />
 
           <div className="absolute inset-y-0 right-1.5 md:right-2.5 flex items-center space-x-1.5 md:space-x-2.5">
@@ -60,7 +50,7 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
                   // Mettre le focus sur l'input après avoir effacé
                   setTimeout(() => inputRef.current?.focus(), 0);
                 }}
-                aria-label="Effacer la recherche"
+                aria-label={t("clearSearch")}
               >
                 <X className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </button>
@@ -68,32 +58,13 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
             <button 
               type="submit"
               className="p-2 md:p-2.5 hover:bg-primary/10 rounded-full transition-colors"
-              aria-label="Rechercher"
+              aria-label={t("search")}
             >
               <Search className="h-5 w-5 md:h-6 md:w-6 text-primary/80 hover:text-primary transition-colors" />
             </button>
           </div>
         </div>
       </form>
-
-      {/* Suggestions */}
-      {/* {isFocused && query && (
-        <div className="absolute mt-2 w-full bg-background rounded-lg shadow-lg border border-border overflow-hidden z-50">
-          {suggestions
-            .filter(s => s.toLowerCase().includes(query.toLowerCase()))
-            .map((suggestion, index) => (
-              <div
-                key={index}
-                className="px-4 py-3 hover:bg-accent cursor-pointer flex items-center"
-                onClick={() => handleSuggestionClick(suggestion)}
-              >
-                <Search className="h-4 w-4 text-muted-foreground mr-3" />
-                <span>{suggestion}</span>
-              </div>
-            ))
-          }
-        </div>
-      )} */}
     </div>
   );
-} 
+}

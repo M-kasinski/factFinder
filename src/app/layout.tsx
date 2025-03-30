@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Footer } from "@/components/Footer";
 import { Analytics } from '@vercel/analytics/next';
+import I18nProvider from "@/i18n/I18nProvider";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -35,12 +36,14 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="flex-1 flex flex-col w-full">    
-            {children}
-            <Analytics />
-          </main>
-          <Footer />
-          <Toaster richColors closeButton position="top-center" />
+          <I18nProvider>
+            <main className="flex-1 flex flex-col w-full">    
+              {children}
+              <Analytics />
+            </main>
+            <Footer />
+            <Toaster richColors closeButton position="top-center" />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

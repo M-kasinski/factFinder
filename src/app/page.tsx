@@ -1,25 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
 import { Eye, Shield, BarChart } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
+import "../i18n"; // Import de la configuration i18n
 
 export default function Home() {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
+  const { t } = useTranslation(["common", "home"]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ce useEffect est nécessaire pour éviter les erreurs d'hydratation avec Next.js
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSearch = (query: string) => {
     if (!query.trim()) return;
     router.push(`/search?q=${encodeURIComponent(query)}`);
   };
 
+  // Retourner un chargement minimal pendant l'hydratation côté client
+  if (!isClient) {
+    return <div className="flex-1 flex flex-col"></div>;
+  }
+
   return (
     <div className="flex-1 flex flex-col">
       <div className="container relative flex-1 mx-auto px-4 pb-8 md:pb-16">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center space-x-2">
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
 
@@ -38,7 +54,7 @@ export default function Home() {
               />
             </div>
             <p className="text-lg md:text-2xl font-semibold text-primary/90 max-w-[600px] mx-auto animate-fade-in-up px-2 md:px-4">
-            La clarté à chaque recherche
+              {t("home:slogan")}
             </p>
           </div>
 
@@ -57,11 +73,11 @@ export default function Home() {
                   <Eye className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
                 <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  Vision claire
+                  {t("home:features.clearVision.title")}
                 </h3>
               </div>
               <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-              Trouvez ce que vous cherchez, clairement et rapidement
+                {t("home:features.clearVision.description")}
               </p>
             </div>
             
@@ -71,11 +87,11 @@ export default function Home() {
                   <Shield className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
                 <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  Sources vérifiées
+                  {t("home:features.verifiedSources.title")}
                 </h3>
               </div>
               <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-              Fiez-vous à des sources fiables et impartiales
+                {t("home:features.verifiedSources.description")}
               </p>
             </div>
             
@@ -85,11 +101,11 @@ export default function Home() {
                   <BarChart className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
                 <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  Analyse intelligente
+                  {t("home:features.smartAnalysis.title")}
                 </h3>
               </div>
               <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                Informations synthétisées et contextualisées pour des décisions éclairées.
+                {t("home:features.smartAnalysis.description")}
               </p>
             </div>
           </div>

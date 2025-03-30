@@ -1,0 +1,17 @@
+{
+  "slogan": "Clarity in every search",
+  "features": {
+    "clearVision": {
+      "title": "Clear Vision",
+      "description": "Find what you're looking for, clearly and quickly"
+    },
+    "verifiedSources": {
+      "title": "Verified Sources",
+      "description": "Rely on trustworthy and impartial sources"
+    },
+    "smartAnalysis": {
+      "title": "Smart Analysis",
+      "description": "Synthesized and contextualized information for informed decisions"
+    }
+  }
+}
