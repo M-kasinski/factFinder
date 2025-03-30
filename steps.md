@@ -737,3 +737,26 @@
 - [x] Implémentation d'un ClientLayout pour éviter les erreurs d'hydratation des composants avec textes traduits
 - [x] Restructuration de l'initialisation i18next pour éviter l'exécution côté serveur
 - [x] Amélioration des composants pour utiliser les traductions avec useTranslation hook
+
+## Étape : Internationalisation progressive des composants (2025-03-30)
+- [x] Enrichissement des fichiers de traduction JSON avec de nouvelles clés
+- [x] Ajout des traductions pour les onglets dans SearchResultTabs
+- [x] Intégration des traductions dans le composant SerpLink
+- [x] Ajout du support i18n dans SourcesComponent pour les libellés
+- [x] Internationalisation du composant LLMResponse
+- [x] Traduction des boutons et messages dans RelatedQuestions
+- [x] Organisation des traductions par sections (footer, tabs, results, etc.)
+- [x] Maintien de la structure de code propre avec imports correctement organisés
+- [x] Tests et vérification du bon fonctionnement sur différentes langues
+- [x] Correction des derniers problèmes d'hydratation
+
+## Étape : Internationalisation complète de l'interface (2025-03-30)
+- [x] Ajout de traductions pour le composant VideoCarousel
+- [x] Internationalisation du composant NewsHighlights
+- [x] Traduction des textes dans le composant AnalysisHighlights
+- [x] Ajout de traductions pour les messages concernant les résultats
+- [x] Organisation des fichiers de traduction en sections thématiques
+- [x] Implémentation de la substitution de variables dans les traductions
+- [x] Optimisation des composants pour éviter les traductions inutiles
+- [x] Vérification de la cohérence des traductions entre les composants
+- [x] Documentation des clés de traduction et de leur utilisation

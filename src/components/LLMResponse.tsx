@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Lightbulb } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface LLMResponseProps {
   isLoading: boolean;
@@ -17,6 +18,8 @@ export function LLMResponse({
   onShowResults,
   streamingContent = ""
 }: LLMResponseProps) {
+  const { t } = useTranslation("common");
+  
   // Si aucune recherche n'a été initiée (ni chargement ni contenu), ne rien afficher
   if (!streamingContent && !isLoading) return null;
   
@@ -33,7 +36,7 @@ export function LLMResponse({
             <Lightbulb className="h-4 w-4" />
           </div>
           <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-            Analyse
+            {t("tabs.answer")}
           </span>
         </h2>
         {onShowResults && (
@@ -44,7 +47,7 @@ export function LLMResponse({
             className="border-primary/20 hover:bg-primary/5 hover:text-primary transition-all duration-300"
           >
             <Search className="h-4 w-4 mr-2" />
-            Voir les sources
+            {t("results.viewMore")}
           </Button>
         )}
       </div>
@@ -66,7 +69,7 @@ export function LLMResponse({
               <ReactMarkdown>{streamingContent}</ReactMarkdown>
             ) : (
               <div className="h-full w-full flex items-center justify-center text-primary/60 text-sm">
-                Génération de l&apos;analyse en cours...
+                {t("generating")}
               </div>
             )}
           </div>

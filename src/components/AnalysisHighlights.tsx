@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SearchResult } from "@/types/search";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AnalysisHighlightsProps {
   isLoading: boolean;
@@ -108,6 +109,8 @@ const MainArticle = ({ article, isLoading, streamingContent }: {
   isLoading: boolean;
   streamingContent?: string;
 }) => {
+  const { t } = useTranslation("common");
+  
   if (!article || !article.thumbnail?.src) return null;
   
   return (
@@ -128,7 +131,7 @@ const MainArticle = ({ article, isLoading, streamingContent }: {
                 <ReactMarkdown>{streamingContent}</ReactMarkdown>
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-primary/60 text-sm">
-                  Génération de l&apos;analyse en cours...
+                  {t("generating")}
                 </div>
               )}
             </div>
@@ -136,7 +139,7 @@ const MainArticle = ({ article, isLoading, streamingContent }: {
             <div className="absolute bottom-0 left-0">
               <div className="bg-gradient-to-r from-primary to-primary/80 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 shadow-lg backdrop-blur-sm">
                 <Sparkles className="h-3 w-3" />
-                <span>IA</span>
+                <span>{t("analysis.ai")}</span>
               </div>
             </div>
           </div>
@@ -152,7 +155,7 @@ const MainArticle = ({ article, isLoading, streamingContent }: {
                   <p className="mt-1 text-sm opacity-90 line-clamp-2">{article.description}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-xs bg-primary/70 px-2 py-0.5 rounded-full">
-                      {article.meta_url?.hostname || 'Source'}
+                      {article.meta_url?.hostname || t("news.source")}
                     </span>
                     {article.age && (
                       <span className="text-xs opacity-80">{article.age}</span>
@@ -170,6 +173,8 @@ const MainArticle = ({ article, isLoading, streamingContent }: {
 
 // Composant pour les articles secondaires
 const SecondaryArticle = ({ article }: { article: SearchResult }) => {
+  const { t } = useTranslation("common");
+  
   if (!article || !article.thumbnail?.src) return null;
 
   return (
@@ -188,7 +193,7 @@ const SecondaryArticle = ({ article }: { article: SearchResult }) => {
             </p>
             <div className="mt-auto pt-2 flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
-                {article.meta_url?.hostname || 'Source'}
+                {article.meta_url?.hostname || t("news.source")}
               </span>
               {article.age && (
                 <span className="text-xs text-muted-foreground">• {article.age}</span>
@@ -267,6 +272,7 @@ export function AnalysisHighlights({
   streamingContent = "",
   results = []
 }: AnalysisHighlightsProps) {
+  const { t } = useTranslation("common");
   const [showMore, setShowMore] = useState(false);
   
   // Réinitialiser showMore quand les résultats changent
@@ -307,7 +313,7 @@ export function AnalysisHighlights({
             <Lightbulb className="h-4 w-4" />
           </div>
           <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-            Analyse & Résultats
+            {t("analysis.title")}
           </span>
         </h2>
         {onShowResults && (
@@ -318,7 +324,7 @@ export function AnalysisHighlights({
             className="border-primary/20 hover:bg-primary/5 hover:text-primary transition-all duration-300"
           >
             <Search className="h-4 w-4 mr-2" />
-            Voir tous les résultats
+            {t("results.viewAll")}
           </Button>
         )}
       </div>
@@ -347,11 +353,10 @@ export function AnalysisHighlights({
                 className="bg-card/50 hover:bg-card/80 backdrop-blur-sm text-primary/80 hover:text-primary transition-all duration-300"
                 onClick={() => setShowMore(!showMore)}
               >
-                {showMore ? (
-                  <>Voir moins</>
-                ) : (
-                  <>Voir {secondaryArticles.length - 3} résultats supplémentaires</>
-                )}
+                {showMore 
+                  ? t("results.seeLess")
+                  : t("results.seeMore", { count: secondaryArticles.length - 3 })
+                }
               </Button>
             </motion.div>
           )}

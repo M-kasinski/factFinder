@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import type { SearchResult } from "@/types/search";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface SourcesComponentProps {
   results: SearchResult[];
@@ -81,42 +82,46 @@ const MoreSourcesCard = React.memo(({
   hiddenSources: SearchResult[], 
   cardClasses: string, 
   onShowAll: () => void 
-}) => (
-  <Card 
-    className={`${cardClasses} cursor-pointer hover:bg-primary/5 transition-colors`}
-    onClick={onShowAll}
-  >
-    <CardContent className="p-2 h-full">
-      <div className="flex items-start gap-3 h-full">
-        <div className="relative w-5 h-5 flex-shrink-0 mt-1">
-          <div className="absolute inset-0">
-            {hiddenSources.slice(0, 3).map((source, index) => (
-              <div
-                key={source.url}
-                className="absolute w-5 h-5 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center"
-                style={{
-                  left: `${index * 3}px`,
-                  top: `${index * 2}px`,
-                  zIndex: 3 - index,
-                }}
-              >
-                <SourceFavicon source={source} />
-              </div>
-            ))}
+}) => {
+  const { t } = useTranslation("common");
+  
+  return (
+    <Card 
+      className={`${cardClasses} cursor-pointer hover:bg-primary/5 transition-colors`}
+      onClick={onShowAll}
+    >
+      <CardContent className="p-2 h-full">
+        <div className="flex items-start gap-3 h-full">
+          <div className="relative w-5 h-5 flex-shrink-0 mt-1">
+            <div className="absolute inset-0">
+              {hiddenSources.slice(0, 3).map((source, index) => (
+                <div
+                  key={source.url}
+                  className="absolute w-5 h-5 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center"
+                  style={{
+                    left: `${index * 3}px`,
+                    top: `${index * 2}px`,
+                    zIndex: 3 - index,
+                  }}
+                >
+                  <SourceFavicon source={source} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            <p className="text-xs font-medium mt-1 text-foreground">
+              +{hiddenSources.length} sources
+            </p>
+            <p className="text-[10px] text-primary/70">
+              {t("results.viewMore")}
+            </p>
           </div>
         </div>
-        <div className="flex-1 min-w-0 flex flex-col justify-center">
-          <p className="text-xs font-medium mt-1 text-foreground">
-            +{hiddenSources.length} sources
-          </p>
-          <p className="text-[10px] text-primary/70">
-            Voir tous les résultats
-          </p>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-));
+      </CardContent>
+    </Card>
+  );
+});
 MoreSourcesCard.displayName = 'MoreSourcesCard';
 
 // Skeleton loader pour les sources
@@ -158,6 +163,8 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   onShowAll,
   isLoading = false
 }) => {
+  const { t } = useTranslation("common");
+  
   // Afficher le skeleton loader pendant le chargement
   if (isLoading) {
     return <SourcesSkeleton />;
@@ -204,58 +211,42 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   return (
     <motion.div 
       className="space-y-3"
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.1 }}
     >
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <div className="p-2 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-            <LinkIcon className="h-4 w-4" />
-          </div>
-          <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-            Sources
-          </span>
-        </h2>
-      </div>
-
-      <div className="w-full">
-        <div className="hidden sm:grid sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {visibleSources.map((source) => (
-            <SourceCard
-              key={source.url}
-              source={source}
-              cardClasses={cardClasses}
-            />
-          ))}
-
-          {hiddenSources.length > 0 && (
-            <MoreSourcesCard
-              hiddenSources={hiddenSources}
-              cardClasses={cardClasses}
-              onShowAll={handleShowMore}
-            />
-          )}
+      <div className="flex items-center gap-2">
+        <div className="p-1.5 rounded-full bg-primary/10">
+          <LinkIcon className="h-3.5 w-3.5 text-primary/70" />
         </div>
-        
-        <div className="sm:hidden flex overflow-x-auto pb-2 gap-3 snap-x snap-mandatory no-scrollbar">
-          {visibleSources.map((source) => (
-            <div key={source.url} className="flex-shrink-0 w-[200px] snap-start">
-              <SourceCard 
-                source={source} 
-                cardClasses={cardClasses} 
-              />
-            </div>
+        <h2 className="text-base font-semibold">{t("tabs.sources")}</h2>
+      </div>
+      
+      <div className="w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {visibleSources.map((source, index) => (
+            <motion.div
+              key={source.url}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+            >
+              <SourceCard source={source} cardClasses={cardClasses} />
+            </motion.div>
           ))}
-
+          
           {hiddenSources.length > 0 && (
-            <div className="flex-shrink-0 w-[200px] snap-start">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 + visibleSources.length * 0.05 }}
+            >
               <MoreSourcesCard 
-                hiddenSources={hiddenSources}
-                cardClasses={cardClasses}
-                onShowAll={handleShowMore}
+                hiddenSources={hiddenSources} 
+                cardClasses={cardClasses} 
+                onShowAll={handleShowMore} 
               />
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

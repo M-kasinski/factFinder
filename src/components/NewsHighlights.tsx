@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 interface NewsHighlightsProps {
   news: SearchResult[];
@@ -184,6 +185,8 @@ ScrollNewsImage.displayName = "ScrollNewsImage";
 
 // Composant pour l'article principal
 const MainArticle = React.memo(({ article }: { article: SearchResult }) => {
+  const { t } = useTranslation("common");
+  
   if (!article || !article.thumbnail?.src) return null;
   
   return (
@@ -197,11 +200,9 @@ const MainArticle = React.memo(({ article }: { article: SearchResult }) => {
             <p className="mt-1 text-xs opacity-90 line-clamp-2">{article.description}</p>
             <div className="mt-1 flex items-center gap-2">
               <span className="text-xs bg-primary/70 px-2 py-0.5 rounded-full">
-                {article.meta_url?.hostname || 'Source'}
+                {article.meta_url?.hostname || t("news.source")}
               </span>
-              {article.age && (
-                <span className="text-xs opacity-80">{article.age}</span>
-              )}
+              {article.age && <span className="text-xs opacity-80">{article.age}</span>}
             </div>
           </div>
         </div>
@@ -355,6 +356,8 @@ const MobileView = React.memo(({ displayData }: { displayData: SearchResult[] })
 MobileView.displayName = "MobileView";
 
 function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
+  const { t } = useTranslation("common");
+  
   // Ne rien afficher si le composant ne doit pas être visible ou s'il n'y a pas d'actualités
   if (!isVisible || news.length === 0) return null;
 
@@ -373,46 +376,50 @@ function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
   );
   
   // Placeholder pour le chargement (ghost loading)
-  const LoadingPlaceholder = () => (
-    <div>
-      <div className="flex items-center gap-2">
-        <Newspaper className="h-5 w-5 text-primary/50" />
-        <div className="h-6 w-24 bg-muted-foreground/20 rounded-lg animate-pulse" />
-      </div>
-      
-      {/* Desktop placeholder */}
-      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <MainArticleSkeleton />
-        {[...Array(3)].map((_, index) => (
-          <SecondaryArticleSkeleton key={index} />
-        ))}
-      </div>
-      
-      {/* Mobile placeholder */}
-      <div className="md:hidden mt-4">
-        <ScrollArea className="w-full relative" type="scroll">
-          <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
-            {[...Array(3)].map((_, index) => (
-              <div key={index} className="w-[240px] flex-shrink-0">
-                <div className="h-full">
-                  <div className="overflow-hidden rounded-t-lg">
-                    <div className="aspect-video bg-muted" />
-                  </div>
-                  <div className="p-3 space-y-2 border border-t-0 rounded-b-lg border-muted">
-                    <div className="h-4 bg-muted-foreground/20 rounded-lg w-full" />
-                    <div className="h-3 bg-muted-foreground/10 rounded-lg w-2/3" />
-                    <div className="h-3 bg-muted-foreground/10 rounded-lg w-1/3" />
-                    <div className="h-2" /> {/* Espace supplémentaire pour correspondre à la hauteur du footer */}
+  const LoadingPlaceholder = () => {
+    const { t } = useTranslation("common");
+    
+    return (
+      <div>
+        <div className="flex items-center gap-2">
+          <Newspaper className="h-5 w-5 text-primary/50" />
+          <div className="h-6 w-24 bg-muted-foreground/20 rounded-lg animate-pulse" />
+        </div>
+        
+        {/* Desktop placeholder */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <MainArticleSkeleton />
+          {[...Array(3)].map((_, index) => (
+            <SecondaryArticleSkeleton key={index} />
+          ))}
+        </div>
+        
+        {/* Mobile placeholder */}
+        <div className="md:hidden mt-4">
+          <ScrollArea className="w-full relative" type="scroll">
+            <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="w-[240px] flex-shrink-0">
+                  <div className="h-full">
+                    <div className="overflow-hidden rounded-t-lg">
+                      <div className="aspect-video bg-muted" />
+                    </div>
+                    <div className="p-3 space-y-2 border border-t-0 rounded-b-lg border-muted">
+                      <div className="h-4 bg-muted-foreground/20 rounded-lg w-full" />
+                      <div className="h-3 bg-muted-foreground/10 rounded-lg w-2/3" />
+                      <div className="h-3 bg-muted-foreground/10 rounded-lg w-1/3" />
+                      <div className="h-2" /> {/* Espace supplémentaire pour correspondre à la hauteur du footer */}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" className="opacity-100" />
-        </ScrollArea>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" className="opacity-100" />
+          </ScrollArea>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Afficher le placeholder si les données ne sont pas encore chargées ou si les données ne sont pas valides
   if (allDisplayData.length === 0 || validDisplayData.length === 0) {
@@ -424,8 +431,6 @@ function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
   const mainArticle = displayedItems[0];
   const secondaryArticles = displayedItems.slice(1);
 
-  const sectionTitle = "À la une";
-
   return (
     <motion.div
       className="space-y-3"
@@ -435,7 +440,7 @@ function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
     >
       <div className="flex items-center gap-2">
         <Newspaper className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold">{sectionTitle}</h2>
+        <h2 className="text-lg font-semibold">{t("news.headline")}</h2>
       </div>
 
       <DesktopView mainArticle={mainArticle} secondaryArticles={secondaryArticles} />

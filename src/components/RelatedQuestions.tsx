@@ -1,6 +1,7 @@
 import { HelpCircle, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface RelatedQuestionsProps {
   questions: string[];
@@ -28,6 +29,8 @@ const RelatedQuestionsSkeleton = () => (
 );
 
 export function RelatedQuestions({ questions, isVisible, onQuestionClick }: RelatedQuestionsProps) {
+  const { t } = useTranslation("common");
+  
   if (!isVisible) return null;
   
   // Afficher le skeleton loader si aucune question n'est disponible
@@ -59,7 +62,7 @@ export function RelatedQuestions({ questions, isVisible, onQuestionClick }: Rela
     >
       <div className="flex items-center gap-2">
         <HelpCircle className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold">Questions connexes</h2>
+        <h2 className="text-lg font-semibold">{t("relatedQuestions")}</h2>
       </div>
 
       <div className="grid gap-3 w-full">

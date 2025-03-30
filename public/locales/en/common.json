@@ -8,5 +8,34 @@
     "because": "because you deserve clear and transparent search",
     "termsOfService": "Terms of Service",
     "copyright": "© 2025 ClaireVue"
+  },
+  "results": {
+    "viewSource": "View source",
+    "openInNewTab": "Open in new tab",
+    "viewMore": "View more",
+    "viewLess": "View less",
+    "resultsFound": "{count} results found for your search",
+    "noResults": "No results available",
+    "viewAll": "View all results",
+    "seeMore": "See {count} more results",
+    "seeLess": "See less"
+  },
+  "tabs": {
+    "response": "Response",
+    "sources": "Sources",
+    "answer": "AI",
+    "images": "Images",
+    "videos": "Videos",
+    "news": "News"
+  },
+  "generating": "Generating analysis...",
+  "relatedQuestions": "Related questions",
+  "news": {
+    "headline": "Headlines",
+    "source": "Source"
+  },
+  "analysis": {
+    "title": "Analysis & Results",
+    "ai": "AI"
   }
 }

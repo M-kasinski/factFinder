@@ -8,5 +8,34 @@
     "because": "parce que vous méritez une recherche claire et transparente",
     "termsOfService": "CGU",
     "copyright": "© 2025 ClaireVue"
+  },
+  "results": {
+    "viewSource": "Voir la source",
+    "openInNewTab": "Ouvrir dans un nouvel onglet",
+    "viewMore": "Voir plus",
+    "viewLess": "Voir moins",
+    "resultsFound": "{count} résultats trouvés pour votre recherche",
+    "noResults": "Aucun résultat disponible",
+    "viewAll": "Voir tous les résultats",
+    "seeMore": "Voir {count} résultats supplémentaires",
+    "seeLess": "Voir moins"
+  },
+  "tabs": {
+    "response": "Réponse",
+    "sources": "Sources",
+    "answer": "IA",
+    "images": "Images",
+    "videos": "Vidéos",
+    "news": "Actualités"
+  },
+  "generating": "Génération de l'analyse en cours...",
+  "relatedQuestions": "Questions connexes",
+  "news": {
+    "headline": "À la une",
+    "source": "Source"
+  },
+  "analysis": {
+    "title": "Analyse & Résultats",
+    "ai": "IA"
   }
 }

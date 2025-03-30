@@ -7,7 +7,6 @@ import { fetchYouTubeResults } from "@/app/actions";
 import {
   Lightbulb,
   Link,
-  Search,
   Image,
   Newspaper,
   MessageSquare,
@@ -25,6 +24,7 @@ import { VideoCarousel } from "./VideoCarousel";
 import { RelatedQuestions } from "./RelatedQuestions";
 import YouTubeResults from "./YouTubeResults";
 import { YouTubeVideoItem } from "@/types/youtube";
+import { useTranslation } from "react-i18next";
 
 interface SearchResultTabsProps {
   results: SearchResult[];
@@ -61,6 +61,7 @@ export function SearchResultTabs({
   onQuestionClick,
   activeTab = "response",
 }: SearchResultTabsProps) {
+  const { t } = useTranslation("common");
   const [localActiveTab, setLocalActiveTab] = useState(activeTab);
 
   // États pour les vidéos YouTube
@@ -180,7 +181,7 @@ export function SearchResultTabs({
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
           <Lightbulb className="h-4 w-4" />
-          <span>IA</span>
+          <span>{t("tabs.answer")}</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
             data-state={localActiveTab === "response" ? "active" : "inactive"}
@@ -191,7 +192,7 @@ export function SearchResultTabs({
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
           <MessageSquare className="h-4 w-4" />
-          <span>Réponse</span>
+          <span>{t("tabs.response")}</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
             data-state={localActiveTab === "answer" ? "active" : "inactive"}
@@ -201,12 +202,12 @@ export function SearchResultTabs({
           value="sources"
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
-          <Search className="h-4 w-4" />
-          <span>Sources</span>
+          <Link className="h-4 w-4" />
+          <span>{t("tabs.sources")}</span>
           {sourceCount > 0 && (
-            <span className="ml-1 text-xs text-muted-foreground">
-              ({sourceCount})
-            </span>
+            <div className="ml-1 flex items-center justify-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+              {sourceCount}
+            </div>
           )}
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
@@ -214,32 +215,40 @@ export function SearchResultTabs({
           ></div>
         </TabsTrigger>
         <TabsTrigger
-          value="youtube"
+          value="images"
+          disabled
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
-          <VideoIcon className="h-4 w-4" />
-          <span>YouTube</span>
+          <Image className="h-4 w-4" />
+          <span>{t("tabs.images")}</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
-            data-state={localActiveTab === "youtube" ? "active" : "inactive"}
+            data-state={localActiveTab === "images" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
         <TabsTrigger
-          value="images"
-          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none opacity-60 cursor-not-allowed pointer-events-none"
-          disabled
+          value="videos"
+          disabled={!showVideos && !showYouTube}
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
-          <Image className="h-4 w-4" />
-          <span>Images</span>
+          <VideoIcon className="h-4 w-4" />
+          <span>{t("tabs.videos")}</span>
+          <div
+            className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
+            data-state={localActiveTab === "videos" ? "active" : "inactive"}
+          ></div>
         </TabsTrigger>
-
         <TabsTrigger
           value="news"
-          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none opacity-60 cursor-not-allowed pointer-events-none"
-          disabled
+          disabled={!showNews}
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
         >
           <Newspaper className="h-4 w-4" />
-          <span>Actualités</span>
+          <span>{t("tabs.news")}</span>
+          <div
+            className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
+            data-state={localActiveTab === "news" ? "active" : "inactive"}
+          ></div>
         </TabsTrigger>
       </TabsList>
 
@@ -302,7 +311,7 @@ export function SearchResultTabs({
         <div>
           <div className="flex flex-col mb-4">
             <p className="text-xs text-muted-foreground">
-              {sourceCount} résultats trouvés pour votre recherche
+              {t("results.resultsFound", { count: sourceCount })}
             </p>
           </div>
 
@@ -321,7 +330,7 @@ export function SearchResultTabs({
           ) : (
             <div className="py-8 text-center text-muted-foreground flex flex-col items-center gap-2">
               <Link className="h-8 w-8 text-muted-foreground/50" />
-              <p>Aucun résultat disponible</p>
+              <p>{t("results.noResults")}</p>
             </div>
           )}
         </div>

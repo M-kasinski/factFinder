@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { SearchResult } from "@/types/search";
+import { useTranslation } from "react-i18next";
 
 interface VideoCarouselProps {
   videos: SearchResult[];
@@ -77,50 +78,54 @@ const VideoCard = React.memo(({ video }: { video: SearchResult }) => (
 VideoCard.displayName = "VideoCard";
 
 // Skeleton loader unifié (grille pour desktop, carousel pour mobile)
-const VideoSkeleton = () => (
-  <div className="space-y-3">
-    <div className="flex items-center gap-2">
-      <Play className="h-5 w-5 text-primary/50" />
-      <div className="h-6 w-28 bg-muted-foreground/20 rounded-lg animate-pulse" />
-    </div>
+const VideoSkeleton = () => {
+  const { t } = useTranslation("common");
+  
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Play className="h-5 w-5 text-primary/50" />
+        <div className="h-6 w-28 bg-muted-foreground/20 rounded-lg animate-pulse" />
+      </div>
 
-    {/* Skeleton Grille (Desktop) */}
-    <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {[...Array(4)].map((_, index) => (
-        <div key={index} className="animate-pulse">
-          <div className="border border-border/40 rounded-lg overflow-hidden h-full">
-            <div className="aspect-video bg-muted relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-9 w-9 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-                  <div className="h-5 w-5 rounded-full bg-muted-foreground/30" />
+      {/* Skeleton Grille (Desktop) */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, index) => (
+          <div key={index} className="animate-pulse">
+            <div className="border border-border/40 rounded-lg overflow-hidden h-full">
+              <div className="aspect-video bg-muted relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-full bg-muted-foreground/20 flex items-center justify-center">
+                    <div className="h-5 w-5 rounded-full bg-muted-foreground/30" />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="p-3 space-y-2">
-              <div className="h-4 bg-muted-foreground/20 rounded w-full" />
-              <div className="h-4 bg-muted-foreground/20 rounded w-3/4" />
-              <div className="h-3 bg-muted-foreground/10 rounded w-1/2" />
+              <div className="p-3 space-y-2">
+                <div className="h-4 bg-muted-foreground/20 rounded w-full" />
+                <div className="h-4 bg-muted-foreground/20 rounded w-3/4" />
+                <div className="h-3 bg-muted-foreground/10 rounded w-1/2" />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
 
-    {/* Skeleton Carrousel (Mobile) */}
-    <div className="sm:hidden">
-      <ScrollArea className="w-full relative" type="scroll">
-        <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
-          {[...Array(3)].map((_, index) => (
-            <div key={index} className="w-[240px] flex-shrink-0">
-              <VideoSkeletonItem />
-            </div>
-          ))}
-        </div>
-        <ScrollBar orientation="horizontal" className="opacity-100" />
-      </ScrollArea>
+      {/* Skeleton Carrousel (Mobile) */}
+      <div className="sm:hidden">
+        <ScrollArea className="w-full relative" type="scroll">
+          <div className="flex gap-3 pb-4 px-1 touch-pan-x overflow-x-auto whitespace-nowrap">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="w-[240px] flex-shrink-0">
+                <VideoSkeletonItem />
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="opacity-100" />
+        </ScrollArea>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Skeleton Item pour le carousel mobile
 const VideoSkeletonItem = () => (
@@ -144,6 +149,8 @@ const VideoSkeletonItem = () => (
 
 
 function VideoCarouselComponent({ videos, isVisible }: VideoCarouselProps) {
+  const { t } = useTranslation("common");
+  
   if (!isVisible) return null;
 
   // Filtrer les vidéos avec des miniatures valides
@@ -167,7 +174,7 @@ function VideoCarouselComponent({ videos, isVisible }: VideoCarouselProps) {
     >
       <div className="flex items-center gap-2">
         <Play className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold">Vidéos</h2>
+        <h2 className="text-lg font-semibold">{t("tabs.videos")}</h2>
       </div>
 
       {/* Grille pour Desktop (sm et plus) */}
