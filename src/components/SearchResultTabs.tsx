@@ -7,8 +7,8 @@ import { fetchYouTubeResults } from "@/app/actions";
 import {
   Lightbulb,
   Link,
-  Image,
-  Newspaper,
+  // Image,
+  // Newspaper,
   MessageSquare,
   VideoIcon,
 } from "lucide-react";
@@ -81,13 +81,6 @@ export function SearchResultTabs({
     }
   }, [results]);
 
-  // Mettre à jour la requête actuelle quand les résultats changent
-  useEffect(() => {
-    if (results.length > 0 && results[0].query) {
-      setCurrentQuery(results[0].query);
-    }
-  }, [results]);
-
   // Mise à jour des vidéos YouTube quand elles changent
   useEffect(() => {
     if (youtubeVideos.length > 0) {
@@ -95,6 +88,17 @@ export function SearchResultTabs({
       setYoutubeLoaded(showYouTube);
     }
   }, [youtubeVideos, showYouTube]);
+
+  // Reset YouTube state when the query changes
+  useEffect(() => {
+    // Reset only if the query actually changes to avoid unnecessary resets
+    const newQuery = results[0]?.query;
+    if (results.length > 0 && newQuery && newQuery !== currentQuery) {
+      setYoutubeLoaded(false);
+      setLocalYoutubeVideos([]); // Clear previous videos
+      setCurrentQuery(newQuery);
+    }
+  }, [currentQuery, results]); // Remove currentQuery from dependencies to avoid infinite loop
 
   // Mettre à jour l'onglet local si la prop activeTab change
   useEffect(() => {
@@ -131,7 +135,7 @@ export function SearchResultTabs({
       setLocalActiveTab(tab);
 
       // Si on active l'onglet YouTube et que les vidéos n'ont pas encore été chargées
-      if (tab === "youtube" && !youtubeLoaded && !loadingYoutube) {
+      if (tab === "videos" && !youtubeLoaded && !loadingYoutube) {
         loadYouTubeVideos();
       }
 
@@ -214,7 +218,7 @@ export function SearchResultTabs({
             data-state={localActiveTab === "sources" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
-        <TabsTrigger
+        {/* <TabsTrigger
           value="images"
           disabled
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
@@ -225,7 +229,7 @@ export function SearchResultTabs({
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
             data-state={localActiveTab === "images" ? "active" : "inactive"}
           ></div>
-        </TabsTrigger>
+        </TabsTrigger> */}
         <TabsTrigger
           value="videos"
           disabled={!showVideos && !showYouTube}
@@ -238,7 +242,7 @@ export function SearchResultTabs({
             data-state={localActiveTab === "videos" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
-        <TabsTrigger
+        {/* <TabsTrigger
           value="news"
           disabled={!showNews}
           className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
@@ -249,8 +253,8 @@ export function SearchResultTabs({
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
             data-state={localActiveTab === "news" ? "active" : "inactive"}
           ></div>
-        </TabsTrigger>
-      </TabsList>
+        </TabsTrigger>*/}
+      </TabsList> 
 
       <TabsContent
         value="response"
@@ -338,7 +342,7 @@ export function SearchResultTabs({
       </TabsContent>
 
       <TabsContent
-        value="youtube"
+        value="videos"
         className="mt-6 focus-visible:outline-none focus-visible:ring-0"
       >
         <YouTubeResults
