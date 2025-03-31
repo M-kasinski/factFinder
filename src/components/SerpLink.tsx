@@ -106,7 +106,6 @@ const formatUrlAsBreadcrumb = (url: string) => {
 // Composant principal SerpLink mémorisé
 // Supprimer 'date' de la déstructuration des props
 const SerpLinkComponent = ({ title, url, description, onClick, meta_url, profile, thumbnail }: SerpLinkProps) => {
-  const { t } = useTranslation("common");
   // Utilise la fonction pour formater l'URL
   const breadcrumbUrl = formatUrlAsBreadcrumb(url);
 
