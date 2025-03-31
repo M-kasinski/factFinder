@@ -3,7 +3,6 @@
 import React, { useState, memo } from 'react';
 import Image, { ImageProps } from 'next/image';
 import { decode } from 'he';
-import { useTranslation } from 'react-i18next';
 
 interface SerpLinkProps {
   title: string;

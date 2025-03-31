@@ -777,3 +777,8 @@
    - Utilisation de la langue sélectionnée dans le composant de recherche
    - Passage de la langue à travers toute la chaîne d'appels
    - Adaptation des résultats de recherche en fonction de la langue
+
+## Étape : Correction de l'API de localisation (2025-03-04)
+- [x] Correction du typage des paramètres de route dans l'API de localisation
+- [x] Mise à jour de la structure des paramètres pour Next.js App Router
+- [x] Optimisation de la gestion des erreurs
