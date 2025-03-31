@@ -782,3 +782,10 @@
 - [x] Correction du typage des paramètres de route dans l'API de localisation
 - [x] Mise à jour de la structure des paramètres pour Next.js App Router
 - [x] Optimisation de la gestion des erreurs
+
+## Étape : Optimisation de l'internationalisation (2025-03-06)
+- [x] Suppression de la route API redondante pour les fichiers de traduction
+- [x] Conservation de la configuration i18next existante qui utilise les fichiers statiques
+- [x] Optimisation de l'accès aux fichiers de traduction directement depuis le dossier public
+- [x] Réduction de la complexité et amélioration des performances en éliminant une couche d'API
+- [x] Simplification de l'architecture pour les fichiers de localisation
