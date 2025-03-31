@@ -377,7 +377,6 @@ function NewsHighlightsComponent({ news, isVisible }: NewsHighlightsProps) {
   
   // Placeholder pour le chargement (ghost loading)
   const LoadingPlaceholder = () => {
-    const { t } = useTranslation("common");
     
     return (
       <div>

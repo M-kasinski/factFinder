@@ -79,7 +79,6 @@ VideoCard.displayName = "VideoCard";
 
 // Skeleton loader unifié (grille pour desktop, carousel pour mobile)
 const VideoSkeleton = () => {
-  const { t } = useTranslation("common");
   
   return (
     <div className="space-y-3">
