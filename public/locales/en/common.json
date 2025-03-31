@@ -14,10 +14,11 @@
     "openInNewTab": "Open in new tab",
     "viewMore": "View more",
     "viewLess": "View less",
-    "resultsFound": "{count} results found for your search",
+    "resultsFound": "{{count}} results found for your search",
     "noResults": "No results available",
     "viewAll": "View all results",
-    "seeMore": "See {count} more results",
+    "seeMore_one": "See {{count}} more result",
+    "seeMore_other": "See {{count}} more results",
     "seeLess": "See less"
   },
   "tabs": {
@@ -31,7 +32,7 @@
   "generating": "Generating analysis...",
   "relatedQuestions": "Related questions",
   "news": {
-    "headline": "Headlines",
+    "headline": "Top stories",
     "source": "Source"
   },
   "analysis": {

@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SearchResult } from "@/types/search";
 import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 
 interface AnalysisHighlightsProps {
   isLoading: boolean;
@@ -353,10 +353,17 @@ export function AnalysisHighlights({
                 className="bg-card/50 hover:bg-card/80 backdrop-blur-sm text-primary/80 hover:text-primary transition-all duration-300"
                 onClick={() => setShowMore(!showMore)}
               >
-                {showMore 
-                  ? t("results.seeLess")
-                  : t("results.seeMore", { count: secondaryArticles.length - 3 })
-                }
+                {showMore ? (
+                  t("results.seeLess")
+                ) : (
+                  <Trans
+                    i18nKey="results.seeMore"
+                    values={{
+                      count: secondaryArticles.length - 3
+                    }}
+                  />
+                  
+                )}
               </Button>
             </motion.div>
           )}

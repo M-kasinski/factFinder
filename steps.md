@@ -760,3 +760,8 @@
 - [x] Optimisation des composants pour éviter les traductions inutiles
 - [x] Vérification de la cohérence des traductions entre les composants
 - [x] Documentation des clés de traduction et de leur utilisation
+
+## Étape : Utilisation du composant Trans pour la pluralisation dynamique dans AnalysisHighlights (2025-03-30)
+- [x] Implémentation de la pluralisation dynamique dans le composant AnalysisHighlights
+- [x] Vérification du bon fonctionnement de la pluralisation
+- [x] Amélioration de l'expérience utilisateur avec des traductions adaptées

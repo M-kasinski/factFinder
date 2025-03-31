@@ -24,7 +24,7 @@ import { VideoCarousel } from "./VideoCarousel";
 import { RelatedQuestions } from "./RelatedQuestions";
 import YouTubeResults from "./YouTubeResults";
 import { YouTubeVideoItem } from "@/types/youtube";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 interface SearchResultTabsProps {
   results: SearchResult[];
@@ -311,7 +311,8 @@ export function SearchResultTabs({
         <div>
           <div className="flex flex-col mb-4">
             <p className="text-xs text-muted-foreground">
-              {t("results.resultsFound", { count: sourceCount })}
+              <Trans i18nKey="results.resultsFound" values={{ count: sourceCount }} />
+              {/* {t("results.resultsFound", { count: sourceCount })} */}
             </p>
           </div>
 

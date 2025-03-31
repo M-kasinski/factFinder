@@ -14,10 +14,11 @@
     "openInNewTab": "Ouvrir dans un nouvel onglet",
     "viewMore": "Voir plus",
     "viewLess": "Voir moins",
-    "resultsFound": "{count} résultats trouvés pour votre recherche",
+    "resultsFound": "{{count}} résultats trouvés pour votre recherche",
     "noResults": "Aucun résultat disponible",
     "viewAll": "Voir tous les résultats",
-    "seeMore": "Voir {count} résultats supplémentaires",
+    "seeMore_one": "Voir {{count}} résultat supplémentaire",
+    "seeMore_other": "Voir {{count}} résultats supplémentaires",
     "seeLess": "Voir moins"
   },
   "tabs": {
