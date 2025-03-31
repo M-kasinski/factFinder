@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { readStreamableValue } from "ai/rsc";
-import { fetchYouTubeResults } from "@/app/actions";
+import { fetchYouTubeResults, fetchImageResults } from "@/app/actions";
+import { ImageSearchResult } from "@/lib/services/braveImageSearch";
 import {
   Lightbulb,
   Link,
-  // Image,
-  // Newspaper,
+  Image as ImageIcon,
   MessageSquare,
   VideoIcon,
 } from "lucide-react";
@@ -24,6 +24,7 @@ import { RelatedQuestions } from "./RelatedQuestions";
 import YouTubeResults from "./YouTubeResults";
 import { YouTubeVideoItem } from "@/types/youtube";
 import { Trans, useTranslation } from "react-i18next";
+import { ImageGallery } from "./ImageGallery";
 
 interface SearchResultTabsProps {
   results: SearchResult[];
@@ -60,7 +61,7 @@ export function SearchResultTabs({
   onQuestionClick,
   activeTab = "response",
 }: SearchResultTabsProps) {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const [localActiveTab, setLocalActiveTab] = useState(activeTab);
 
   // États pour les vidéos YouTube
@@ -69,6 +70,12 @@ export function SearchResultTabs({
     YouTubeVideoItem[]
   >(youtubeVideos);
   const [loadingYoutube, setLoadingYoutube] = useState(false);
+
+  // États pour les images
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [localImageResults, setLocalImageResults] = useState<ImageSearchResult[]>([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+
   const [currentQuery, setCurrentQuery] = useState("");
 
   const [renderedResults, setRenderedResults] = useState<SearchResult[]>([]);
@@ -88,16 +95,17 @@ export function SearchResultTabs({
     }
   }, [youtubeVideos, showYouTube]);
 
-  // Reset YouTube state when the query changes
+  // Reset YouTube and Image state when the query changes
   useEffect(() => {
-    // Reset only if the query actually changes to avoid unnecessary resets
     const newQuery = results[0]?.query;
     if (results.length > 0 && newQuery && newQuery !== currentQuery) {
       setYoutubeLoaded(false);
       setLocalYoutubeVideos([]); // Clear previous videos
+      setImagesLoaded(false); // Reset image loaded state
+      setLocalImageResults([]); // Clear previous images
       setCurrentQuery(newQuery);
     }
-  }, [currentQuery, results]); // Remove currentQuery from dependencies to avoid infinite loop
+  }, [currentQuery, results]);
 
   // Mettre à jour l'onglet local si la prop activeTab change
   useEffect(() => {
@@ -128,14 +136,42 @@ export function SearchResultTabs({
     }
   }, [currentQuery, loadingYoutube, youtubeLoaded]);
 
+  // Nouvelle fonction pour charger les images
+  const loadImageResults = useCallback(async () => {
+    if (!currentQuery || loadingImages || imagesLoaded) return;
+
+    setLoadingImages(true);
+
+    try {
+      const streamableValue = await fetchImageResults(currentQuery, i18n.language); // Passer la langue
+
+      // Lire les mises à jour du streamable
+      for await (const update of readStreamableValue(streamableValue)) {
+        if (update) {
+          setLocalImageResults(update.images || []);
+          setLoadingImages(update.loading);
+        }
+      }
+      setImagesLoaded(true);
+    } catch (error) {
+      console.error("Erreur lors du chargement des résultats d'images:", error);
+      // Gérer l'erreur, par exemple afficher un message
+      setLoadingImages(false); // S'assurer que le chargement s'arrête en cas d'erreur
+    }
+  }, [currentQuery, loadingImages, imagesLoaded, i18n.language]);
+
   // Gérer le changement d'onglet
   const handleTabChange = useCallback(
     (tab: string) => {
       setLocalActiveTab(tab);
 
-      // Si on active l'onglet YouTube et que les vidéos n'ont pas encore été chargées
+      // Charger YouTube si nécessaire
       if (tab === "videos" && !youtubeLoaded && !loadingYoutube) {
         loadYouTubeVideos();
+      }
+      // Charger les Images si nécessaire
+      else if (tab === "images" && !imagesLoaded && !loadingImages) {
+        loadImageResults();
       }
 
       // Appeler le callback externe si disponible
@@ -143,7 +179,7 @@ export function SearchResultTabs({
         onTabChange(tab);
       }
     },
-    [onTabChange, youtubeLoaded, loadingYoutube, loadYouTubeVideos]
+    [onTabChange, youtubeLoaded, loadingYoutube, loadYouTubeVideos, imagesLoaded, loadingImages, loadImageResults]
   );
 
   // Nombre de sources pour l'affichage du badge
@@ -170,6 +206,9 @@ export function SearchResultTabs({
       onClick: () => window.open(result.url, "_blank"),
     };
   };
+
+  // Détermine si l'onglet image doit être activé (s'il y a une query)
+  const canShowImageTab = !!currentQuery;
 
   return (
     <Tabs
@@ -217,22 +256,22 @@ export function SearchResultTabs({
             data-state={localActiveTab === "sources" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
-        {/* <TabsTrigger
+        <TabsTrigger
           value="images"
-          disabled
-          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
+          disabled={!canShowImageTab}
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative disabled:opacity-50"
         >
-          <Image className="h-4 w-4" />
+          <ImageIcon className="h-4 w-4" />
           <span>{t("tabs.images")}</span>
           <div
             className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
             data-state={localActiveTab === "images" ? "active" : "inactive"}
           ></div>
-        </TabsTrigger> */}
+        </TabsTrigger>
         <TabsTrigger
           value="videos"
-          disabled={!showVideos && !showYouTube}
-          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
+          disabled={!showVideos && !showYouTube && !currentQuery}
+          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative disabled:opacity-50"
         >
           <VideoIcon className="h-4 w-4" />
           <span>{t("tabs.videos")}</span>
@@ -241,18 +280,6 @@ export function SearchResultTabs({
             data-state={localActiveTab === "videos" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
-        {/* <TabsTrigger
-          value="news"
-          disabled={!showNews}
-          className="flex items-center gap-1.5 rounded-none border-0 bg-transparent px-1 py-2.5 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:shadow-none relative"
-        >
-          <Newspaper className="h-4 w-4" />
-          <span>{t("tabs.news")}</span>
-          <div
-            className="absolute -bottom-[1px] left-0 right-0 h-[3px] bg-primary rounded-t-sm transform origin-left transition-transform duration-200 ease-out data-[state=inactive]:scale-x-0 data-[state=active]:scale-x-100"
-            data-state={localActiveTab === "news" ? "active" : "inactive"}
-          ></div>
-        </TabsTrigger>*/}
       </TabsList> 
 
       <TabsContent
@@ -315,7 +342,6 @@ export function SearchResultTabs({
           <div className="flex flex-col mb-4">
             <p className="text-xs text-muted-foreground">
               <Trans i18nKey="results.resultsFound" values={{ count: sourceCount }} />
-              {/* {t("results.resultsFound", { count: sourceCount })} */}
             </p>
           </div>
 
@@ -338,6 +364,16 @@ export function SearchResultTabs({
             </div>
           )}
         </div>
+      </TabsContent>
+
+      <TabsContent
+        value="images"
+        className="mt-6 focus-visible:outline-none focus-visible:ring-0"
+      >
+        <ImageGallery 
+          images={localImageResults} 
+          isLoading={loadingImages} 
+        />
       </TabsContent>
 
       <TabsContent

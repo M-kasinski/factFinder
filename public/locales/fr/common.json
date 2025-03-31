@@ -7,19 +7,24 @@
     "createdWith": "Créé avec",
     "because": "parce que vous méritez une recherche claire et transparente",
     "termsOfService": "CGU",
-    "copyright": "© 2025 ClaireVue"
+    "copyright": "© 2025 ClaireVue",
+    "madeWithLove": "fait avec ❤️ pour une recherche web européenne fiable"
   },
   "results": {
     "viewSource": "Voir la source",
     "openInNewTab": "Ouvrir dans un nouvel onglet",
     "viewMore": "Voir plus",
     "viewLess": "Voir moins",
-    "resultsFound": "{{count}} résultats trouvés pour votre recherche",
-    "noResults": "Aucun résultat disponible",
+    "resultsFound": "{{count}} résultat trouvé",
+    "resultsFound_plural": "{{count}} résultats trouvés",
+    "noResults": "Aucune source trouvée pour cette recherche.",
     "viewAll": "Voir tous les résultats",
     "seeMore_one": "Voir {{count}} résultat supplémentaire",
     "seeMore_other": "Voir {{count}} résultats supplémentaires",
-    "seeLess": "Voir moins"
+    "seeLess": "Voir moins",
+    "loadingImages": "Chargement des images...",
+    "noImagesFound": "Aucune image trouvée pour cette recherche.",
+    "webVideos": "Vidéos du Web"
   },
   "tabs": {
     "response": "Réponse",
@@ -38,5 +43,8 @@
   "analysis": {
     "title": "Analyse & Résultats",
     "ai": "IA"
+  },
+  "searchBar": {
+    "placeholder": "Posez n'importe quelle question..."
   }
 }

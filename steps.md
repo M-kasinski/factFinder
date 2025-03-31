@@ -789,3 +789,12 @@
 - [x] Optimisation de l'accès aux fichiers de traduction directement depuis le dossier public
 - [x] Réduction de la complexité et amélioration des performances en éliminant une couche d'API
 - [x] Simplification de l'architecture pour les fichiers de localisation
+
+## Étape : Implémentation de l'API de recherche d'images (2025-03-04)
+- [x] Création du service `braveImageSearch.ts` pour l'API Brave Image Search
+- [x] Implémentation de la fonction `searchImagesWithBrave` pour effectuer des recherches d'images
+- [x] Test et vérification du bon fonctionnement de la nouvelle API
+
+## Étape : Ajout de la gestion du chargement et des erreurs (2025-03-04)
+- [x] Implémentation d'un composant ImageGallery pour l'affichage des images avec prévisualisation
+- [x] Test et vérification du bon fonctionnement de la nouvelle fonctionnalité

@@ -13,6 +13,7 @@ import {
   streamLLMResponse as streamGeminiLLMResponse,
   generateRelatedQuestions as generateGeminiRelatedQuestions,
 } from "@/lib/services/geminiLLM";
+import { searchImagesWithBrave, ImageSearchResult } from "@/lib/services/braveImageSearch";
 
 /**
  * Type pour les résultats de recherche
@@ -28,6 +29,14 @@ export interface SearchResults {
   showRelated: boolean;
   youtubeVideos: YouTubeVideoItem[];
   showYouTube: boolean;
+}
+
+/**
+ * Type pour le streamable des résultats d'images
+ */
+export interface ImageResultsStream {
+  images: ImageSearchResult[];
+  loading: boolean;
 }
 
 /**
@@ -68,6 +77,37 @@ export async function fetchYouTubeResults(query: string) {
     } catch (error) {
       console.error('Erreur lors de la recherche YouTube:', error);
       streamable.error(error instanceof Error ? error : new Error('Une erreur est survenue'));
+    }
+  })();
+
+  return streamable.value;
+}
+
+/**
+ * Action serveur pour récupérer les résultats d'images uniquement
+ * Cette fonction est appelée lorsque l'utilisateur clique sur l'onglet Images
+ */
+export async function fetchImageResults(query: string, language: string = "fr") {
+  // Créer un streamable pour les résultats d'images
+  const streamable = createStreamableValue<ImageResultsStream>({
+    images: [],
+    loading: true
+  });
+
+  // Lancer la recherche en arrière-plan
+  (async () => {
+    try {
+      // Récupérer les images depuis Brave Image Search
+      const images = await searchImagesWithBrave(query, language);
+
+      // Mettre à jour le streamable avec les résultats
+      streamable.done({
+        images,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Erreur lors de la recherche d\'images Brave:', error);
+      streamable.error(error instanceof Error ? error : new Error('Une erreur est survenue lors de la recherche d\'images'));
     }
   })();
 

@@ -7,22 +7,27 @@
     "createdWith": "Created with",
     "because": "because you deserve clear and transparent search",
     "termsOfService": "Terms of Service",
-    "copyright": "© 2025 ClaireVue"
+    "copyright": "© 2025 ClaireVue",
+    "madeWithLove": "made with ❤️ for reliable European web search"
   },
   "results": {
     "viewSource": "View source",
     "openInNewTab": "Open in new tab",
     "viewMore": "View more",
     "viewLess": "View less",
-    "resultsFound": "{{count}} results found for your search",
-    "noResults": "No results available",
+    "resultsFound": "{{count}} result found",
+    "resultsFound_plural": "{{count}} results found",
+    "noResults": "No sources found for this search.",
     "viewAll": "View all results",
     "seeMore_one": "See {{count}} more result",
     "seeMore_other": "See {{count}} more results",
-    "seeLess": "See less"
+    "seeLess": "See less",
+    "loadingImages": "Loading images...",
+    "noImagesFound": "No images found for this search.",
+    "webVideos": "Web Videos"
   },
   "tabs": {
-    "response": "Response",
+    "response": "Answer",
     "sources": "Sources",
     "answer": "AI",
     "images": "Images",
@@ -38,5 +43,8 @@
   "analysis": {
     "title": "Analysis & Results",
     "ai": "AI"
+  },
+  "searchBar": {
+    "placeholder": "Ask anything..."
   }
 }
