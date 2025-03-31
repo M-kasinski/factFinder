@@ -14,6 +14,7 @@ import { SearchResult } from "@/types/search";
 import { YouTubeVideoItem } from "@/types/youtube";
 import Image from "next/image";
 import { useInitialTab } from "@/hooks/useInitialTab";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -165,8 +166,10 @@ function SearchPageContent() {
               </h1>
             </div>
           </div>
-
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
 
         <div className="w-full max-w-3xl mx-auto">
