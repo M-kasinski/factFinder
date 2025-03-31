@@ -134,12 +134,33 @@ const SourcesSkeleton = () => (
       <div className="h-6 w-28 bg-primary/10 rounded-lg animate-pulse" />
     </div>
     
-    <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        {[...Array(4)].map((_, index) => (
+    {/* --- Desktop Skeleton --- */}
+    <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 gap-3 w-full">
+      {[...Array(4)].map((_, index) => (
+        <div 
+          key={`desktop-skeleton-${index}`}
+          className="animate-pulse w-full h-[70px] border border-primary/10 rounded-lg bg-card/70 backdrop-blur-sm relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent" />
+          <div className="p-2 h-full flex flex-col relative z-10">
+            <div className="flex items-start gap-2">
+              <div className="w-5 h-5 rounded-full bg-primary/10 flex-shrink-0 mt-0.5" />
+              <div className="h-4 bg-primary/10 rounded-md w-3/4" />
+            </div>
+            <div className="mt-2 flex-1">
+              <div className="h-3 bg-primary/5 rounded-md w-3/4" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {/* --- Mobile Skeleton --- */}
+    <div className="sm:hidden w-full overflow-hidden">
+      <div className="flex space-x-3 pb-2">
+        {[...Array(3)].map((_, index) => (
           <div 
-            key={index} 
-            className="animate-pulse w-full h-[70px] border border-primary/10 rounded-lg bg-card/70 backdrop-blur-sm relative overflow-hidden"
+            key={`mobile-skeleton-${index}`}
+            className="animate-pulse w-[200px] h-[70px] border border-primary/10 rounded-lg bg-card/70 backdrop-blur-sm relative overflow-hidden flex-shrink-0"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent" />
             <div className="p-2 h-full flex flex-col relative z-10">
@@ -199,7 +220,11 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   const hiddenSources = results.slice(maxVisible);
 
   // Utiliser une largeur fixe pour chaque carte, qui s'adapte à la taille de l'écran
-  const cardClasses = "w-full h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
+  const cardClasses = "h-[70px] backdrop-blur-sm bg-card/80 hover:bg-card transition-colors border-primary/10 hover:border-primary/20";
+  // Classes spécifiques pour les cartes dans le slider mobile
+  const mobileCardClasses = `${cardClasses} w-[200px] flex-shrink-0`; 
+  // Classes spécifiques pour les cartes dans la grille desktop
+  const desktopCardClasses = `${cardClasses} w-full`;
 
   // Fonction pour rediriger vers l'onglet Sources
   const handleShowMore = () => {
@@ -222,28 +247,59 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
         <h2 className="text-base font-semibold">{t("tabs.sources")}</h2>
       </div>
       
-      <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+      {/* --- Desktop Grid --- */}
+      <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 gap-3 w-full">
+        {visibleSources.map((source, index) => (
+          <motion.div
+            key={source.url + '-desktop'}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+          >
+            <SourceCard source={source} cardClasses={desktopCardClasses} />
+          </motion.div>
+        ))}
+        
+        {hiddenSources.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 + visibleSources.length * 0.05 }}
+          >
+            <MoreSourcesCard 
+              hiddenSources={hiddenSources} 
+              cardClasses={desktopCardClasses} 
+              onShowAll={handleShowMore} 
+            />
+          </motion.div>
+        )}
+      </div>
+
+      {/* --- Mobile Slider --- */}
+      <div className="sm:hidden w-full overflow-x-auto pb-2">
+        <div className="flex space-x-3">
           {visibleSources.map((source, index) => (
             <motion.div
-              key={source.url}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              key={source.url + '-mobile'}
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+              className="flex-shrink-0" // Important pour que motion.div ne force pas la largeur
             >
-              <SourceCard source={source} cardClasses={cardClasses} />
+              <SourceCard source={source} cardClasses={mobileCardClasses} />
             </motion.div>
           ))}
           
           {hiddenSources.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 + visibleSources.length * 0.05 }}
+              className="flex-shrink-0" // Important pour que motion.div ne force pas la largeur
             >
               <MoreSourcesCard 
                 hiddenSources={hiddenSources} 
-                cardClasses={cardClasses} 
+                cardClasses={mobileCardClasses} 
                 onShowAll={handleShowMore} 
               />
             </motion.div>
