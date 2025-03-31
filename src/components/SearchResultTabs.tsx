@@ -331,6 +331,12 @@ export function SearchResultTabs({
             isLoading={isLoading}
             streamingContent={streamingContent || messages}
           />
+
+          <RelatedQuestions
+            questions={relatedQuestions}
+            isVisible={showRelated}
+            onQuestionClick={onQuestionClick || (() => {})}
+          />
         </div>
       </TabsContent>
 
