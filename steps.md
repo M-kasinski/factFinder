@@ -809,3 +809,8 @@
 - [x] Ajout des traductions nécessaires dans les fichiers de localisation
 - [x] Optimisation de la navigation et de l'expérience utilisateur pour les pages légales
 - [x] Installation du composant shadcn/ui dropdown-menu pour le sélecteur de langue
+
+## Étape : Correction d'éléments d'interface (2025-03-07)
+- [x] Correction de l'affichage du logo "ClaireVue" où le dernier 'e' apparaissait coupé
+- [x] Suppression de la classe "tracking-tighter" qui compressait trop le texte
+- [x] Ajout d'un padding-right pour assurer l'affichage complet du texte
