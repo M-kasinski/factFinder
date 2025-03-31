@@ -84,13 +84,14 @@ class BraveSearchClient {
   /**
    * Effectue une recherche avec l'API Brave Search
    */
-  async search(query: string): Promise<BraveSearchResponse> {
+  async search(query: string, language: string = "fr"): Promise<BraveSearchResponse> {
     const params = new URLSearchParams({
       q: query,
       count: '10',
       safesearch: 'off',
       extra_snippets: '1',
-      country: 'FR',
+      search_lang: language,
+      country: language === "fr" ? "FR" : "US",
       text_decorations: '0',
     });
 
@@ -116,14 +117,14 @@ class BraveSearchClient {
 /**
  * Fonction pour effectuer une recherche avec Brave Search
  */
-export async function searchWithBrave(query: string): Promise<{
+export async function searchWithBrave(query: string, language: string = "fr"): Promise<{
   results: SearchResult[]; 
   videos: SearchResult[];
   news: SearchResult[];
 }> {
   try {
     const braveClient = new BraveSearchClient(process.env.BRAVE_API_KEY || "");
-    const braveData = await braveClient.search(query);
+    const braveData = await braveClient.search(query, language);
 
     // Traiter les résultats web
     const searchResults: SearchResult[] = braveData.web.results.map(result => ({

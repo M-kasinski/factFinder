@@ -765,3 +765,15 @@
 - [x] Implémentation de la pluralisation dynamique dans le composant AnalysisHighlights
 - [x] Vérification du bon fonctionnement de la pluralisation
 - [x] Amélioration de l'expérience utilisateur avec des traductions adaptées
+
+## Support multilingue (FR/EN)
+
+1. Ajout du paramètre de langue dans les services :
+   - Modification de `searchWithBrave` pour prendre en compte la langue (FR/US)
+   - Adaptation des prompts LLM pour générer des réponses dans la langue sélectionnée
+   - Mise à jour des questions connexes pour respecter la langue choisie
+
+2. Intégration dans l'interface :
+   - Utilisation de la langue sélectionnée dans le composant de recherche
+   - Passage de la langue à travers toute la chaîne d'appels
+   - Adaptation des résultats de recherche en fonction de la langue

@@ -15,10 +15,12 @@ import { YouTubeVideoItem } from "@/types/youtube";
 import Image from "next/image";
 import { useInitialTab } from "@/hooks/useInitialTab";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { i18n } = useTranslation();
   const initialQuery = searchParams.get("q") || "";
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
@@ -61,7 +63,7 @@ function SearchPageContent() {
 
     try {
       // Appel à la fonction de recherche avec streaming
-      const streamableValue = await fetchSearchResults(query);
+      const streamableValue = await fetchSearchResults(query, i18n.language);
 
       // Utiliser readStreamableValue pour lire les mises à jour du streamable
       for await (const update of readStreamableValue(streamableValue)) {
@@ -97,7 +99,7 @@ function SearchPageContent() {
       // Marquer que nous avons terminé la recherche
       isSearchingRef.current = false;
     }
-  }, []);
+  }, [i18n.language]);
 
   const handleSearch = (query: string) => {
     if (!query.trim() || query === currentQuery) return;

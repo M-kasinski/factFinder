@@ -53,7 +53,8 @@ Réponds de manière concise, factuelle et en français.
  */
 export function streamLLMResponse(
   query: string,
-  searchResults: SearchResult[]
+  searchResults: SearchResult[],
+  language: string = "fr"
 ) {
   try {
     // Construire le contexte à partir des résultats de recherche
@@ -65,8 +66,9 @@ export function streamLLMResponse(
       })
       .join("\n");
 
-    // Construire le prompt pour le LLM
-    const prompt = `
+    // Définir les prompts selon la langue
+    const prompts = {
+      fr: `
 Tu es un assistant de recherche factuel et précis. Réponds à la question de l'utilisateur en te basant uniquement sur les informations fournies dans les résultats de recherche ci-dessous.
 Mets en gras les mots clés **mots clés** dans la réponse.
 Si les résultats de recherche ne contiennent pas suffisamment d'informations pour répondre à la question, indique-le clairement.
@@ -78,12 +80,26 @@ Résultats de recherche:
 ${context}
 
 Réponds de manière concise, factuelle et en français.
-`;
+`,
+      en: `
+You are a factual and precise search assistant. Answer the user's question based solely on the information provided in the search results below.
+Put key terms in bold using **key terms** in your response.
+If the search results don't contain enough information to answer the question, clearly state this.
+Don't make up information and cite sources using markdown links in parentheses [1](URL), [2](URL), etc.
+
+Question: ${query}
+
+Search results:
+${context}
+
+Answer in a concise, factual manner in English.
+`
+    };
 
     // Utiliser streamText pour générer une réponse en streaming
     return streamText({
       model: cerebras("llama3.3-70b"),
-      prompt,
+      prompt: prompts[language as keyof typeof prompts] || prompts.fr,
     });
   } catch (error) {
     console.error("Error streaming LLM response:", error);
@@ -94,18 +110,11 @@ Réponds de manière concise, factuelle et en français.
 /**
  * Fonction pour générer des questions connexes basées sur les résultats de recherche
  */
-export async function generateRelatedQuestions(query: string, context: string) {
+export async function generateRelatedQuestions(query: string, context: string, language: string = "fr") {
   try {
-    // // Construire le contexte à partir des résultats de recherche
-    // const context = searchResults
-    //   .slice(0, 5) // Limiter à 5 résultats pour le contexte
-    //   .map((result) => {
-    //     return `${result.title}\nContent: ${result.extra_snippet}\n`;
-    //   })
-    //   .join('\n');
-
-    // Construire le prompt pour le LLM
-    const prompt = `
+    // Définir les prompts selon la langue
+    const prompts = {
+      fr: `
 Tu es un assistant de recherche qui aide à explorer un sujet. Basé sur la question de l'utilisateur et la réponse du LLM, génère 5 questions connexes que l'utilisateur pourrait vouloir explorer ensuite.
 Ces questions doivent être pertinentes, intéressantes et formulées de manière concise.
 
@@ -115,12 +124,24 @@ Contexte:
 ${context}
 
 Génère exactement 5 questions connexes et courte, une par ligne, sans numérotation ni préfixe. Chaque question doit être concise et en français.
-`;
+`,
+      en: `
+You are a search assistant helping to explore a topic. Based on the user's question and the LLM's response, generate 5 related questions that the user might want to explore next.
+These questions should be relevant, interesting, and concisely formulated.
+
+Original question: ${query}
+
+Context:
+${context}
+
+Generate exactly 5 short related questions, one per line, without numbering or prefix. Each question should be concise and in English.
+`
+    };
 
     // Utiliser le modèle pour générer les questions
     const result = await generateText({
       model: cerebras("llama3.1-8b"),
-      prompt,
+      prompt: prompts[language as keyof typeof prompts] || prompts.fr,
     });
 
     // Traiter la réponse pour obtenir un tableau de questions

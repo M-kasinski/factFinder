@@ -196,7 +196,7 @@ export async function fetchGeminiLLMResponse(query: string) {
 /**
  * Fonction pour récupérer les résultats de recherche avec streaming
  */
-export async function fetchSearchResults(query: string) {
+export async function fetchSearchResults(query: string, language: string = "fr") {
   // Créer un streamable value avec un état initial
   const streamable = createStreamableValue<SearchResults>({
     results: [],
@@ -215,7 +215,7 @@ export async function fetchSearchResults(query: string) {
   (async () => {
     try {
       // Appel au service de recherche principal seulement
-      const searchResponse = await searchWithBrave(query);
+      const searchResponse = await searchWithBrave(query, language);
       
       const searchResults = searchResponse.results;
       const videoResults = searchResponse.videos || [];
@@ -239,7 +239,7 @@ export async function fetchSearchResults(query: string) {
       });
 
       // Utiliser la version streaming du LLM Cerebras
-      const llmStream = streamCerebrasLLMResponse(query, searchResults);
+      const llmStream = streamCerebrasLLMResponse(query, searchResults, language);
 
       // Variable pour accumuler le texte généré
       let accumulatedText = "";
@@ -269,14 +269,15 @@ export async function fetchSearchResults(query: string) {
             relatedQuestions: [],
             showRelated: false,
             youtubeVideos,
-            showYouTube: youtubeVideos.length > 0,
+            showYouTube: false,
           });
         }
 
-        // Générer des questions connexes une fois que le LLM Cerebras a terminé
+        // Générer des questions connexes une fois que le LLM a terminé
         const relatedQuestions = await generateCerebrasRelatedQuestions(
           query,
-          accumulatedText
+          accumulatedText,
+          language
         );
 
         // Marquer le streamable comme terminé avec toutes les données
@@ -290,7 +291,7 @@ export async function fetchSearchResults(query: string) {
           relatedQuestions,
           showRelated: relatedQuestions.length > 0,
           youtubeVideos,
-          showYouTube: youtubeVideos.length > 0,
+          showYouTube: false,
         });
       } catch (readerError) {
         console.error("Error reading LLM stream:", readerError);
@@ -303,7 +304,7 @@ export async function fetchSearchResults(query: string) {
     } catch (error) {
       console.error("Error fetching search results:", error);
       streamable.error(
-        error instanceof Error ? error : new Error("Une erreur est survenue")
+        error instanceof Error ? error : new Error("Une erreur est survenue lors de la recherche")
       );
     }
   })();
