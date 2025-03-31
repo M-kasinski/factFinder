@@ -382,7 +382,7 @@
 - [x] Utilisation des propriétés flex-grow et flex-shrink pour mieux contrôler la distribution de l'espace
 - [x] Harmonisation visuelle entre les différents composants (NewsHighlights et VideoCarousel)
 - [x] Suppression du composant MobileSkeletonItem devenu obsolète
-- [x] Mise à jour des skeletons de chargement pour correspondre à la nouvelle structure
+- [x] Mise à jour des skeletons de chargement pour correspondre au nouveau format
 
 ## Étape : Amélioration de la gestion de l'article principal en version desktop (2025-03-07)
 - [x] Modification du comportement pour supprimer l'article principal s'il n'a pas d'image valide
@@ -798,3 +798,14 @@
 ## Étape : Ajout de la gestion du chargement et des erreurs (2025-03-04)
 - [x] Implémentation d'un composant ImageGallery pour l'affichage des images avec prévisualisation
 - [x] Test et vérification du bon fonctionnement de la nouvelle fonctionnalité
+
+## Étape : Implémentation des pages légales (2025-03-31)
+- [x] Création de la structure des pages juridiques avec /legal/terms et /legal/privacy
+- [x] Mise en place d'un layout partagé pour les pages légales avec sélecteur de langue
+- [x] Implémentation du contenu des CGU et de la politique de confidentialité en français et anglais
+- [x] Intégration de react-markdown pour l'affichage formaté des documents légaux
+- [x] Mise à jour du Footer pour inclure des liens vers les CGU et la politique de confidentialité
+- [x] Redirection de l'ancienne route /cgu vers /legal/terms pour maintenir la compatibilité
+- [x] Ajout des traductions nécessaires dans les fichiers de localisation
+- [x] Optimisation de la navigation et de l'expérience utilisateur pour les pages légales
+- [x] Installation du composant shadcn/ui dropdown-menu pour le sélecteur de langue

@@ -2,6 +2,7 @@
 
 import { Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 export function Footer() {
   const { t } = useTranslation("common");
@@ -15,7 +16,8 @@ export function Footer() {
           <span>{t("footer.because")}</span>
         </div>
         <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1 md:mt-0">
-          <a href="/cgu" className="hover:underline">{t("footer.termsOfService")}</a> 
+          <Link href="/legal/terms" className="hover:underline">{t("footer.termsOfService")}</Link>
+          <Link href="/legal/privacy" className="hover:underline">{t("footer.privacyPolicy")}</Link>
           <span>{t("footer.copyright")}</span>
         </div>
       </div>
