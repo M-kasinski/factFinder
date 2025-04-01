@@ -13,9 +13,9 @@ import { fetchSearchResults } from "@/app/actions";
 import { SearchResult } from "@/types/search";
 import { YouTubeVideoItem } from "@/types/youtube";
 import Image from "next/image";
-import { useInitialTab } from "@/hooks/useInitialTab";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { QueryIntent } from "@/lib/services/intentDetector";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -40,17 +40,7 @@ function SearchPageContent() {
   const [showYouTube, setShowYouTube] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("response");
-
-  // Utilise notre hook personnalisé pour déterminer l'onglet initial
-  const initialTab = useInitialTab(currentQuery);
-
-  // Met à jour activeTab quand initialTab change
-  useEffect(() => {
-    if (initialTab && currentQuery) {
-      setActiveTab(initialTab);
-    }
-  }, [initialTab, currentQuery]);
+  const [detectedIntent, setDetectedIntent] = useState<QueryIntent>('AI_ANSWER');
 
   // Fonction pour effectuer la recherche avec useCallback
   const performSearch = useCallback(async (query: string) => {
@@ -79,6 +69,12 @@ function SearchPageContent() {
           setShowRelated(update.showRelated || false);
           setYoutubeVideos(update.youtubeVideos || []);
           setShowYouTube(update.showYouTube || false);
+          
+          // Mettre à jour l'intention détectée si disponible
+          if (update.intentType) {
+            setDetectedIntent(update.intentType);
+            console.log(`Intent detected from API: ${update.intentType}`);
+          }
 
           // Ne mettre isLoading à false que lorsque nous avons à la fois le message et des résultats
           // Cela évite un état transitoire où l'interface est ni en chargement ni avec du contenu
@@ -111,6 +107,8 @@ function SearchPageContent() {
     // Mettre à jour les états locaux
     setCurrentQuery(query);
     setSearchValue(query);
+    // Réinitialiser l'intention pour la nouvelle recherche
+    setDetectedIntent('AI_ANSWER');
 
     // Effectuer la recherche
     performSearch(query);
@@ -196,8 +194,7 @@ function SearchPageContent() {
             youtubeVideos={youtubeVideos}
             showYouTube={isLoading || showYouTube}
             onQuestionClick={handleSearch}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
+            intentType={detectedIntent}
           />
         </div>
 

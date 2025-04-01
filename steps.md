@@ -384,6 +384,70 @@
 - [x] Suppression du composant MobileSkeletonItem devenu obsolète
 - [x] Mise à jour des skeletons de chargement pour correspondre au nouveau format
 
+## Étape : Implémentation de la détection d'intention (2025-03-20)
+- [x] Installation des bibliothèques fast-levenshtein et @types/fast-levenshtein
+- [x] Création du type QueryIntent ('AI_ANSWER' | 'DIRECT_SOURCE')
+- [x] Implémentation des fonctions de normalisation (normalizeQuery, normalizeDomain)
+- [x] Développement de l'algorithme de détection d'intention basé sur la distance de Levenshtein
+- [x] Mise à jour de l'interface SearchResults pour inclure le champ intentType
+- [x] Intégration de la détection d'intention dans les fonctions fetchSearchResults et fetchGeminiLLMResponse
+- [x] Configuration d'un seuil Levenshtein optimal (LEVENSHTEIN_THRESHOLD = 2)
+- [x] Implémentation de la détection d'intention navigationnelle vs informationnelle
+- [x] Ajout de logs pour suivre la classification d'intention en temps réel
+
+## Étape : Adaptation de l'interface en fonction de l'intention (2025-03-20)
+- [x] Mise à jour de la page de recherche pour utiliser l'intentType reçu de l'API
+- [x] Ajout d'un état local detectedIntent dans le composant SearchPageContent
+- [x] Implémentation d'une logique conditionnelle pour sélectionner l'onglet approprié en fonction de l'intention
+- [x] Ajout de logs pour suivre la détection d'intention et les changements d'onglets
+- [x] Configuration d'une règle pour afficher l'onglet "Sources" si l'intention est DIRECT_SOURCE
+- [x] Réinitialisation de l'intention détectée lors d'une nouvelle recherche
+- [x] Optimisation de l'UX en évitant les changements d'onglets pendant le chargement
+- [x] Prévention des conflits entre la détection d'intention et la sélection manuelle d'onglets
+
+## Étape : Amélioration de la détection d'intention avec vérification par concaténation (2025-03-20)
+- [x] Refactorisation de la fonction classifyQueryIntent pour une structure plus claire
+- [x] Ajout d'une nouvelle logique de détection basée sur la concaténation des mots de la requête
+- [x] Implémentation de la vérification des noms de domaine composés (ex: "atnt paris" → "atntparis")
+- [x] Optimisation de la détection pour les requêtes courtes (2-3 mots)
+- [x] Amélioration des logs pour distinguer les détections par mot et par concaténation
+- [x] Validation que les chaînes comparées sont suffisamment significatives (longueur > 3)
+- [x] Conservation de la logique initiale avec amélioration de la robustesse
+- [x] Élimination des faux positifs avec des conditions de validation plus strictes
+
+## Étape : Refactorisation de la détection d'intention en service dédié (2025-04-01)
+- [x] Création d'un nouveau service IntentDetector dans lib/services
+- [x] Déplacement de toute la logique de détection d'intention depuis actions.ts vers le service dédié
+- [x] Implémentation du modèle Singleton avec export d'une instance unique du service
+- [x] Conversion en classe avec méthodes privées (normalizeQuery, normalizeDomain) et publique (classifyQueryIntent)
+- [x] Amélioration de la documentation avec JSDoc complet
+- [x] Export du type QueryIntent directement depuis le service
+- [x] Mise à jour des fichiers actions.ts pour utiliser le nouveau service
+- [x] Réduction de la taille et complexité du fichier actions.ts
+- [x] Amélioration de la structure et de la maintenabilité du code
+
+## Étape : Ajout de la détection de questions et suppression du hook useInitialTab (2025-04-01)
+- [x] Ajout du type d'intention 'ANSWER' pour les requêtes se terminant par un point d'interrogation
+- [x] Implémentation d'une priorité haute pour la détection de questions dans le service IntentDetector
+- [x] Vérification précoce de la présence du caractère '?' dans la requête
+- [x] Suppression du hook useInitialTab devenu redondant
+- [x] Refactorisation de la page de recherche pour utiliser uniquement l'intention détectée côté backend
+- [x] Implémentation d'un switch complet pour gérer tous les types d'intentions possibles (DIRECT_SOURCE, ANSWER, AI_ANSWER)
+- [x] Amélioration des logs pour le suivi de la détection et de la sélection d'onglets
+- [x] Simplification du code client avec une logique de détermination d'onglet centralisée
+- [x] Correction des problèmes de typages pour assurer la cohérence
+
+## Étape : Recentrage de la gestion des onglets dans SearchResultTabs (2025-04-01)
+- [x] Déplacement de la gestion de l'état des onglets dans SearchResultTabs pour autonomie du composant
+- [x] Implémentation d'une initialisation unique de l'onglet actif par requête via intentType
+- [x] Utilisation d'une ref pour mémoriser la requête pour laquelle l'onglet a déjà été défini
+- [x] Suppression du contrôle externe de l'onglet actif depuis la page parente
+- [x] Optimisation de l'expérience utilisateur en donnant contrôle total après initialisation
+- [x] Réinitialisation de la ref lors d'un changement manuel d'onglet par l'utilisateur
+- [x] Amélioration des logs pour visualiser le processus d'initialisation des onglets
+- [x] Introduction d'une distinction explicite entre initialisation automatique et sélection manuelle
+- [x] Modification du type UITab pour une meilleure cohérence entre les composants
+
 ## Étape : Amélioration de la gestion de l'article principal en version desktop (2025-03-07)
 - [x] Modification du comportement pour supprimer l'article principal s'il n'a pas d'image valide
 - [x] Mise en place d'un mécanisme de promotion du premier article secondaire valide en article principal

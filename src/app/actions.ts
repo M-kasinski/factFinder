@@ -14,6 +14,7 @@ import {
   generateRelatedQuestions as generateGeminiRelatedQuestions,
 } from "@/lib/services/geminiLLM";
 import { searchImagesWithBrave, ImageSearchResult } from "@/lib/services/braveImageSearch";
+import { intentDetector, QueryIntent } from "@/lib/services/intentDetector";
 
 /**
  * Type pour les résultats de recherche
@@ -29,6 +30,7 @@ export interface SearchResults {
   showRelated: boolean;
   youtubeVideos: YouTubeVideoItem[];
   showYouTube: boolean;
+  intentType: QueryIntent;
 }
 
 /**
@@ -130,6 +132,7 @@ export async function fetchGeminiLLMResponse(query: string) {
     showRelated: false,
     youtubeVideos: [],
     showYouTube: false,
+    intentType: 'AI_ANSWER', // Valeur par défaut initiale
   });
 
   // Lancer la recherche en arrière-plan
@@ -145,6 +148,10 @@ export async function fetchGeminiLLMResponse(query: string) {
       // Pas de chargement des vidéos YouTube initialement
       const youtubeVideos: YouTubeVideoItem[] = [];
 
+      // Classification de l'intention avec le service dédié
+      const intent = intentDetector.classifyQueryIntent(query, searchResults);
+      console.log(`Classified Intent for "${query}": ${intent}`);
+
       // Mettre à jour le streamable avec les résultats de recherche initiaux
       streamable.update({
         results: searchResults,
@@ -157,6 +164,7 @@ export async function fetchGeminiLLMResponse(query: string) {
         showRelated: false,
         youtubeVideos,
         showYouTube: false, // YouTube non chargé initialement
+        intentType: intent,
       });
 
       // Utiliser la version streaming du LLM Gemini
@@ -191,6 +199,7 @@ export async function fetchGeminiLLMResponse(query: string) {
             showRelated: false,
             youtubeVideos,
             showYouTube: false,
+            intentType: intent,
           });
         }
 
@@ -212,6 +221,7 @@ export async function fetchGeminiLLMResponse(query: string) {
           showRelated: relatedQuestions.length > 0,
           youtubeVideos,
           showYouTube: false, // Toujours false ici car non chargé
+          intentType: intent,
         });
       } catch (readerError) {
         console.error("Error reading Gemini LLM stream:", readerError);
@@ -249,6 +259,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
     showRelated: false,
     youtubeVideos: [],
     showYouTube: false,
+    intentType: 'AI_ANSWER', // Valeur par défaut initiale
   });
 
   // Lancer la recherche en arrière-plan
@@ -264,18 +275,23 @@ export async function fetchSearchResults(query: string, language: string = "fr")
       // Pas de chargement des vidéos YouTube initialement
       const youtubeVideos: YouTubeVideoItem[] = [];
 
+      // Classification de l'intention avec le service dédié
+      const intent = intentDetector.classifyQueryIntent(query, searchResults);
+      console.log(`Classified Intent for "${query}": ${intent}`);
+
       // Mettre à jour le streamable avec les résultats de recherche, vidéos et news
       streamable.update({
         results: searchResults,
         messages: "",
-        videos: [],
-        showVideos: false,
-        news: [],
-        showNews: false,
+        videos: videoResults,
+        showVideos: videoResults.length > 0,
+        news: newsResults,
+        showNews: newsResults.length > 0,
         relatedQuestions: [],
         showRelated: false,
         youtubeVideos,
         showYouTube: youtubeVideos.length > 0,
+        intentType: intent,
       });
 
       // Utiliser la version streaming du LLM Cerebras
@@ -310,6 +326,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
             showRelated: false,
             youtubeVideos,
             showYouTube: false,
+            intentType: intent,
           });
         }
 
@@ -332,6 +349,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
           showRelated: relatedQuestions.length > 0,
           youtubeVideos,
           showYouTube: false,
+          intentType: intent,
         });
       } catch (readerError) {
         console.error("Error reading LLM stream:", readerError);

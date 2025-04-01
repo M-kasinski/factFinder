@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { readStreamableValue } from "ai/rsc";
 import { fetchYouTubeResults, fetchImageResults } from "@/app/actions";
 import { ImageSearchResult } from "@/lib/services/braveImageSearch";
@@ -25,6 +25,10 @@ import YouTubeResults from "./YouTubeResults";
 import { YouTubeVideoItem } from "@/types/youtube";
 import { Trans, useTranslation } from "react-i18next";
 import { ImageGallery } from "./ImageGallery";
+import { QueryIntent } from "@/lib/services/intentDetector";
+
+// Définir les valeurs possibles pour les onglets UI
+type UITab = 'response' | 'answer' | 'sources' | 'images' | 'videos';
 
 interface SearchResultTabsProps {
   results: SearchResult[];
@@ -41,7 +45,7 @@ interface SearchResultTabsProps {
   youtubeVideos?: YouTubeVideoItem[];
   showYouTube?: boolean;
   onQuestionClick?: (query: string) => void;
-  activeTab?: string;
+  intentType?: QueryIntent;
 }
 
 export function SearchResultTabs({
@@ -59,10 +63,11 @@ export function SearchResultTabs({
   youtubeVideos = [],
   showYouTube = false,
   onQuestionClick,
-  activeTab = "response",
+  intentType,
 }: SearchResultTabsProps) {
   const { t, i18n } = useTranslation("common");
-  const [localActiveTab, setLocalActiveTab] = useState(activeTab);
+  const [localActiveTab, setLocalActiveTab] = useState<UITab>('response');
+  const initialTabSetForQuery = useRef<string | null>(null); // Ref pour savoir si on a déjà défini l'onglet pour la requête actuelle
 
   // États pour les vidéos YouTube
   const [youtubeLoaded, setYoutubeLoaded] = useState(false);
@@ -107,10 +112,36 @@ export function SearchResultTabs({
     }
   }, [currentQuery, results]);
 
-  // Mettre à jour l'onglet local si la prop activeTab change
+  // NOUVEAU/MODIFIÉ: useEffect pour définir l'onglet initial basé sur intentType
   useEffect(() => {
-    setLocalActiveTab(activeTab);
-  }, [activeTab]);
+    // Obtenir la query associée aux résultats actuels
+    const queryFromResults = results[0]?.query;
+
+    // Condition : Avoir une intention, une query associée aux résultats,
+    // ET cette query doit être différente de celle pour laquelle on a déjà défini l'onglet.
+    if (intentType && queryFromResults && initialTabSetForQuery.current !== queryFromResults) {
+      let targetTab: UITab = 'response'; // Onglet par défaut
+
+      switch(intentType) {
+        case 'DIRECT_SOURCE':
+          targetTab = 'sources';
+          break;
+        case 'ANSWER':
+          // Pour les questions, montrer l'onglet answer qui contient la réponse LLM
+          targetTab = 'answer';
+          break;
+        case 'AI_ANSWER':
+        default:
+          // Pour une réponse IA standard
+          targetTab = 'response';
+          break;
+      }
+
+      console.log(`[Initial Tab Setter] Query: "${queryFromResults}", Intent: ${intentType} -> Setting initial tab: ${targetTab}`);
+      setLocalActiveTab(targetTab); // Définir l'état local
+      initialTabSetForQuery.current = queryFromResults; // Mémoriser qu'on l'a fait pour cette query
+    }
+  }, [intentType, results]);
 
   // Fonction pour charger les vidéos YouTube
   const loadYouTubeVideos = useCallback(async () => {
@@ -163,7 +194,10 @@ export function SearchResultTabs({
   // Gérer le changement d'onglet
   const handleTabChange = useCallback(
     (tab: string) => {
-      setLocalActiveTab(tab);
+      // S'assurer que la valeur est bien du type UITab
+      const newTab = tab as UITab;
+      setLocalActiveTab(newTab);
+      initialTabSetForQuery.current = null; // Réinitialiser la ref pour permettre la sélection auto sur la prochaine nouvelle requête
 
       // Charger YouTube si nécessaire
       if (tab === "videos" && !youtubeLoaded && !loadingYoutube) {
@@ -212,7 +246,6 @@ export function SearchResultTabs({
 
   return (
     <Tabs
-      defaultValue="response"
       value={localActiveTab}
       onValueChange={handleTabChange}
       className="w-full"
