@@ -878,3 +878,13 @@
 - [x] Correction de l'affichage du logo "ClaireVue" où le dernier 'e' apparaissait coupé
 - [x] Suppression de la classe "tracking-tighter" qui compressait trop le texte
 - [x] Ajout d'un padding-right pour assurer l'affichage complet du texte
+
+## Étape 3: Restructurer l'API Route
+
+- Déplacé la logique de l'API de `src/app/api/route.ts` vers `src/app/api/redis/route.ts` pour une meilleure organisation.
+
+## Étape 8: Réinitialiser les états lors d'une nouvelle recherche
+
+- **Fichier modifié:** `src/app/search/page.tsx`
+- **Objectif:** Vider les résultats de la recherche précédente (résultats, messages, vidéos, actualités, questions associées, vidéos YouTube) lorsqu'une nouvelle recherche est lancée pour éviter d'afficher des données périmées.
+- **Implémentation:** Ajout de l'appel aux fonctions `set...` pour réinitialiser les états correspondants au début de la fonction `handleSearch`.

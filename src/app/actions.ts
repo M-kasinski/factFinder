@@ -15,6 +15,8 @@ import {
 } from "@/lib/services/geminiLLM";
 import { searchImagesWithBrave, ImageSearchResult } from "@/lib/services/braveImageSearch";
 import { intentDetector, QueryIntent } from "@/lib/services/intentDetector";
+import { getRedisClient } from "@/lib/redis";
+import { manageCache, generateCacheKey, CACHE_TTL_SECONDS, CachedQueryData } from "@/lib/cache";
 
 /**
  * Type pour les résultats de recherche
@@ -55,30 +57,22 @@ async function fetchYouTubeVideos(query: string, maxResults: number = 10): Promi
 }
 
 /**
- * Action serveur pour récupérer les vidéos YouTube uniquement
- * Cette fonction est appelée lorsque l'utilisateur clique sur l'onglet YouTube
+ * Action serveur pour récupérer les vidéos YouTube uniquement (avec cache unifié)
  */
 export async function fetchYouTubeResults(query: string) {
-  // Créer un streamable pour les vidéos YouTube
-  const streamable = createStreamableValue<{ videos: YouTubeVideoItem[], loading: boolean }>({
-    videos: [],
-    loading: true
-  });
+  const streamable = createStreamableValue<{ videos: YouTubeVideoItem[], loading: boolean } | null>(null);
+  const cacheKey = generateCacheKey('query', query);
 
-  // Lancer la recherche en arrière-plan
   (async () => {
-    try {
-      // Récupérer les vidéos depuis YouTube
+    const data = await manageCache(cacheKey, 'youtubeResults', async () => {
       const videos = await fetchYouTubeVideos(query);
-      
-      // Mettre à jour le streamable avec les résultats
-      streamable.done({
-        videos,
-        loading: false
-      });
-    } catch (error) {
-      console.error('Erreur lors de la recherche YouTube:', error);
-      streamable.error(error instanceof Error ? error : new Error('Une erreur est survenue'));
+      return { videos: videos || [], loading: false };
+    });
+
+    if (data) {
+      streamable.done(data);
+    } else {
+      streamable.error(new Error('Failed to fetch YouTube results after cache check'));
     }
   })();
 
@@ -86,30 +80,22 @@ export async function fetchYouTubeResults(query: string) {
 }
 
 /**
- * Action serveur pour récupérer les résultats d'images uniquement
- * Cette fonction est appelée lorsque l'utilisateur clique sur l'onglet Images
+ * Action serveur pour récupérer les résultats d'images uniquement (avec cache unifié)
  */
 export async function fetchImageResults(query: string, language: string = "fr") {
-  // Créer un streamable pour les résultats d'images
-  const streamable = createStreamableValue<ImageResultsStream>({
-    images: [],
-    loading: true
-  });
+  const streamable = createStreamableValue<ImageResultsStream | null>(null);
+  const cacheKey = generateCacheKey('query', query, language);
 
-  // Lancer la recherche en arrière-plan
   (async () => {
-    try {
-      // Récupérer les images depuis Brave Image Search
+    const data = await manageCache(cacheKey, 'imageResults', async () => {
       const images = await searchImagesWithBrave(query, language);
+      return { images: images || [], loading: false };
+    });
 
-      // Mettre à jour le streamable avec les résultats
-      streamable.done({
-        images,
-        loading: false
-      });
-    } catch (error) {
-      console.error('Erreur lors de la recherche d\'images Brave:', error);
-      streamable.error(error instanceof Error ? error : new Error('Une erreur est survenue lors de la recherche d\'images'));
+    if (data) {
+      streamable.done(data);
+    } else {
+      streamable.error(new Error('Failed to fetch image results after cache check'));
     }
   })();
 
@@ -120,7 +106,6 @@ export async function fetchImageResults(query: string, language: string = "fr") 
  * Fonction pour récupérer les résultats de recherche avec streaming en utilisant Gemini
  */
 export async function fetchGeminiLLMResponse(query: string) {
-  // Créer un streamable value avec un état initial
   const streamable = createStreamableValue<SearchResults>({
     results: [],
     messages: "",
@@ -132,154 +117,22 @@ export async function fetchGeminiLLMResponse(query: string) {
     showRelated: false,
     youtubeVideos: [],
     showYouTube: false,
-    intentType: 'AI_ANSWER', // Valeur par défaut initiale
+    intentType: 'AI_ANSWER',
   });
 
-  // Lancer la recherche en arrière-plan
   (async () => {
     try {
-      // Appel au service de recherche principal seulement
       const searchResponse = await searchWithBrave(query);
       
       const searchResults = searchResponse.results;
       const videoResults = searchResponse.videos || [];
       const newsResults = searchResponse.news || [];
       
-      // Pas de chargement des vidéos YouTube initialement
       const youtubeVideos: YouTubeVideoItem[] = [];
 
-      // Classification de l'intention avec le service dédié
       const intent = intentDetector.classifyQueryIntent(query, searchResults);
       console.log(`Classified Intent for "${query}": ${intent}`);
 
-      // Mettre à jour le streamable avec les résultats de recherche initiaux
-      streamable.update({
-        results: searchResults,
-        messages: "",
-        videos: videoResults, // Afficher les vidéos Brave si disponibles
-        showVideos: videoResults.length > 0,
-        news: newsResults, // Afficher les news Brave si disponibles
-        showNews: newsResults.length > 0,
-        relatedQuestions: [],
-        showRelated: false,
-        youtubeVideos,
-        showYouTube: false, // YouTube non chargé initialement
-        intentType: intent,
-      });
-
-      // Utiliser la version streaming du LLM Gemini
-      const llmStream = streamGeminiLLMResponse(query, searchResults);
-
-      // Variable pour accumuler le texte généré
-      let accumulatedText = "";
-
-      // Lire le stream chunk par chunk
-      const reader = llmStream.textStream.getReader();
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-
-          if (done) {
-            break;
-          }
-
-          // Accumuler le texte
-          accumulatedText += value;
-
-          // Mettre à jour le streamable avec le texte accumulé
-          streamable.update({
-            results: searchResults,
-            messages: accumulatedText,
-            videos: videoResults,
-            showVideos: videoResults.length > 0,
-            news: newsResults,
-            showNews: newsResults.length > 0,
-            relatedQuestions: [],
-            showRelated: false,
-            youtubeVideos,
-            showYouTube: false,
-            intentType: intent,
-          });
-        }
-
-        // Générer des questions connexes une fois que le LLM Gemini a terminé
-        const relatedQuestions = await generateGeminiRelatedQuestions(
-          query,
-          accumulatedText
-        );
-
-        // Marquer le streamable comme terminé avec toutes les données
-        streamable.done({
-          results: searchResults,
-          messages: accumulatedText,
-          videos: videoResults,
-          showVideos: videoResults.length > 0,
-          news: newsResults,
-          showNews: newsResults.length > 0,
-          relatedQuestions,
-          showRelated: relatedQuestions.length > 0,
-          youtubeVideos,
-          showYouTube: false, // Toujours false ici car non chargé
-          intentType: intent,
-        });
-      } catch (readerError) {
-        console.error("Error reading Gemini LLM stream:", readerError);
-        streamable.error(
-          readerError instanceof Error
-            ? readerError
-            : new Error("Erreur lors de la lecture du stream LLM Gemini")
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching Gemini search results:", error);
-      streamable.error(
-        error instanceof Error ? error : new Error("Une erreur est survenue lors de la recherche Gemini")
-      );
-    }
-  })();
-
-  // Retourner la valeur streamable
-  return streamable.value;
-}
-
-/**
- * Fonction pour récupérer les résultats de recherche avec streaming
- */
-export async function fetchSearchResults(query: string, language: string = "fr") {
-  // Créer un streamable value avec un état initial
-  const streamable = createStreamableValue<SearchResults>({
-    results: [],
-    messages: "",
-    videos: [],
-    showVideos: false,
-    news: [],
-    showNews: false,
-    relatedQuestions: [],
-    showRelated: false,
-    youtubeVideos: [],
-    showYouTube: false,
-    intentType: 'AI_ANSWER', // Valeur par défaut initiale
-  });
-
-  // Lancer la recherche en arrière-plan
-  (async () => {
-    try {
-      // Appel au service de recherche principal seulement
-      const searchResponse = await searchWithBrave(query, language);
-      
-      const searchResults = searchResponse.results;
-      const videoResults = searchResponse.videos || [];
-      const newsResults = searchResponse.news || [];
-      
-      // Pas de chargement des vidéos YouTube initialement
-      const youtubeVideos: YouTubeVideoItem[] = [];
-
-      // Classification de l'intention avec le service dédié
-      const intent = intentDetector.classifyQueryIntent(query, searchResults);
-      console.log(`Classified Intent for "${query}": ${intent}`);
-
-      // Mettre à jour le streamable avec les résultats de recherche, vidéos et news
       streamable.update({
         results: searchResults,
         messages: "",
@@ -290,17 +143,14 @@ export async function fetchSearchResults(query: string, language: string = "fr")
         relatedQuestions: [],
         showRelated: false,
         youtubeVideos,
-        showYouTube: youtubeVideos.length > 0,
+        showYouTube: false,
         intentType: intent,
       });
 
-      // Utiliser la version streaming du LLM Cerebras
-      const llmStream = streamCerebrasLLMResponse(query, searchResults, language);
+      const llmStream = streamGeminiLLMResponse(query, searchResults);
 
-      // Variable pour accumuler le texte généré
       let accumulatedText = "";
 
-      // Lire le stream chunk par chunk
       const reader = llmStream.textStream.getReader();
 
       try {
@@ -311,10 +161,8 @@ export async function fetchSearchResults(query: string, language: string = "fr")
             break;
           }
 
-          // Accumuler le texte
           accumulatedText += value;
 
-          // Mettre à jour le streamable avec le texte accumulé
           streamable.update({
             results: searchResults,
             messages: accumulatedText,
@@ -330,15 +178,12 @@ export async function fetchSearchResults(query: string, language: string = "fr")
           });
         }
 
-        // Générer des questions connexes une fois que le LLM a terminé
-        const relatedQuestions = await generateCerebrasRelatedQuestions(
+        const relatedQuestions = await generateGeminiRelatedQuestions(
           query,
-          accumulatedText,
-          language
+          accumulatedText
         );
 
-        // Marquer le streamable comme terminé avec toutes les données
-        streamable.done({
+        const finalResult = {
           results: searchResults,
           messages: accumulatedText,
           videos: videoResults,
@@ -350,23 +195,160 @@ export async function fetchSearchResults(query: string, language: string = "fr")
           youtubeVideos,
           showYouTube: false,
           intentType: intent,
-        });
+        };
+        streamable.done(finalResult);
+
       } catch (readerError) {
-        console.error("Error reading LLM stream:", readerError);
+        console.error("Error reading Gemini LLM stream:", readerError);
+        reader.releaseLock();
         streamable.error(
           readerError instanceof Error
             ? readerError
-            : new Error("Erreur lors de la lecture du stream LLM")
+            : new Error("Erreur lors de la lecture du stream LLM Gemini")
         );
+      } finally {
+        if (reader && typeof reader.releaseLock === 'function') {
+          try {
+            reader.releaseLock();
+          } catch (releaseError) {
+            console.warn("Error releasing reader lock in finally block:", releaseError);
+          }
+        }
       }
     } catch (error) {
-      console.error("Error fetching search results:", error);
+      console.error("Error fetching Gemini search results:", error);
+      streamable.error(
+        error instanceof Error ? error : new Error("Une erreur est survenue lors de la recherche Gemini")
+      );
+    }
+  })();
+
+  return streamable.value;
+}
+
+/**
+ * Fonction pour récupérer les résultats de recherche (Cerebras) avec streaming et cache unifié
+ */
+export async function fetchSearchResults(query: string, language: string = "fr") {
+  const streamable = createStreamableValue<SearchResults | null>(null);
+  const cacheKey = generateCacheKey('query', query, language);
+
+  (async () => {
+    let redisClient;
+    let cachedQueryData: CachedQueryData = {};
+
+    try {
+      try {
+        redisClient = await getRedisClient();
+        const rawCachedData = await redisClient.get(cacheKey);
+        if (rawCachedData) {
+          cachedQueryData = JSON.parse(rawCachedData);
+          if (cachedQueryData.searchResults) {
+            console.log(`Cache hit for full searchResults with key: ${cacheKey}`);
+            streamable.done(cachedQueryData.searchResults);
+            return;
+          }
+          console.log(`Cache miss for searchResults, found other data for key: ${cacheKey}`);
+        } else {
+          console.log(`Cache miss for key: ${cacheKey}`);
+        }
+      } catch (redisError) {
+        console.error(`Redis GET failed for key ${cacheKey}:`, redisError);
+        redisClient = null;
+      }
+
+      console.log(`Fetching fresh data for searchResults...`);
+      const searchResponse = await searchWithBrave(query, language);
+      const searchResults = searchResponse.results;
+      const videoResults = searchResponse.videos || [];
+      const newsResults = searchResponse.news || [];
+      const youtubeVideos: YouTubeVideoItem[] = [];
+      const intent = intentDetector.classifyQueryIntent(query, searchResults);
+
+      streamable.update({
+        results: searchResults,
+        messages: "",
+        videos: videoResults,
+        showVideos: videoResults.length > 0,
+        news: newsResults,
+        showNews: newsResults.length > 0,
+        relatedQuestions: [],
+        showRelated: false,
+        youtubeVideos,
+        showYouTube: false,
+        intentType: intent,
+      });
+
+      const llmStream = streamCerebrasLLMResponse(query, searchResults, language);
+      let accumulatedText = "";
+      const reader = llmStream.textStream.getReader();
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          accumulatedText += value;
+          streamable.update({
+            results: searchResults,
+            messages: accumulatedText,
+            videos: videoResults,
+            showVideos: videoResults.length > 0,
+            news: newsResults,
+            showNews: newsResults.length > 0,
+            relatedQuestions: [],
+            showRelated: false,
+            youtubeVideos,
+            showYouTube: false,
+            intentType: intent,
+          });
+        }
+      } finally {
+        reader.releaseLock();
+      }
+
+      const relatedQuestions = await generateCerebrasRelatedQuestions(
+        query,
+        accumulatedText,
+        language
+      );
+
+      const finalResult: SearchResults = {
+        results: searchResults,
+        messages: accumulatedText,
+        videos: videoResults,
+        showVideos: videoResults.length > 0,
+        news: newsResults,
+        showNews: newsResults.length > 0,
+        relatedQuestions,
+        showRelated: relatedQuestions.length > 0,
+        youtubeVideos,
+        showYouTube: false,
+        intentType: intent,
+      };
+
+      const updatedCacheData: CachedQueryData = { ...cachedQueryData, searchResults: finalResult };
+      if (redisClient) {
+        try {
+          await redisClient.set(cacheKey, JSON.stringify(updatedCacheData), {
+            EX: CACHE_TTL_SECONDS,
+          });
+          console.log(`Cached final searchResults for key: ${cacheKey}`);
+        } catch (cacheError) {
+          console.error(`Failed to cache final searchResults for key ${cacheKey}:`, cacheError);
+        }
+      } else {
+        console.warn(`Skipping cache update for ${cacheKey} because Redis client is not available.`);
+      }
+
+      streamable.done(finalResult);
+
+    } catch (error) {
+      console.error("Error in fetchSearchResults (unified cache):", error);
       streamable.error(
         error instanceof Error ? error : new Error("Une erreur est survenue lors de la recherche")
       );
     }
   })();
 
-  // Retourner la valeur streamable
   return streamable.value;
 }

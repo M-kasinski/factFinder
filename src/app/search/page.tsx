@@ -100,6 +100,22 @@ function SearchPageContent() {
   const handleSearch = (query: string) => {
     if (!query.trim() || query === currentQuery) return;
 
+    // Reset states before starting the new search
+    setResults([]);
+    setMessages("");
+    setVideos([]);
+    setShowVideos(false);
+    setNews([]);
+    setShowNews(false);
+    setRelatedQuestions([]);
+    setShowRelated(false);
+    setYoutubeVideos([]);
+    setShowYouTube(false);
+    setError(null);
+    setIsLoading(true); // Show loading state immediately
+    // Réinitialiser l'intention pour la nouvelle recherche (déjà fait avant)
+    // setDetectedIntent('AI_ANSWER');
+
     // Mettre à jour l'URL avec la nouvelle requête
     const newUrl = `/search?q=${encodeURIComponent(query)}`;
     router.push(newUrl);
