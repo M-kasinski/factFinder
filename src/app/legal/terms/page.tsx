@@ -21,7 +21,7 @@ En accédant ou en utilisant notre Service, vous acceptez d'être lié par ces C
 
 ## 2. Qui sommes-nous
 
-Le Service est exploité par un développeur indépendant en founderMode basé à Ajaccio, Corse, France (ci-après "nous", "notre", "nos").
+Le Service est exploité par un développeur indépendant en founderMode, France (ci-après "nous", "notre", "nos").
 
 ## 3. Modifications des Conditions
 
@@ -159,7 +159,7 @@ By accessing or using our Service, you agree to be bound by these Terms. If you 
 
 ## 2. Who We Are
 
-The Service is operated by an independent developer in founderMode based in Ajaccio, Corsica, France (hereinafter "we", "our", "us").
+The Service is operated by an independent developer in founderMode (hereinafter "we", "our", "us").
 
 ## 3. Changes to the Terms
 

@@ -22,7 +22,6 @@ Veuillez lire attentivement cette Politique de Confidentialité. En utilisant Cl
 ## 2. Responsable du traitement
 
 **Développeur indépendant en founderMode**  
-Basé à Ajaccio, Corse, France  
 Contact : clairevue2a@gmail.com
 
 ## 3. Informations que nous collectons
@@ -148,7 +147,6 @@ Please read this Privacy Policy carefully. By using ClaireVue, you agree to the 
 ## 2. Data Controller
 
 **Independent developer in founderMode**  
-Based in Ajaccio, Corsica, France  
 Contact: clairevue2a@gmail.com
 
 ## 3. Information We Collect
