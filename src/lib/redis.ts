@@ -21,7 +21,7 @@ async function getRedisClient(): Promise<RedisClientType> {
       // Assumes Redis is running on the default host and port
       // You might need to configure this using environment variables
       const client = createClient({
-        // url: process.env.REDIS_URL || 'redis://localhost:6379' 
+        url: process.env.REDIS_URL || 'redis://localhost:6379'
       });
       client.on('error', (err) => {
         console.error('Redis Client Error', err);
