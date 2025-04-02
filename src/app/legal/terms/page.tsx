@@ -116,7 +116,7 @@ Nous ne serons pas responsables de tout retard ou manquement à nos obligations 
 
 Ces Conditions seront régies et interprétées conformément au droit français, sans égard aux dispositions relatives aux conflits de lois.
 
-Tout litige découlant de ces Conditions ou s'y rapportant sera soumis à la compétence exclusive des tribunaux d'Ajaccio (Corse).
+Tout litige découlant de ces Conditions ou s'y rapportant sera soumis à la compétence exclusive des tribunaux de France.
 
 ## 14. Dispositions diverses
 
@@ -254,7 +254,7 @@ We will not be liable for any delay or failure to perform our obligations under 
 
 These Terms shall be governed and construed in accordance with the laws of France, without regard to its conflict of law provisions.
 
-Any dispute arising from these Terms or related to them will be subject to the exclusive jurisdiction of the courts of Ajaccio (Corsica).
+Any dispute arising from these Terms or related to them will be subject to the exclusive jurisdiction of the courts of France.
 
 ## 14. Miscellaneous
 
