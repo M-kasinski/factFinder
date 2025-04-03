@@ -19,9 +19,10 @@ import { getRedisClient } from "@/lib/redis";
 import { manageCache, generateCacheKey, CACHE_TTL_SECONDS, CachedQueryData } from "@/lib/cache";
 
 /**
- * Type pour les résultats de recherche
+ * Résultats complets de recherche avec streaming LLM
  */
 export interface SearchResults {
+  /** Résultats de recherche web */
   results: SearchResult[];
   messages: string;
   videos: SearchResult[];
@@ -36,15 +37,19 @@ export interface SearchResults {
 }
 
 /**
- * Type pour le streamable des résultats d'images
+ * Résultats d'images avec état de chargement
  */
 export interface ImageResultsStream {
+  /** Tableau des résultats d'images */
   images: ImageSearchResult[];
   loading: boolean;
 }
 
 /**
- * Recherche des vidéos sur YouTube (fonction interne)
+ * Récupère les vidéos YouTube correspondant à une requête
+ * @param query Termes de recherche
+ * @param maxResults Nombre max de résultats (défaut: 10)
+ * @returns Promise avec les vidéos trouvées ou tableau vide en cas d'erreur
  */
 async function fetchYouTubeVideos(query: string, maxResults: number = 10): Promise<YouTubeVideoItem[]> {
   try {
@@ -57,7 +62,9 @@ async function fetchYouTubeVideos(query: string, maxResults: number = 10): Promi
 }
 
 /**
- * Action serveur pour récupérer les vidéos YouTube uniquement (avec cache unifié)
+ * Récupère les résultats YouTube avec gestion du cache
+ * @param query Termes de recherche 
+ * @returns Streamable avec vidéos et état de chargement
  */
 export async function fetchYouTubeResults(query: string) {
   const streamable = createStreamableValue<{ videos: YouTubeVideoItem[], loading: boolean } | null>(null);
@@ -80,7 +87,10 @@ export async function fetchYouTubeResults(query: string) {
 }
 
 /**
- * Action serveur pour récupérer les résultats d'images uniquement (avec cache unifié)
+ * Récupère les résultats d'images avec gestion du cache
+ * @param query Termes de recherche
+ * @param language Langue des résultats (défaut: "fr")
+ * @returns Streamable avec images et état de chargement
  */
 export async function fetchImageResults(query: string, language: string = "fr") {
   const streamable = createStreamableValue<ImageResultsStream | null>(null);
@@ -103,7 +113,9 @@ export async function fetchImageResults(query: string, language: string = "fr") 
 }
 
 /**
- * Fonction pour récupérer les résultats de recherche avec streaming en utilisant Gemini
+ * Effectue une recherche complète avec streaming LLM via Gemini
+ * @param query Termes de recherche
+ * @returns Streamable avec tous les résultats
  */
 export async function fetchGeminiLLMResponse(query: string) {
   const streamable = createStreamableValue<SearchResults>({
@@ -227,7 +239,10 @@ export async function fetchGeminiLLMResponse(query: string) {
 }
 
 /**
- * Fonction pour récupérer les résultats de recherche (Cerebras) avec streaming et cache unifié
+ * Effectue une recherche complète avec streaming LLM via Cerebras
+ * @param query Termes de recherche
+ * @param language Langue des résultats (défaut: "fr")
+ * @returns Streamable avec tous les résultats
  */
 export async function fetchSearchResults(query: string, language: string = "fr") {
   const streamable = createStreamableValue<SearchResults | null>(null);
