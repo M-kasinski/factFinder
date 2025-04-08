@@ -37,7 +37,7 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+            onBlur={() => setIsFocused(false)}
             // Ajout de enterKeyHint pour le clavier mobile
             enterKeyHint="search"
             className="w-full py-3.5 md:py-4.5 pl-5 md:pl-6 pr-20 md:pr-24 rounded-full focus:outline-none text-lg md:text-xl bg-transparent"
