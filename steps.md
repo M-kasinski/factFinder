@@ -888,3 +888,8 @@
 - **Fichier modifié:** `src/app/search/page.tsx`
 - **Objectif:** Vider les résultats de la recherche précédente (résultats, messages, vidéos, actualités, questions associées, vidéos YouTube) lorsqu'une nouvelle recherche est lancée pour éviter d'afficher des données périmées.
 - **Implémentation:** Ajout de l'appel aux fonctions `set...` pour réinitialiser les états correspondants au début de la fonction `handleSearch`.
+
+## Amélioration de l'expérience mobile pour la barre de recherche
+
+- Ajout de `enterKeyHint="search"` à l'input pour afficher un bouton "Rechercher" sur le clavier mobile (iOS).
+- Ajout de `inputRef.current?.blur()` dans `handleSubmit` pour fermer automatiquement le clavier après la soumission de la recherche.

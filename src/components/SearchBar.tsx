@@ -18,6 +18,8 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(value);
+    // Ferme le clavier en retirant le focus de l'input
+    inputRef.current?.blur();
   };
 
   return (
@@ -31,11 +33,13 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
           
           <input
             ref={inputRef}
-            type="text"
+            type="search"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+            // Ajout de enterKeyHint pour le clavier mobile
+            enterKeyHint="search"
             className="w-full py-3.5 md:py-4.5 pl-5 md:pl-6 pr-20 md:pr-24 rounded-full focus:outline-none text-lg md:text-xl bg-transparent"
             placeholder={t("searchPlaceholder")}
           />
