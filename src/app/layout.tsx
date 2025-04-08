@@ -18,12 +18,18 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  manifest: '/manifest.json',
   title: "ClaireVue - La clarté à chaque recherche",
   description: "Un moteur de recherche français qui offre des résultats clairs, sourcés et impartiaux",
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' }
     ]
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'ClaireVue'
   }
 };
 

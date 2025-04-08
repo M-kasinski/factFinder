@@ -893,3 +893,18 @@
 
 - Ajout de `enterKeyHint="search"` à l'input pour afficher un bouton "Rechercher" sur le clavier mobile (iOS).
 - Ajout de `inputRef.current?.blur()` dans `handleSubmit` pour fermer automatiquement le clavier après la soumission de la recherche.
+
+## Étape : Configuration PWA et affichage plein écran iOS (Date actuelle)
+- [x] Création du fichier `public/manifest.json` avec les configurations de base PWA et le nom "ClaireVue"
+- [x] Ajout des métadonnées `apple-mobile-web-app-capable` pour iOS
+- [x] Ajout des métadonnées `apple-mobile-web-app-status-bar-style` pour la barre d'état iOS
+- [x] Ajout des métadonnées `apple-mobile-web-app-title` ("ClaireVue") pour le titre de l'app sur l'écran d'accueil iOS
+- [x] Ajout du lien vers le `manifest.json` dans `src/app/layout.tsx`
+- [x] Ajout des métadonnées `appleWebApp` (avec title: 'ClaireVue') dans `src/app/layout.tsx` pour Next.js
+
+## Étape : Correction du problème des balises manquantes dans le Root Layout (2025-04-08)
+- [x] Identification du problème des balises `<html>` et `<body>` manquantes
+- [x] Correction du fichier `src/app/legal/layout.tsx` qui rendait `null` pendant le montage
+- [x] Mise à jour pour renvoyer un conteneur `<div>` avec les enfants pendant le montage
+- [x] Résolution de l'erreur "The following tags are missing in the Root Layout: <html>, <body>"
+- [x] Vérification que tous les layouts (y compris les layouts imbriqués) respectent la structure de Next.js
