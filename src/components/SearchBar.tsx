@@ -33,7 +33,7 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
           
           <input
             ref={inputRef}
-            type="search"
+            type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
