@@ -3,52 +3,6 @@ import { streamText, generateText } from "ai";
 import { SearchResult } from "@/types/search";
 
 /**
- * Fonction pour générer une réponse LLM basée sur les résultats de recherche
- */
-export async function generateLLMResponse(
-  query: string,
-  searchResults: SearchResult[]
-) {
-  try {
-    // Construire le contexte à partir des résultats de recherche
-    const context = searchResults
-      .map((result, index) => {
-        return `[${index + 1}] ${result.title}\nURL: ${
-          result.url
-        }\nDescription: ${result.description}\n`;
-      })
-      .join("\n");
-
-    // Construire le prompt pour le LLM
-    const prompt = `
-Tu es un assistant de recherche factuel et précis. Réponds à la question de l'utilisateur en te basant uniquement sur les informations fournies dans les résultats de recherche ci-dessous.
-Mets en gras les mots clés **mots clés** dans la réponse.
-Si les résultats de recherche ne contiennent pas suffisamment d'informations pour répondre à la question, indique-le clairement.
-Ne fabrique pas d'informations et cite les sources en utilisant les numéros entre crochets [1], [2], etc.
-
-Question: ${query}
-
-Résultats de recherche:
-${context}
-
-Réponds de manière concise, factuelle et en français.
-`;
-
-    // Utiliser streamText pour générer une réponse en streaming
-    const result = await streamText({
-      model: cerebras("llama-3.3-70b"),
-      prompt,
-    });
-
-    // Retourner le texte généré
-    return result.text;
-  } catch (error) {
-    console.error("Error generating LLM response:", error);
-    return `Je n'ai pas pu générer une réponse basée sur les résultats de recherche. Veuillez consulter directement les sources.`;
-  }
-}
-
-/**
  * Fonction pour streamer une réponse LLM basée sur les résultats de recherche
  */
 export function streamLLMResponse(
@@ -60,7 +14,7 @@ export function streamLLMResponse(
     // Construire le contexte à partir des résultats de recherche
     const context = searchResults
       .map((result, index) => {
-        return `[${index + 1}] ${result.title}\nURL: ${result.url}\nContent: ${
+        return `citation source:[${index + 1}](${result.url})\ntitle:${result.title}\nContent: ${
           result.extra_snippet
         }\n`;
       })
@@ -73,6 +27,7 @@ Tu es un assistant de recherche factuel et précis. Réponds à la question de l
 Mets en gras les mots clés **mots clés** dans la réponse.
 Si les résultats de recherche ne contiennent pas suffisamment d'informations pour répondre à la question, indique-le clairement.
 Ne fabrique pas d'informations et cite les sources en utilisant les urls (lien au format markdown) entre parenthèses [1](URL), [2](URL), etc.
+exemples: question: "Quel est le plus grand volcan de la planète ?", réponse: "Le plus grand volcan de la planète est le mont Everest, avec une hauteur de 8848 mètres. [1](https://fr.wikipedia.org/wiki/Mont_Everest)"
 
 Question: ${query}
 
@@ -86,6 +41,7 @@ You are a factual and precise search assistant. Answer the user's question based
 Put key terms in bold using **key terms** in your response.
 If the search results don't contain enough information to answer the question, clearly state this.
 Don't make up information and cite sources using markdown links in parentheses [1](URL), [2](URL), etc.
+exemples: question: "What is the largest volcano on the planet?", response: "The largest volcano on the planet is Mount Everest, with a height of 8848 meters. [1](https://en.wikipedia.org/wiki/Mount_Everest)"
 
 Question: ${query}
 
@@ -98,7 +54,7 @@ Answer in a concise, factual manner in English.
 
     // Utiliser streamText pour générer une réponse en streaming
     return streamText({
-      model: cerebras("llama3.3-70b"),
+      model: cerebras("llama3.1-8b"),
       prompt: prompts[language as keyof typeof prompts] || prompts.fr,
     });
   } catch (error) {
