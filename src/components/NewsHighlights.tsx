@@ -1,3 +1,4 @@
+"use client";
 import { Newspaper } from "lucide-react";
 import { SearchResult } from "@/types/search";
 import Image from "next/image";

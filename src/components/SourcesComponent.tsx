@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { Globe, LinkIcon } from 'lucide-react';
 import Image from 'next/image';

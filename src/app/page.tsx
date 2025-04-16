@@ -7,7 +7,6 @@ import { Eye, Shield, BarChart } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import "../i18n"; // Import de la configuration i18n
 import Image from "next/image";
 
 export default function Home() {
