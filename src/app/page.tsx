@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import "../i18n"; // Import de la configuration i18n
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
@@ -40,18 +41,18 @@ export default function Home() {
 
         <div className="flex flex-col items-center pt-16 md:pt-0 md:justify-center min-h-[calc(100vh-130px)]">
           <div className="text-center space-y-4 mb-8 md:mb-10">
-            <div className="flex items-center justify-center gap-2 md:gap-3 text-primary animate-fade-in">
-              <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent pr-1">
+            <div className="flex flex-col items-center justify-center gap-0 md:gap-1 text-primary animate-fade-in">
+              <Image 
+                src="/spiral_svg.svg" 
+                alt="ClaireVue Logo" 
+                width={200} 
+                height={200} 
+                className="w-32 h-32 md:w-[200px] md:h-[200px]"
+                priority
+              />
+              <h1 className="-mt-4 md:-mt-8 text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent pr-1">
                 ClaireVue
               </h1>
-              {/* TODO: Add logo */}
-              {/* <Image 
-                src="/clairevue-logo.svg" 
-                alt="ClaireVue Logo" 
-                width={40} 
-                height={40} 
-                className="md:w-12 md:h-12"
-              /> */}
             </div>
             <p className="text-lg md:text-2xl font-semibold text-primary/90 max-w-[600px] mx-auto animate-fade-in-up px-2 md:px-4">
               {t("home:slogan")}

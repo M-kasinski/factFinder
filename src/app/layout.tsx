@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: "Un moteur de recherche français qui offre des résultats clairs, sourcés et impartiaux",
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' }
+      { url: '/spiral_svg.svg', type: 'image/svg+xml' }
     ]
   },
   appleWebApp: {

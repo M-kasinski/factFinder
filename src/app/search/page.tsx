@@ -170,9 +170,9 @@ function SearchPageContent() {
               <ArrowLeft className="h-5 w-5 text-primary" />
             </Button>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center">
               <Image
-                src="/clairevue-logo.svg"
+                src="/spiral_svg.svg"
                 alt="ClaireVue Logo"
                 width={32}
                 height={32}
