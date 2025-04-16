@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Search Engine Project Structure Rule
+
+Ce projet est un moteur de recherche basé sur Next.js App Router, shadcn/ui et Tailwind CSS. Voici les principaux fichiers et dossiers à connaître :
+
+## App Router (Next.js)
+- [src/app/layout.tsx](mdc:src/app/layout.tsx) : Layout principal de l'application.
+- [src/app/page.tsx](mdc:src/app/page.tsx) : Page d'accueil.
+- [src/app/search/page.tsx](mdc:src/app/search/page.tsx) : Page principale du moteur de recherche.
+
+## Composants UI (shadcn/ui)
+- [src/components/ui/](mdc:src/components/ui) : Composants UI réutilisables (boutons, tabs, drawer, etc.).
+- [src/components/SearchBar.tsx](mdc:src/components/SearchBar.tsx) : Barre de recherche principale.
+- [src/components/SearchResultTabs.tsx](mdc:src/components/SearchResultTabs.tsx) : Affichage des résultats par onglets.
+- [src/components/LLMResponse.tsx](mdc:src/components/LLMResponse.tsx) : Affichage de la réponse du LLM.
+
+## Sources Web & LLM
+- [src/lib/services/braveSearch.ts](mdc:src/lib/services/braveSearch.ts) : Recherche web Brave.
+- [src/lib/services/braveImageSearch.ts](mdc:src/lib/services/braveImageSearch.ts) : Recherche d'images Brave.
+- [src/lib/services/cerebrasLLM.ts](mdc:src/lib/services/cerebrasLLM.ts) : Intégration LLM Cerebras.
+- [src/lib/services/geminiLLM.ts](mdc:src/lib/services/geminiLLM.ts) : Intégration LLM Gemini.
+- [src/lib/services/youtube/youtubeService.ts](mdc:src/lib/services/youtube/youtubeService.ts) : Source YouTube.
+
+## Hooks personnalisés
+- [src/hooks/useEventSource.ts](mdc:src/hooks/useEventSource.ts) : Hook pour gérer les flux SSE.
+- [src/hooks/use-media-query.ts](mdc:src/hooks/use-media-query.ts) : Hook pour les media queries.
+
+## Types
+- [src/types/search.ts](mdc:src/types/search.ts) : Types pour la recherche.
+- [src/types/youtube.ts](mdc:src/types/youtube.ts) : Types pour YouTube.
+
+## Prompts & Instructions LLM
+- [prompt_instruction/](mdc:prompt_instruction) : Dossiers et fichiers pour l'ingénierie de prompt et les instructions LLM.
+
+## Utilitaires
+- [src/lib/cache.ts](mdc:src/lib/cache.ts) : Gestion du cache.
+- [src/lib/redis.ts](mdc:src/lib/redis.ts) : Connexion Redis.
+- [src/lib/utils.ts](mdc:src/lib/utils.ts) : Fonctions utilitaires diverses.
+
+---
+
+Pour toute navigation ou compréhension du code, commencez par ces fichiers et dossiers. Utilisez les liens pour accéder rapidement aux parties clés du moteur de recherche.
