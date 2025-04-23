@@ -10,19 +10,18 @@ export function streamLLMResponse(
   searchResults: SearchResult[],
   language: string = "fr"
 ) {
-  try {
-    // Construire le contexte à partir des résultats de recherche
-    const context = searchResults
-      .map((result, index) => {
-        return `citation source:[${index + 1}](${result.url})\ntitle:${result.title}\nContent: ${
-          result.extra_snippet
-        }\n`;
-      })
-      .join("\n");
+  // Construire le contexte à partir des résultats de recherche
+  const context = searchResults
+    .map((result, index) => {
+      return `citation source:[${index + 1}](${result.url})\ntitle:${result.title}\nContent: ${
+        result.extra_snippet
+      }\n`;
+    })
+    .join("\n");
 
-    // Définir les prompts selon la langue
-    const prompts = {
-      fr: `
+  // Définir les prompts selon la langue
+  const prompts = {
+    fr: `
 Tu es un assistant de recherche factuel et précis. Réponds à la question de l'utilisateur en te basant uniquement sur les informations fournies dans les résultats de recherche ci-dessous.
 Mets en gras les mots clés **mots clés** dans la réponse.
 Si les résultats de recherche ne contiennent pas suffisamment d'informations pour répondre à la question, indique-le clairement.
@@ -36,7 +35,7 @@ ${context}
 
 Réponds de manière concise, factuelle et en français.
 `,
-      en: `
+    en: `
 You are a factual and precise search assistant. Answer the user's question based solely on the information provided in the search results below.
 Put key terms in bold using **key terms** in your response.
 If the search results don't contain enough information to answer the question, clearly state this.
@@ -50,16 +49,50 @@ ${context}
 
 Answer in a concise, factual manner in English.
 `
-    };
+  };
 
-    // Utiliser streamText pour générer une réponse en streaming
+  const selectedPrompt = prompts[language as keyof typeof prompts] || prompts.fr;
+
+  try {
+    // Essayer avec le modèle principal
     return streamText({
-      model: cerebras("llama3.1-8b"),
-      prompt: prompts[language as keyof typeof prompts] || prompts.fr,
+      model: cerebras("llama-3.3-70b"),
+      prompt: selectedPrompt,
     });
-  } catch (error) {
-    console.error("Error streaming LLM response:", error);
-    throw error;
+  } catch (error: unknown) {
+    // Vérifier si l'erreur est une erreur 429 (Too Many Requests)
+    // Note: La structure exacte de l'erreur peut varier. Adaptez si nécessaire.
+    let isRateLimitError = false;
+    let status: number | undefined;
+    let message: string | undefined;
+
+    if (typeof error === 'object' && error !== null) {
+      if ('status' in error && typeof error.status === 'number') {
+        status = error.status;
+      }
+      if ('message' in error && typeof error.message === 'string') {
+        message = error.message;
+      }
+      isRateLimitError = status === 429 || (typeof message === 'string' && message.includes("429"));
+    }
+
+    if (isRateLimitError) {
+      console.warn("Rate limit hit with llama-3.3-70b. Falling back to llama3.1-8b.");
+      try {
+        // Essayer avec le modèle de repli
+        return streamText({
+          model: cerebras("llama3.1-8b"), // Modèle de repli
+          prompt: selectedPrompt,
+        });
+      } catch (fallbackError) {
+        console.error("Error streaming LLM response with fallback model:", fallbackError);
+        throw fallbackError; // Relancer l'erreur du modèle de repli
+      }
+    } else {
+      // Si ce n'est pas une erreur 429, relancer l'erreur originale
+      console.error("Error streaming LLM response:", error);
+      throw error;
+    }
   }
 }
 
