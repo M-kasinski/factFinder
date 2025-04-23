@@ -4,7 +4,6 @@ import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { readStreamableValue } from "ai/rsc";
 import { SearchBar } from "@/components/SearchBar";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { SearchResultTabs } from "@/components/SearchResultTabs";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
@@ -13,7 +12,7 @@ import { fetchSearchResults } from "@/app/actions";
 import { SearchResult } from "@/types/search";
 import { YouTubeVideoItem } from "@/types/youtube";
 import Image from "next/image";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import { useTranslation } from "react-i18next";
 import { QueryIntent } from "@/lib/services/intentDetector";
 
@@ -182,10 +181,7 @@ function SearchPageContent() {
               </h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </div>
+          <SettingsMenu />
         </div>
 
         <div className="w-full max-w-3xl mx-auto">

@@ -46,5 +46,10 @@
   },
   "searchBar": {
     "placeholder": "Ask anything..."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme"
   }
 }

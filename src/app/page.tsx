@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
 import { Eye, Shield, BarChart } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
 
@@ -33,9 +32,8 @@ export default function Home() {
   return (
     <div className="flex-1 flex flex-col">
       <div className="container relative flex-1 mx-auto px-4 pb-8 md:pb-16">
-        <div className="absolute top-4 right-4 flex items-center space-x-2">
-          <LanguageSwitcher />
-          <ThemeToggle />
+        <div className="absolute top-4 right-4">
+          <SettingsMenu />
         </div>
 
         <div className="flex flex-col items-center pt-16 md:pt-0 md:justify-center min-h-[calc(100vh-130px)]">
