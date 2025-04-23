@@ -284,8 +284,6 @@ const PrivacyPolicyPage = () => {
   useEffect(() => {
     if (mounted) {
       const contentToUse = i18n.language === "fr" ? privacyPolicyFR : privacyPolicyEN;
-      console.log("Setting content for language:", i18n.language);
-      console.log("Content length:", contentToUse.length);
       setContent(contentToUse);
     }
   }, [i18n.language, mounted]);

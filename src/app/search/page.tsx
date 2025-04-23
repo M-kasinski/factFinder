@@ -72,7 +72,6 @@ function SearchPageContent() {
           // Mettre à jour l'intention détectée si disponible
           if (update.intentType) {
             setDetectedIntent(update.intentType);
-            console.log(`Intent detected from API: ${update.intentType}`);
           }
 
           // Ne mettre isLoading à false que lorsque nous avons à la fois le message et des résultats

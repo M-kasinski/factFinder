@@ -310,8 +310,6 @@ const TermsOfServicePage = () => {
   useEffect(() => {
     if (mounted) {
       const contentToUse = i18n.language === "fr" ? termsOfServiceFR : termsOfServiceEN;
-      console.log("Setting terms content for language:", i18n.language);
-      console.log("Terms content length:", contentToUse.length);
       setContent(contentToUse);
     }
   }, [i18n.language, mounted]);
