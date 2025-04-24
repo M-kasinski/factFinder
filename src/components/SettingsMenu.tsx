@@ -15,34 +15,54 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { Switch } from "@/components/ui/switch";
 
-// Key for local storage
-const LOCAL_STORAGE_KEY = 'showConversationFeature';
+// Keys for local storage
+const LOCAL_STORAGE_KEY_PROMO = 'showConversationFeature';
+const LOCAL_STORAGE_KEY_POSITION = 'searchBarPosition'; // New key
 
 export function SettingsMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation("common");
-  // State for the toggle, defaulting to true
+  // State for the promo toggle
   const [showPromo, setShowPromo] = useState(true);
+  // State for the search bar position, defaulting to 'top'
+  const [searchBarPosition, setSearchBarPosition] = useState<'top' | 'bottom'>('top');
 
-  // Effect to load the setting from local storage on mount (client-side)
+  // Effect to load settings from local storage on mount (client-side)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedValue = localStorage.getItem(LOCAL_STORAGE_KEY);
-      // Default to true if not found or invalid
-      setShowPromo(savedValue === null ? true : JSON.parse(savedValue));
+      // Load promo setting
+      const savedPromoValue = localStorage.getItem(LOCAL_STORAGE_KEY_PROMO);
+      setShowPromo(savedPromoValue === null ? true : JSON.parse(savedPromoValue));
+
+      // Load position setting
+      const savedPosition = localStorage.getItem(LOCAL_STORAGE_KEY_POSITION) as 'top' | 'bottom' | null;
+      setSearchBarPosition(savedPosition === 'bottom' ? 'bottom' : 'top');
     }
   }, []);
 
-  // Handler to update state and local storage
-  const handleToggleChange = (checked: boolean) => {
+  // Handler to update promo state and local storage
+  const handlePromoToggleChange = (checked: boolean) => {
     setShowPromo(checked);
     if (typeof window !== 'undefined') {
       const newValue = JSON.stringify(checked);
-      localStorage.setItem(LOCAL_STORAGE_KEY, newValue);
-      // Manually dispatch a storage event to notify other components/tabs
+      localStorage.setItem(LOCAL_STORAGE_KEY_PROMO, newValue);
       window.dispatchEvent(new StorageEvent('storage', {
-        key: LOCAL_STORAGE_KEY,
+        key: LOCAL_STORAGE_KEY_PROMO,
         newValue: newValue,
+        storageArea: localStorage,
+      }));
+    }
+  };
+
+  // Handler to update position state and local storage
+  const handlePositionChange = (checked: boolean) => {
+    const newPosition = checked ? 'bottom' : 'top';
+    setSearchBarPosition(newPosition);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LOCAL_STORAGE_KEY_POSITION, newPosition);
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: LOCAL_STORAGE_KEY_POSITION,
+        newValue: newPosition,
         storageArea: localStorage,
       }));
     }
@@ -75,7 +95,16 @@ export function SettingsMenu() {
             </span>
             <Switch
               checked={showPromo}
-              onCheckedChange={handleToggleChange}
+              onCheckedChange={handlePromoToggleChange}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="pr-4">
+              {t("settings.searchBarPosition")} ({searchBarPosition === 'top' ? t('settings.positionTop', 'Top') : t('settings.positionBottom', 'Bottom')})
+            </span>
+            <Switch
+              checked={searchBarPosition === 'bottom'}
+              onCheckedChange={handlePositionChange}
             />
           </div>
         </div>

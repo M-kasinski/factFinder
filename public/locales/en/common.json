@@ -57,6 +57,9 @@
     "theme": "Theme",
     "showConversationFeature": "Show Landing Feature Section",
     "system": "System",
-    "light": "Light"
+    "light": "Light",
+    "searchBarPosition": "Search Bar Position",
+    "positionTop": "Top",
+    "positionBottom": "Bottom"
   }
 }

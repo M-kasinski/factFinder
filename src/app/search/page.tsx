@@ -16,6 +16,9 @@ import { SettingsMenu } from "@/components/SettingsMenu";
 import { useTranslation } from "react-i18next";
 import { QueryIntent } from "@/lib/services/intentDetector";
 
+// Local storage key for position
+const SEARCH_BAR_POSITION_KEY = 'searchBarPosition';
+
 function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -43,6 +46,9 @@ function SearchPageContent() {
   const [error, setError] = useState<Error | null>(null);
   const [detectedIntent, setDetectedIntent] = useState<QueryIntent>('AI_ANSWER');
   const [followUpQuery, setFollowUpQuery] = useState<string | null>(null);
+  // State for search bar position
+  const [searchBarPosition, setSearchBarPosition] = useState<'top' | 'bottom'>('top');
+
   // Fonction pour effectuer la recherche avec useCallback
   const performSearch = useCallback(async (query: string, history: { query: string, response: string } | null = null) => {
     if (!query.trim() || isSearchingRef.current) return;
@@ -162,77 +168,121 @@ function SearchPageContent() {
     }
   }, [searchParams, currentQuery, performSearch]);
 
+  // Effect to load search bar position and listen for changes
+  useEffect(() => {
+    const updatePosition = () => {
+      if (typeof window !== 'undefined') {
+        const savedPosition = localStorage.getItem(SEARCH_BAR_POSITION_KEY) as 'top' | 'bottom' | null;
+        setSearchBarPosition(savedPosition === 'bottom' ? 'bottom' : 'top');
+      }
+    };
+    updatePosition();
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === SEARCH_BAR_POSITION_KEY && event.newValue) {
+         setSearchBarPosition(event.newValue as 'top' | 'bottom');
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   return (
-    <div className="w-full mx-auto px-4 py-4 pb-16 flex-1">
-      <div className="flex flex-col gap-6 max-w-[1400px] mx-auto">
+    <div className="flex flex-col min-h-screen">
+      <div className="w-full mx-auto px-4 pt-4">
         <div className="flex items-center justify-between w-full max-w-3xl mx-auto">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.push("/")}
-              className="hover:bg-primary/10 rounded-full transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 text-primary" />
-            </Button>
+           <div className="flex items-center gap-4">
+              <Button
+                 variant="ghost"
+                 size="icon"
+                 onClick={() => router.push("/")}
+                 className="hover:bg-primary/10 rounded-full transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5 text-primary" />
+              </Button>
 
-            <div className="flex items-center">
-              <Image
-                src="/spiral_svg.svg"
-                alt="ClaireVue Logo"
-                width={32}
-                height={32}
+              <div className="flex items-center">
+                 <Image
+                   src="/spiral_svg.svg"
+                   alt="ClaireVue Logo"
+                   width={32}
+                   height={32}
+                 />
+                 <h1 className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                   ClaireVue
+                 </h1>
+              </div>
+           </div>
+           <SettingsMenu />
+        </div>
+      </div>
+
+      <div className={`flex-grow w-full mx-auto px-4 pt-4 ${searchBarPosition === 'bottom' ? 'pb-4' : 'pb-4'}`}>
+        <div className="flex flex-col gap-6 max-w-3xl mx-auto w-full h-full">
+
+          {searchBarPosition === 'top' && (
+            <div className="w-full order-1">
+              <SearchBar
+                onSearch={handleSearch}
+                value={searchValue}
+                onChange={setSearchValue}
+                isThreadMode={isThreadMode}
+                onToggleThread={() => setIsThreadMode(prev => !prev)}
+                threadAvailable={messages.length > 0}
+                showThreadToggle={true}
               />
-              <h1 className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                ClaireVue
-              </h1>
+              {followUpQuery && (
+                <p className="mt-2 ml-4 text-sm text-gray-500 dark:text-gray-300">{t("followUpQuery", { query: followUpQuery })}</p>
+              )}
             </div>
-          </div>
-          <SettingsMenu />
-        </div>
-
-        <div className="w-full max-w-3xl mx-auto">
-          <SearchBar
-            onSearch={handleSearch}
-            value={searchValue}
-            onChange={setSearchValue}
-            isThreadMode={isThreadMode}
-            onToggleThread={() => setIsThreadMode(prev => !prev)}
-            threadAvailable={messages.length > 0}
-            showThreadToggle={true}
-          />
-          {followUpQuery && (
-            <p className="mt-2 ml-4 text-sm text-gray-500 dark:text-gray-300">{t("followUpQuery", { query: followUpQuery })}</p>
           )}
-        </div>
 
-        <div className="mt-2 w-full max-w-3xl mx-auto">
-          <SearchResultTabs
-            results={results}
-            isLoading={isLoading}
-            messages={messages}
-            news={news}
-            showNews={isLoading || showNews}
-            videos={videos}
-            showVideos={isLoading || showVideos}
-            relatedQuestions={relatedQuestions}
-            showRelated={isLoading || showRelated}
-            youtubeVideos={youtubeVideos}
-            showYouTube={isLoading || showYouTube}
-            onQuestionClick={handleSearch}
-            intentType={detectedIntent}
-          />
+          <div className={`w-full ${searchBarPosition === 'top' ? 'order-2 mt-2' : 'order-1 flex-grow'}`}>
+            <SearchResultTabs
+              results={results}
+              isLoading={isLoading}
+              messages={messages}
+              news={news}
+              showNews={isLoading || showNews}
+              videos={videos}
+              showVideos={isLoading || showVideos}
+              relatedQuestions={relatedQuestions}
+              showRelated={isLoading || showRelated}
+              youtubeVideos={youtubeVideos}
+              showYouTube={isLoading || showYouTube}
+              onQuestionClick={handleSearch}
+              intentType={detectedIntent}
+            />
+          </div>
         </div>
-
-        {/* Le contenu supplémentaire est maintenant géré directement dans SearchResultTabs */}
       </div>
 
-      <div
-        className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl"
-        aria-hidden="true"
-      >
-        <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
-      </div>
+      {searchBarPosition === 'bottom' && (
+        <div className="sticky bottom-0 bg-background py-4 border-t z-10 shadow-up w-full">
+          <div className="max-w-3xl mx-auto px-4">
+            <SearchBar
+              onSearch={handleSearch}
+              value={searchValue}
+              onChange={setSearchValue}
+              isThreadMode={isThreadMode}
+              onToggleThread={() => setIsThreadMode(prev => !prev)}
+              threadAvailable={messages.length > 0}
+              showThreadToggle={true}
+            />
+            {followUpQuery && (
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">{t("followUpQuery", { query: followUpQuery })}</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {searchBarPosition === 'top' && (
+        <div
+          className="fixed inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl"
+          aria-hidden="true"
+        >
+          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#4B9FFF] to-[#E0F7FA] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
+        </div>
+      )}
     </div>
   );
 }
