@@ -256,8 +256,9 @@ function SearchPageContent() {
         </div>
       </div>
 
+      {/* Search Bar (Bottom Position) - Moved outside main content's max-width */}
       {searchBarPosition === 'bottom' && (
-        <div className="sticky bottom-0 bg-background py-4 border-t z-10 shadow-up w-full">
+        <div className="sticky bottom-0 bg-background pt-4 pb-[calc(2.2rem+env(safe-area-inset-bottom))] border-t z-10 shadow-up w-full">
           <div className="max-w-3xl mx-auto px-4">
             <SearchBar
               onSearch={handleSearch}
