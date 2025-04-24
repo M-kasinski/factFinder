@@ -3,20 +3,48 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/SearchBar";
-import { Eye, Shield, BarChart } from "lucide-react";
 import { SettingsMenu } from "@/components/SettingsMenu";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
+import { ConversationFeature } from "@/components/landing/ConversationFeature";
+
+// Key for local storage - must match the one in SettingsMenu
+const LOCAL_STORAGE_KEY = 'showConversationFeature';
 
 export default function Home() {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const { t } = useTranslation(["common", "home"]);
   const [isClient, setIsClient] = useState(false);
+  // State to control ConversationFeature visibility, default true
+  const [showConversationFeature, setShowConversationFeature] = useState(true);
 
-  // Ce useEffect est nécessaire pour éviter les erreurs d'hydratation avec Next.js
+  // Effect to load setting and handle client-side hydration
   useEffect(() => {
-    setIsClient(true);
+    setIsClient(true); // Handle hydration
+    // Load setting from local storage (client-side)
+    if (typeof window !== 'undefined') {
+      const loadSetting = () => {
+        const savedValue = localStorage.getItem(LOCAL_STORAGE_KEY);
+        setShowConversationFeature(savedValue === null ? true : JSON.parse(savedValue));
+      };
+
+      loadSetting(); // Initial load
+
+      // Listener for changes triggered by SettingsMenu (or other tabs)
+      const handleStorageChange = (event: StorageEvent) => {
+        if (event.key === LOCAL_STORAGE_KEY) {
+          loadSetting(); // Reload setting when the relevant key changes
+        }
+      };
+
+      window.addEventListener('storage', handleStorageChange);
+
+      // Cleanup listener on component unmount
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    }
   }, []);
 
   const handleSearch = (query: string) => {
@@ -36,7 +64,7 @@ export default function Home() {
           <SettingsMenu />
         </div>
 
-        <div className="flex flex-col items-center pt-16 md:pt-0 md:justify-center min-h-[calc(100vh-130px)]">
+        <div className="flex flex-col items-center pt-16">
           <div className="text-center space-y-4 mb-8 md:mb-10">
             <div className="flex flex-col items-center justify-center gap-0 md:gap-1 text-primary animate-fade-in">
               <Image 
@@ -56,7 +84,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="w-full max-w-[95%] md:max-w-2xl mx-auto transform transition-all duration-200 hover:scale-[1.02] animate-fade-in-up delay-100 mb-10 md:mb-12 px-0 md:px-0">
+          <div className="w-full max-w-[95%] md:max-w-2xl mx-auto transform transition-all duration-200 hover:scale-[1.02] animate-fade-in-up delay-100 px-0 md:px-0 mb-32">
             <SearchBar
               onSearch={handleSearch}
               value={searchValue}
@@ -64,49 +92,8 @@ export default function Home() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-5 w-full max-w-5xl mx-auto animate-fade-in-up delay-200 px-2 md:px-4 pb-10">
-            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-[0_0_15px_#4B9FFF4D] hover:scale-[1.02] transition-all duration-300 flex flex-col">
-              <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
-                <div className="p-2.5 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6" />
-                </div>
-                <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  {t("home:features.clearVision.title")}
-                </h3>
-              </div>
-              <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                {t("home:features.clearVision.description")}
-              </p>
-            </div>
-            
-            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-[0_0_15px_#4B9FFF4D] hover:scale-[1.02] transition-all duration-300 flex flex-col">
-              <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
-                <div className="p-2.5 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                  <Shield className="h-5 w-5 md:h-6 md:w-6" />
-                </div>
-                <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  {t("home:features.verifiedSources.title")}
-                </h3>
-              </div>
-              <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                {t("home:features.verifiedSources.description")}
-              </p>
-            </div>
-            
-            <div className="group p-4 md:p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 hover:shadow-[0_0_15px_#4B9FFF4D] hover:scale-[1.02] transition-all duration-300 flex flex-col">
-              <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-3">
-                <div className="p-2.5 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                  <BarChart className="h-5 w-5 md:h-6 md:w-6" />
-                </div>
-                <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  {t("home:features.smartAnalysis.title")}
-                </h3>
-              </div>
-              <p className="text-sm md:text-base text-foreground/90 pl-[2.8rem]">
-                {t("home:features.smartAnalysis.description")}
-              </p>
-            </div>
-          </div>
+          {/* Conditionally render Conversation Feature section */}
+          {isClient && showConversationFeature && <ConversationFeature />}
         </div>
 
         <div

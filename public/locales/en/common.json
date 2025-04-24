@@ -36,6 +36,7 @@
   },
   "generating": "Generating analysis...",
   "relatedQuestions": "Related questions",
+  "followUpQuery": "AI Reformulation: {{query}}",
   "news": {
     "headline": "Top stories",
     "source": "Source"
@@ -47,9 +48,15 @@
   "searchBar": {
     "placeholder": "Ask anything..."
   },
+  "continueConversation": "Continue conversation",
+  "stopConversation": "Stop conversation",
+  "threadPlaceholder": "Continue the conversation on the topic",
   "settings": {
     "title": "Settings",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "showConversationFeature": "Show Landing Feature Section",
+    "system": "System",
+    "light": "Light"
   }
 }

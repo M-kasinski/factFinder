@@ -147,3 +147,54 @@ Generate exactly 5 short related questions, one per line, without numbering or p
     return [];
   }
 }
+
+/**
+ * Fonction pour générer une seule suggestion de requête de recherche de suivi.
+ */
+export async function generateFollowUpSearchQuery(query: string, context: { query: string, response: string }, language: string = "fr"): Promise<string | null> {
+  try {
+    const prompts = {
+      fr: `
+Tu es un assistant de recherche qui aide à trouver la prochaine étape logique de recherche. Basé sur la question originale de l'utilisateur et le contexte fourni, génère UNE seule suggestion de requête de recherche pertinente que l'utilisateur pourrait entrer dans un moteur de recherche comme Google.
+La requête doit être concise et directement utilisable pour une recherche.
+
+Question originale: ${query}
+
+Contexte:
+${"question :" + context.query + "\n" + "réponse :" + context.response}
+
+Génère exactement UNE requête de recherche en français, sans aucun préfixe ni explication.
+`,
+      en: `
+You are a search assistant helping find the next logical search step. Based on the user's original question and the provided context, generate ONE relevant search query suggestion that the user could enter into a search engine like Google.
+The query should be concise and directly usable for searching.
+
+Original question: ${query}
+
+Context:
+${"question :" + context.query + "\n" + "response :" + context.response}
+
+Generate exactly ONE search query in English, without any prefix or explanation.
+`
+    };
+
+    const result = await generateText({
+      model: cerebras("llama3.1-8b"),
+      prompt: prompts[language as keyof typeof prompts] || prompts.fr,
+      maxTokens: 50, // Limiter la longueur de la réponse
+    });
+
+    const responseText = await result.text;
+    const followUpQuery = responseText.trim().split('\n')[0].replaceAll('"', ''); // Prendre la première ligne et nettoyer
+
+    // Vérifier si la requête n'est pas vide et semble valide
+    if (followUpQuery && followUpQuery.length > 3) {
+        return followUpQuery;
+    }
+
+    return null; // Retourner null si aucune requête valide n'est générée
+  } catch (error) {
+    console.error("Error generating follow-up search query:", error);
+    return null; // Retourner null en cas d'erreur
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "conversationFeature": {
+    "title": "Go Deeper with Conversation Mode",
+    "subtitle": "Don't just search, explore. Continue the conversation with AI to refine results and uncover more insights.",
+    "howItWorks": {
+      "title": "How It Works",
+      "step1": {
+        "title": "Start a Search",
+        "description": "Begin with any query. Get initial results and the AI summary."
+      },
+      "step2": {
+        "title": "Activate Conversation",
+        "description": "Click the message icon in the search bar (available after the first search). The bar will highlight."
+      },
+      "step3": {
+        "title": "Ask Your Follow-Up",
+        "description": "Type your related question. The AI uses the previous context for a smarter, relevant answer."
+      }
+    },
+    "benefits": {
+      "title": "Why You'll Love It",
+      "benefit1": {
+        "icon": "Brain",
+        "title": "Context-Aware",
+        "description": "AI understands the thread, providing relevant follow-ups."
+      },
+      "benefit2": {
+        "icon": "Zap",
+        "title": "Efficient Exploration",
+        "description": "Quickly refine your search without starting over."
+      },
+      "benefit3": {
+        "icon": "MessageSquare",
+        "title": "Natural Interaction",
+        "description": "Feels like a real conversation with your search engine."
+      }
+    },
+    "cta": "Experience Smarter Search"
+  }
+} 

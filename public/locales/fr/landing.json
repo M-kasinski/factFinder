@@ -1,0 +1,40 @@
+{
+  "conversationFeature": {
+    "title": "Approfondissez avec le Mode Conversation",
+    "subtitle": "Ne cherchez plus, explorez. Poursuivez la conversation avec l'IA pour affiner les résultats et découvrir plus d'informations.",
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1": {
+        "title": "Lancez une recherche",
+        "description": "Commencez avec n'importe quelle requête. Obtenez les premiers résultats et le résumé IA."
+      },
+      "step2": {
+        "title": "Activez la conversation",
+        "description": "Cliquez sur l'icône message dans la barre de recherche (disponible après la première recherche). La barre sera mise en évidence."
+      },
+      "step3": {
+        "title": "Posez votre question suivante",
+        "description": "Tapez votre question connexe. L'IA utilise le contexte précédent pour une réponse plus intelligente et pertinente."
+      }
+    },
+    "benefits": {
+      "title": "Pourquoi vous allez adorer",
+      "benefit1": {
+        "icon": "Brain",
+        "title": "Conscient du Contexte",
+        "description": "L'IA comprend le fil de la discussion, offrant des suivis pertinents."
+      },
+      "benefit2": {
+        "icon": "Zap",
+        "title": "Exploration Efficace",
+        "description": "Affinez rapidement votre recherche sans tout recommencer."
+      },
+      "benefit3": {
+        "icon": "MessageSquare",
+        "title": "Interaction Naturelle",
+        "description": "Comme une vraie conversation avec votre moteur de recherche."
+      }
+    },
+    "cta": "Découvrez la recherche intelligente"
+  }
+} 

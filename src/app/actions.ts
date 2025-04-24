@@ -8,11 +8,8 @@ import { createStreamableValue } from "ai/rsc";
 import {
   streamLLMResponse as streamCerebrasLLMResponse,
   generateRelatedQuestions as generateCerebrasRelatedQuestions,
+  generateFollowUpSearchQuery as generateCerebrasFollowUpSearchQuery,
 } from "@/lib/services/cerebrasLLM";
-import {
-  streamLLMResponse as streamGeminiLLMResponse,
-  generateRelatedQuestions as generateGeminiRelatedQuestions,
-} from "@/lib/services/geminiLLM";
 import { searchImagesWithBrave, ImageSearchResult } from "@/lib/services/braveImageSearch";
 import { intentDetector, QueryIntent } from "@/lib/services/intentDetector";
 import { getRedisClient } from "@/lib/redis";
@@ -34,6 +31,7 @@ export interface SearchResults {
   youtubeVideos: YouTubeVideoItem[];
   showYouTube: boolean;
   intentType: QueryIntent;
+  followUpQuery: string | null;
 }
 
 /**
@@ -113,139 +111,18 @@ export async function fetchImageResults(query: string, language: string = "fr") 
 }
 
 /**
- * Effectue une recherche complète avec streaming LLM via Gemini
- * @param query Termes de recherche
- * @returns Streamable avec tous les résultats
- */
-export async function fetchGeminiLLMResponse(query: string) {
-  const streamable = createStreamableValue<SearchResults>({
-    results: [],
-    messages: "",
-    videos: [],
-    showVideos: false,
-    news: [],
-    showNews: false,
-    relatedQuestions: [],
-    showRelated: false,
-    youtubeVideos: [],
-    showYouTube: false,
-    intentType: 'AI_ANSWER',
-  });
-
-  (async () => {
-    try {
-      const searchResponse = await searchWithBrave(query);
-      
-      const searchResults = searchResponse.results;
-      const videoResults = searchResponse.videos || [];
-      const newsResults = searchResponse.news || [];
-      
-      const youtubeVideos: YouTubeVideoItem[] = [];
-
-      const intent = intentDetector.classifyQueryIntent(query, searchResults);
-      console.log(`Classified Intent for "${query}": ${intent}`);
-
-      streamable.update({
-        results: searchResults,
-        messages: "",
-        videos: videoResults,
-        showVideos: videoResults.length > 0,
-        news: newsResults,
-        showNews: newsResults.length > 0,
-        relatedQuestions: [],
-        showRelated: false,
-        youtubeVideos,
-        showYouTube: false,
-        intentType: intent,
-      });
-
-      const llmStream = streamGeminiLLMResponse(query, searchResults);
-
-      let accumulatedText = "";
-
-      const reader = llmStream.textStream.getReader();
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-
-          if (done) {
-            break;
-          }
-
-          accumulatedText += value;
-
-          streamable.update({
-            results: searchResults,
-            messages: accumulatedText,
-            videos: videoResults,
-            showVideos: videoResults.length > 0,
-            news: newsResults,
-            showNews: newsResults.length > 0,
-            relatedQuestions: [],
-            showRelated: false,
-            youtubeVideos,
-            showYouTube: false,
-            intentType: intent,
-          });
-        }
-
-        const relatedQuestions = await generateGeminiRelatedQuestions(
-          query,
-          accumulatedText
-        );
-
-        const finalResult = {
-          results: searchResults,
-          messages: accumulatedText,
-          videos: videoResults,
-          showVideos: videoResults.length > 0,
-          news: newsResults,
-          showNews: newsResults.length > 0,
-          relatedQuestions,
-          showRelated: relatedQuestions.length > 0,
-          youtubeVideos,
-          showYouTube: false,
-          intentType: intent,
-        };
-        streamable.done(finalResult);
-
-      } catch (readerError) {
-        console.error("Error reading Gemini LLM stream:", readerError);
-        reader.releaseLock();
-        streamable.error(
-          readerError instanceof Error
-            ? readerError
-            : new Error("Erreur lors de la lecture du stream LLM Gemini")
-        );
-      } finally {
-        if (reader && typeof reader.releaseLock === 'function') {
-          try {
-            reader.releaseLock();
-          } catch (releaseError) {
-            console.warn("Error releasing reader lock in finally block:", releaseError);
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching Gemini search results:", error);
-      streamable.error(
-        error instanceof Error ? error : new Error("Une erreur est survenue lors de la recherche Gemini")
-      );
-    }
-  })();
-
-  return streamable.value;
-}
-
-/**
  * Effectue une recherche complète avec streaming LLM via Cerebras
- * @param query Termes de recherche
+ * @param queryUser Termes de recherche
  * @param language Langue des résultats (défaut: "fr")
  * @returns Streamable avec tous les résultats
  */
-export async function fetchSearchResults(query: string, language: string = "fr") {
+export async function fetchSearchResults(queryUser: string, language: string = "fr", history: { query: string, response: string } | null = null) {
   const streamable = createStreamableValue<SearchResults | null>(null);
+  let followUpQuery: string | null = null;
+  if (history) {
+    followUpQuery = await generateCerebrasFollowUpSearchQuery(queryUser, history, language);
+  }
+  const query = followUpQuery ? followUpQuery : queryUser;
   const cacheKey = generateCacheKey('query', query, language);
 
   (async () => {
@@ -278,7 +155,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
       const videoResults = searchResponse.videos || [];
       const newsResults = searchResponse.news || [];
       const youtubeVideos: YouTubeVideoItem[] = [];
-      const intent = intentDetector.classifyQueryIntent(query, searchResults);
+      const intent = history ? 'AI_ANSWER' : intentDetector.classifyQueryIntent(query, searchResults);
 
       streamable.update({
         results: searchResults,
@@ -292,6 +169,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
         youtubeVideos,
         showYouTube: false,
         intentType: intent,
+        followUpQuery: followUpQuery,
       });
 
       const llmStream = streamCerebrasLLMResponse(query, searchResults, language);
@@ -315,6 +193,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
             youtubeVideos,
             showYouTube: false,
             intentType: intent,
+            followUpQuery: followUpQuery,
           });
         }
       } finally {
@@ -339,6 +218,7 @@ export async function fetchSearchResults(query: string, language: string = "fr")
         youtubeVideos,
         showYouTube: false,
         intentType: intent,
+        followUpQuery: followUpQuery,
       };
 
       const updatedCacheData: CachedQueryData = { ...cachedQueryData, searchResults: finalResult };

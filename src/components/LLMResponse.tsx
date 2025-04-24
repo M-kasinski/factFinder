@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Lightbulb } from "lucide-react";
+import { Search } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -31,14 +31,14 @@ export function LLMResponse({
       transition={{ duration: 0.3 }}
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
+        {/* <h2 className="text-lg font-semibold flex items-center gap-2">
           <div className="p-2 rounded-full bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
             <Lightbulb className="h-4 w-4" />
           </div>
           <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             {t("tabs.answer")}
           </span>
-        </h2>
+        </h2> */}
         {onShowResults && (
           <Button 
             variant="outline" 

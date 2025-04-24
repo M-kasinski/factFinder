@@ -185,7 +185,7 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
   onShowAll,
   isLoading = false
 }) => {
-  const { t } = useTranslation("common");
+  // const { t } = useTranslation("common");
   
   // Afficher le skeleton loader pendant le chargement
   if (isLoading) {
@@ -241,12 +241,12 @@ const SourcesComponent: React.FC<SourcesComponentProps> = React.memo(({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.1 }}
     >
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <div className="p-1.5 rounded-full bg-primary/10">
           <LinkIcon className="h-3.5 w-3.5 text-primary/70" />
         </div>
         <h2 className="text-base font-semibold">{t("tabs.sources")}</h2>
-      </div>
+      </div> */}
       
       {/* --- Desktop Grid --- */}
       <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-4 gap-3 w-full">

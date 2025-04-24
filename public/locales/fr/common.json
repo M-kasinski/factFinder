@@ -36,6 +36,7 @@
   },
   "generating": "Génération de l'analyse en cours...",
   "relatedQuestions": "Questions connexes",
+  "followUpQuery": "Reformulation IA : {{query}}",
   "news": {
     "headline": "À la une",
     "source": "Source"
@@ -47,9 +48,15 @@
   "searchBar": {
     "placeholder": "Posez n'importe quelle question..."
   },
+  "continueConversation": "Continuer la conversation",
+  "stopConversation": "Arrêter la conversation",
+  "threadPlaceholder": "Continuer la conversation sur le sujet",
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
-    "theme": "Thème"
+    "theme": "Thème",
+    "showConversationFeature": "Afficher la section Fonctionnalités",
+    "system": "Système",
+    "light": "Clair"
   }
 }

@@ -28,7 +28,7 @@ import { ImageGallery } from "./ImageGallery";
 import { QueryIntent } from "@/lib/services/intentDetector";
 
 // Définir les valeurs possibles pour les onglets UI
-type UITab = 'response' | 'answer' | 'sources' | 'images' | 'videos';
+type UITab = "response" | "answer" | "sources" | "images" | "videos";
 
 interface SearchResultTabsProps {
   results: SearchResult[];
@@ -66,19 +66,20 @@ export function SearchResultTabs({
   intentType,
 }: SearchResultTabsProps) {
   const { t, i18n } = useTranslation("common");
-  const [localActiveTab, setLocalActiveTab] = useState<UITab>('response');
+  const [localActiveTab, setLocalActiveTab] = useState<UITab>("response");
   const initialTabSetForQuery = useRef<string | null>(null); // Ref pour savoir si on a déjà défini l'onglet pour la requête actuelle
 
   // États pour les vidéos YouTube
   const [youtubeLoaded, setYoutubeLoaded] = useState(false);
-  const [localYoutubeVideos, setLocalYoutubeVideos] = useState<
-    YouTubeVideoItem[]
-  >(youtubeVideos);
+  const [localYoutubeVideos, setLocalYoutubeVideos] =
+    useState<YouTubeVideoItem[]>(youtubeVideos);
   const [loadingYoutube, setLoadingYoutube] = useState(false);
 
   // États pour les images
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [localImageResults, setLocalImageResults] = useState<ImageSearchResult[]>([]);
+  const [localImageResults, setLocalImageResults] = useState<
+    ImageSearchResult[]
+  >([]);
   const [loadingImages, setLoadingImages] = useState(false);
 
   const [currentQuery, setCurrentQuery] = useState("");
@@ -119,25 +120,31 @@ export function SearchResultTabs({
 
     // Condition : Avoir une intention, une query associée aux résultats,
     // ET cette query doit être différente de celle pour laquelle on a déjà défini l'onglet.
-    if (intentType && queryFromResults && initialTabSetForQuery.current !== queryFromResults) {
-      let targetTab: UITab = 'response'; // Onglet par défaut
+    if (
+      intentType &&
+      queryFromResults &&
+      initialTabSetForQuery.current !== queryFromResults
+    ) {
+      let targetTab: UITab = "response"; // Onglet par défaut
 
-      switch(intentType) {
-        case 'DIRECT_SOURCE':
-          targetTab = 'sources';
+      switch (intentType) {
+        case "DIRECT_SOURCE":
+          targetTab = "sources";
           break;
-        case 'ANSWER':
+        case "ANSWER":
           // Pour les questions, montrer l'onglet answer qui contient la réponse LLM
-          targetTab = 'answer';
+          targetTab = "answer";
           break;
-        case 'AI_ANSWER':
+        case "AI_ANSWER":
         default:
           // Pour une réponse IA standard
-          targetTab = 'response';
+          targetTab = "response";
           break;
       }
 
-      console.log(`[Initial Tab Setter] Query: "${queryFromResults}", Intent: ${intentType} -> Setting initial tab: ${targetTab}`);
+      console.log(
+        `[Initial Tab Setter] Query: "${queryFromResults}", Intent: ${intentType} -> Setting initial tab: ${targetTab}`
+      );
       setLocalActiveTab(targetTab); // Définir l'état local
       initialTabSetForQuery.current = queryFromResults; // Mémoriser qu'on l'a fait pour cette query
     }
@@ -174,7 +181,10 @@ export function SearchResultTabs({
     setLoadingImages(true);
 
     try {
-      const streamableValue = await fetchImageResults(currentQuery, i18n.language); // Passer la langue
+      const streamableValue = await fetchImageResults(
+        currentQuery,
+        i18n.language
+      ); // Passer la langue
 
       // Lire les mises à jour du streamable
       for await (const update of readStreamableValue(streamableValue)) {
@@ -213,7 +223,15 @@ export function SearchResultTabs({
         onTabChange(tab);
       }
     },
-    [onTabChange, youtubeLoaded, loadingYoutube, loadYouTubeVideos, imagesLoaded, loadingImages, loadImageResults]
+    [
+      onTabChange,
+      youtubeLoaded,
+      loadingYoutube,
+      loadYouTubeVideos,
+      imagesLoaded,
+      loadingImages,
+      loadImageResults,
+    ]
   );
 
   // Nombre de sources pour l'affichage du badge
@@ -313,7 +331,7 @@ export function SearchResultTabs({
             data-state={localActiveTab === "videos" ? "active" : "inactive"}
           ></div>
         </TabsTrigger>
-      </TabsList> 
+      </TabsList>
 
       <TabsContent
         value="response"
@@ -353,18 +371,18 @@ export function SearchResultTabs({
         value="answer"
         className="mt-6 focus-visible:outline-none focus-visible:ring-0"
       >
-        <div className="space-y-8">
+        <div className="space-y-4">
+          <LLMResponse
+            isLoading={isLoading}
+            streamingContent={streamingContent || messages}
+          />
           <SourcesComponent
             results={results}
             isLoading={isLoading}
             onShowAll={() => setLocalActiveTab("sources")}
           />
-
-          <LLMResponse
-            isLoading={isLoading}
-            streamingContent={streamingContent || messages}
-          />
-
+        </div>
+        <div className="mt-8">
           <RelatedQuestions
             questions={relatedQuestions}
             isVisible={showRelated}
@@ -380,7 +398,10 @@ export function SearchResultTabs({
         <div>
           <div className="flex flex-col mb-4">
             <p className="text-xs text-muted-foreground">
-              <Trans i18nKey="results.resultsFound" values={{ count: sourceCount }} />
+              <Trans
+                i18nKey="results.resultsFound"
+                values={{ count: sourceCount }}
+              />
             </p>
           </div>
 
@@ -409,10 +430,7 @@ export function SearchResultTabs({
         value="images"
         className="mt-6 focus-visible:outline-none focus-visible:ring-0"
       >
-        <ImageGallery 
-          images={localImageResults} 
-          isLoading={loadingImages} 
-        />
+        <ImageGallery images={localImageResults} isLoading={loadingImages} />
       </TabsContent>
 
       <TabsContent

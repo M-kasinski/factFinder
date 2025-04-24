@@ -1,16 +1,25 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, MessageSquare } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   value: string;
   onChange: (value: string) => void;
+  isThreadMode?: boolean;
+  onToggleThread?: () => void;
+  threadAvailable?: boolean;
+  showThreadToggle?: boolean;
 }
 
-export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
+export function SearchBar({ onSearch, value, onChange, isThreadMode = false, onToggleThread = () => {}, threadAvailable = false, showThreadToggle = false }: SearchBarProps) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation("common");
@@ -25,12 +34,33 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit}>
-        <div className={`relative rounded-full border backdrop-blur-sm ${
-          isFocused 
-            ? 'border-primary shadow-lg ring-2 ring-primary/20' 
-            : 'border-input hover:border-primary/50 hover:shadow-md'
-          } transition-all duration-300 bg-background/80`}>
-          
+        <div className={`flex items-center gap-1 md:gap-2 rounded-full border backdrop-blur-sm px-2 md:px-3 py-1 md:py-2 transition-all duration-300 bg-background/80 ${
+            isThreadMode
+              ? 'border-primary shadow-sm ring-2 ring-primary/30'
+              : isFocused
+                ? 'border-primary shadow-lg ring-2 ring-primary/20'
+                : 'border-input hover:border-primary/50 hover:shadow-md'
+          }`}>  
+          {/* Mobile Thread Toggle Button (Inside) */}
+          {showThreadToggle && (
+            <button
+              type="button"
+              aria-pressed={isThreadMode}
+              aria-label={isThreadMode ? t('stopConversation') : t('continueConversation')}
+              onClick={() => {
+                onToggleThread?.();
+                onChange('');
+                inputRef.current?.focus();
+              }}
+              disabled={!threadAvailable}
+              className={`md:hidden p-1.5 rounded-full transition-colors ${ // Adjusted padding
+                isThreadMode ? 'bg-primary/20 text-primary' : 'text-primary/60 hover:bg-primary/10 hover:text-primary'
+              } ${!threadAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <MessageSquare className="h-5 w-5" />
+            </button>
+          )}
+          {/* Input flex */}
           <input
             ref={inputRef}
             type="text"
@@ -38,33 +68,64 @@ export function SearchBar({ onSearch, value, onChange }: SearchBarProps) {
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            // Ajout de enterKeyHint pour le clavier mobile
             enterKeyHint="search"
-            className="w-full py-3.5 md:py-4.5 pl-5 md:pl-6 pr-20 md:pr-24 rounded-full focus:outline-none text-lg md:text-xl bg-transparent"
-            placeholder={t("searchPlaceholder")}
+            className="flex-1 bg-transparent focus:outline-none text-base md:text-lg px-2 py-2"
+            placeholder={isThreadMode
+              ? 'Continuer la conversation sur le sujet'
+              : t('searchPlaceholder')}
           />
-
-          <div className="absolute inset-y-0 right-1.5 md:right-2.5 flex items-center space-x-1.5 md:space-x-2.5">
-            {value && (
-              <button 
-                type="button"
-                className="p-2 md:p-2.5 hover:bg-primary/10 rounded-full transition-colors"
-                onClick={() => {
-                  onChange('');
-                  // Mettre le focus sur l'input après avoir effacé
-                  setTimeout(() => inputRef.current?.focus(), 0);
-                }}
-                aria-label={t("clearSearch")}
-              >
-                <X className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-              </button>
-            )}
-            <button 
-              type="submit"
-              className="p-2 md:p-2.5 hover:bg-primary/10 rounded-full transition-colors"
-              aria-label={t("search")}
+          {/* Clear button */}
+          {value && (
+            <button
+              type="button"
+              className="p-1 md:p-2 hover:bg-primary/10 rounded-full transition-colors"
+              onClick={() => { onChange(''); setTimeout(() => inputRef.current?.focus(), 0); }}
+              aria-label={t('clearSearch')}
             >
-              <Search className="h-5 w-5 md:h-6 md:w-6 text-primary/80 hover:text-primary transition-colors" />
+              <X className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+            </button>
+          )}
+          {/* Mobile: search submit icon */}
+          <button
+            type="submit"
+            className="md:hidden p-2 rounded-full hover:bg-primary/10 transition-colors"
+            aria-label={t('search')}
+          >
+            <Search className="h-5 w-5 text-primary/80 hover:text-primary transition-colors" />
+          </button>
+          {/* Desktop: thread toggle + search */}
+          <div className="hidden md:flex items-center space-x-1">
+            {showThreadToggle && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-pressed={isThreadMode}
+                    aria-label={isThreadMode ? t('stopConversation') : t('continueConversation')}
+                    onClick={() => {
+                      onToggleThread?.();
+                      onChange('');
+                      inputRef.current?.focus();
+                    }}
+                    disabled={!threadAvailable}
+                    className={`p-2 rounded-full transition-colors ${
+                      isThreadMode ? 'bg-primary/20 text-primary' : 'text-primary/80 hover:bg-primary/10 hover:text-primary'
+                    } ${!threadAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <MessageSquare className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isThreadMode ? t('stopConversation') : t('continueConversation')}</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            <button
+              type="submit"
+              className="p-2 rounded-full hover:bg-primary/10 transition-colors"
+              aria-label={t('search')}
+            >
+              <Search className="h-5 w-5 text-primary/80 hover:text-primary transition-colors" />
             </button>
           </div>
         </div>

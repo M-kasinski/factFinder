@@ -19,12 +19,14 @@ import { QueryIntent } from "@/lib/services/intentDetector";
 function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation("common");
   const initialQuery = searchParams.get("q") || "";
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
   const [searchValue, setSearchValue] = useState(initialQuery);
   const isSearchingRef = useRef(false);
   const isInitialRenderRef = useRef(true);
+  // Conversation thread mode
+  const [isThreadMode, setIsThreadMode] = useState(false);
 
   // États pour stocker les résultats de recherche
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -40,9 +42,9 @@ function SearchPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [detectedIntent, setDetectedIntent] = useState<QueryIntent>('AI_ANSWER');
-
+  const [followUpQuery, setFollowUpQuery] = useState<string | null>(null);
   // Fonction pour effectuer la recherche avec useCallback
-  const performSearch = useCallback(async (query: string) => {
+  const performSearch = useCallback(async (query: string, history: { query: string, response: string } | null = null) => {
     if (!query.trim() || isSearchingRef.current) return;
 
     // Marquer que nous sommes en train de rechercher pour éviter les doublons
@@ -52,7 +54,7 @@ function SearchPageContent() {
 
     try {
       // Appel à la fonction de recherche avec streaming
-      const streamableValue = await fetchSearchResults(query, i18n.language);
+      const streamableValue = await fetchSearchResults(query, i18n.language, history);
 
       // Utiliser readStreamableValue pour lire les mises à jour du streamable
       for await (const update of readStreamableValue(streamableValue)) {
@@ -68,7 +70,7 @@ function SearchPageContent() {
           setShowRelated(update.showRelated || false);
           setYoutubeVideos(update.youtubeVideos || []);
           setShowYouTube(update.showYouTube || false);
-          
+          setFollowUpQuery(update.followUpQuery || null);
           // Mettre à jour l'intention détectée si disponible
           if (update.intentType) {
             setDetectedIntent(update.intentType);
@@ -98,6 +100,9 @@ function SearchPageContent() {
   const handleSearch = (query: string) => {
     if (!query.trim() || query === currentQuery) return;
 
+    // Build history context if in thread mode
+    const history = isThreadMode ? { query: currentQuery, response: messages } : null;
+
     // Reset states before starting the new search
     setResults([]);
     setMessages("");
@@ -111,6 +116,7 @@ function SearchPageContent() {
     setShowYouTube(false);
     setError(null);
     setIsLoading(true); // Show loading state immediately
+    setFollowUpQuery(null);
     // Réinitialiser l'intention pour la nouvelle recherche (déjà fait avant)
     // setDetectedIntent('AI_ANSWER');
 
@@ -125,7 +131,9 @@ function SearchPageContent() {
     setDetectedIntent('AI_ANSWER');
 
     // Effectuer la recherche
-    performSearch(query);
+    performSearch(query, history);
+    // Exit thread mode after submitting follow-up
+    setIsThreadMode(false);
   };
 
   useEffect(() => {
@@ -188,7 +196,14 @@ function SearchPageContent() {
             onSearch={handleSearch}
             value={searchValue}
             onChange={setSearchValue}
+            isThreadMode={isThreadMode}
+            onToggleThread={() => setIsThreadMode(prev => !prev)}
+            threadAvailable={messages.length > 0}
+            showThreadToggle={true}
           />
+          {followUpQuery && (
+            <p className="mt-2 ml-4 text-sm text-gray-500 dark:text-gray-300">{t("followUpQuery", { query: followUpQuery })}</p>
+          )}
         </div>
 
         <div className="mt-2 w-full max-w-3xl mx-auto">

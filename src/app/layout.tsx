@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { Analytics } from '@vercel/analytics/next';
 import I18nProvider from "@/i18n/I18nProvider";
 import ClientLayout from "./client-layout";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -43,12 +44,14 @@ export default function RootLayout({
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <I18nProvider>
-            <ClientLayout>
-              <main className="flex-1 flex flex-col w-full">    
-                {children}
-                <Analytics />
-              </main>
-            </ClientLayout>
+            <TooltipProvider>
+              <ClientLayout>
+                <main className="flex-1 flex flex-col w-full">    
+                  {children}
+                  <Analytics />
+                </main>
+              </ClientLayout>
+            </TooltipProvider>
             <Toaster richColors closeButton position="top-center" />
           </I18nProvider>
         </ThemeProvider>
