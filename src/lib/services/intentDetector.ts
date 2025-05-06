@@ -4,104 +4,86 @@ import Levenshtein from "fast-levenshtein";
 /**
  * Type pour l'intention de recherche détectée
  */
-export type QueryIntent = 'AI_ANSWER' | 'DIRECT_SOURCE' | 'ANSWER';
+export type QueryIntent = "AI_ANSWER" | "DIRECT_SOURCE" | "ANSWER";
 
 /**
- * Service pour détecter l'intention de recherche de l'utilisateur
+ * Liste bilingue (FR / EN) de mots interrogatifs détectés en début de requête.
+ * Pour les expressions composées (« how many », « combien de »), on se contente
+ * du premier mot clé (« how », « combien »), suffisant pour classer en ANSWER.
+ */
+const INTERROGATIVE_PREFIX = /^(combien|comment|qu(?:e|and|oi|els?|elles?)|pourquoi|où|quel(?:le|les|s)?|how|what|when|why|where|which|who|whom|whose)\b/;
+
+/**
+ * Service pour détecter l'intention de recherche de l'utilisateur – amélioration rapide.
+ * ▶  Nouveautés:
+ *   1. Reconnaît les questions sans point d'interrogation (FR + EN).
+ *   2. Seuil Levenshtein dynamique (<=2 ou <=3% de la longueur du mot).
+ *   3. Extraction de domaine plus robuste (gère .co.uk, .gouv.fr, etc.).
  */
 export class IntentDetector {
-  /**
-   * Normalise la requête pour la comparaison
-   */
+  /** Normalise la requête pour la comparaison */
   private normalizeQuery(query: string): string {
     return query.trim().toLowerCase();
   }
 
   /**
-   * Normalise le nom de domaine pour la comparaison
+   * Normalise le nom de domaine pour la comparaison – garde le "core" du domaine.
+   * Ex. "assure.ameli.fr" -> "ameli", "www.gov.co.uk" -> "gov".
    */
   private normalizeDomain(hostname: string | undefined): string | null {
     if (!hostname) return null;
-    // Enlève www. et le TLD (.com, .fr, etc.) pour une comparaison plus robuste
-    const cleanedHost = hostname.replace(/^www\./, '');
-    const parts = cleanedHost.split('.');
-    
-    //retourne la partie principale (ex: 'ameli' pour 'assure.ameli.fr')
+    const cleaned = hostname.replace(/^www\./, "");
+    const parts = cleaned.split(".");
     if (parts.length > 2) {
-        return parts[1];
+      return parts[parts.length - 2]; // avant le TLD final
     }
-    // Retourne la partie principale (ex: 'amazon' pour 'amazon.fr')
-    return parts.length > 1 ? parts[0] : cleanedHost;
+    return parts.length > 1 ? parts[0] : cleaned;
   }
 
-  /**
-   * Classifie l'intention de la requête à partir des résultats de recherche
-   * @param query La requête de l'utilisateur
-   * @param webResults Les résultats de recherche web
-   * @returns L'intention détectée (AI_ANSWER, DIRECT_SOURCE ou ANSWER)
-   */
+  /** Calcule un seuil levenshtein proportionnel à la longueur du mot */
+  private dynThreshold(word: string): number {
+    return Math.max(2, Math.round(word.length * 0.25)); // 25% ou 2 caractères mini
+  }
+
+  /** Classifie l'intention */
   public classifyQueryIntent(query: string, webResults: SearchResult[]): QueryIntent {
-    const trimmedQuery = this.normalizeQuery(query); // Normaliser une seule fois au début
+    const trimmed = this.normalizeQuery(query);
 
-    // --- LOGIQUE 0 : Détection de Question (Priorité Haute) ---
-    if (trimmedQuery.endsWith('?')) {
-      console.log(`Intent Signal (Question Mark): Query ends with '?'`);
-      return 'ANSWER'; // Retourner ANSWER directement si la requête se termine par ?
+    // 1️⃣ Détection rapide de question (même sans '?')
+    if (trimmed.endsWith("?") || INTERROGATIVE_PREFIX.test(trimmed)) {
+      return "ANSWER";
     }
 
-    // --- Initialisation et Gardes (si ce n'est pas une question) ---
-    if (!webResults || webResults.length === 0) {
-      return 'AI_ANSWER'; // Pas de résultats, on ne peut pas classifier -> Défaut IA
-    }
+    // 2️⃣ Pas de résultat – on laisse l'IA répondre
+    if (!webResults?.length) return "AI_ANSWER";
 
-    const firstResult = webResults[0];
-    const normalizedDomainBase = this.normalizeDomain(firstResult.meta_url?.hostname);
-    // Utiliser trimmedQuery déjà calculé
-    const queryWords = trimmedQuery.toLowerCase().split(/\s+/).filter(Boolean);
+    const first = webResults[0];
+    const domainCore = this.normalizeDomain(first.meta_url?.hostname);
+    if (!domainCore) return "AI_ANSWER";
 
-    if (!normalizedDomainBase) {
-      return 'AI_ANSWER'; // Impossible d'extraire le domaine -> Défaut IA
-    }
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    let navigational = false;
 
-    const LEVENSHTEIN_THRESHOLD = 2; // Seuil à ajuster
-    let isNavigational = false; // Flag pour le résultat
-
-    // --- LOGIQUE 1 : Comparaison Mot par Mot ---
-    for (const word of queryWords) {
-      const dist = Levenshtein.get(word, normalizedDomainBase);
-      console.log(`Word Check - Distance between '${word}' and '${normalizedDomainBase}': ${dist}`);
-      // Si la distance est 0 (match exact) OU très faible
-      if (dist <= LEVENSHTEIN_THRESHOLD) {
-        // Condition supplémentaire : vérifier que le mot comparé est significatif
-        if (word.length > 2 && normalizedDomainBase.length > 2) {
-          isNavigational = true;
-          console.log(`Intent Signal (Word): Word '${word}' matched domain '${normalizedDomainBase}' with distance ${dist}`);
-          break; // Sortir dès qu'un match est trouvé
-        }
+    for (const tok of tokens) {
+      const dist = Levenshtein.get(tok, domainCore);
+      if (dist <= this.dynThreshold(tok) && tok.length > 2 && domainCore.length > 2) {
+        navigational = true;
+        break;
       }
     }
 
-    // --- LOGIQUE 2 : Vérification par Concaténation (si Logique 1 n'a pas réussi ET requête courte) ---
-    // On ajoute cette vérification si la première n'a rien donné ET si la requête est courte (2 ou 3 mots)
-    if (!isNavigational && (queryWords.length === 2 || queryWords.length === 3)) {
-      const concatenatedQuery = queryWords.join(''); // Ex: ["atnt", "paris"] -> "atntparis"
-      const distConcat = Levenshtein.get(concatenatedQuery, normalizedDomainBase);
-      console.log(`Concat Check - Distance between '${concatenatedQuery}' and '${normalizedDomainBase}': ${distConcat}`);
-
-      // Vérifier si la distance est suffisamment faible
-      if (distConcat <= LEVENSHTEIN_THRESHOLD) {
-        // Vérifier si les chaînes comparées ne sont pas trop courtes
-        if (concatenatedQuery.length > 3 && normalizedDomainBase.length > 3) {
-          isNavigational = true;
-          console.log(`Intent Signal (Concat): Concatenated query '${concatenatedQuery}' matched domain '${normalizedDomainBase}' with distance ${distConcat}`);
-        }
+    // 3️⃣ Vérif concaténée uniquement si pas déjà navigationnel et peu de mots
+    if (!navigational && tokens.length <= 3) {
+      const concat = tokens.join("");
+      const distC = Levenshtein.get(concat, domainCore);
+      if (distC <= this.dynThreshold(concat) && concat.length > 3 && domainCore.length > 3) {
+        navigational = true;
       }
     }
 
-    // --- Décision Finale (si ce n'était pas une question) ---
-    return isNavigational ? 'DIRECT_SOURCE' : 'AI_ANSWER';
+    return navigational ? "DIRECT_SOURCE" : "AI_ANSWER";
   }
 }
 
-// Exportation d'une instance unique du service
-export const intentDetector = new IntentDetector(); 
+export const intentDetector = new IntentDetector();
+
