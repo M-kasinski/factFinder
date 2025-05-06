@@ -172,7 +172,7 @@ export async function fetchSearchResults(queryUser: string, language: string = "
         followUpQuery: followUpQuery,
       });
 
-      const llmStream = streamCerebrasLLMResponse(query, searchResults, language);
+      const llmStream = streamCerebrasLLMResponse(queryUser, searchResults, language);
       let accumulatedText = "";
       const reader = llmStream.textStream.getReader();
 
