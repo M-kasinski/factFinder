@@ -113,7 +113,7 @@ Question originale: ${query}
 Contexte:
 ${context}
 
-Génère exactement 5 questions connexes et courte, une par ligne, sans numérotation ni préfixe. Chaque question doit être concise et en français.
+Génère exactement 5 questions connexes et courtes, une par ligne, sans numérotation ni préfixe. Chaque question doit être concise et en français.
 `,
       en: `
 You are a search assistant helping to explore a topic. Based on the user's question and the LLM's response, generate 5 related questions that the user might want to explore next.
