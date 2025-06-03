@@ -407,16 +407,13 @@ export function SearchResultTabs({
 
           {results.length > 0 ? (
             <div className="flex flex-col space-y-4">
-              {results.map((result, index) => (
-                <div
-                  key={result.url || index}
-                  className="relative group cursor-pointer"
-                  onClick={() => window.open(result.url, "_blank")}
-                >
-                  <SerpLink {...formatResult(result)} onClick={undefined} />
-                </div>
-              ))}
-            </div>
+                {results.map((result, index) => (
+                  <SerpLink
+                    key={result.url || index}
+                    {...formatResult(result)}
+                  />
+                ))}
+              </div>
           ) : (
             <div className="py-8 text-center text-muted-foreground flex flex-col items-center gap-2">
               <Link className="h-8 w-8 text-muted-foreground/50" />
