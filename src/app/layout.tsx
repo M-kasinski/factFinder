@@ -42,7 +42,22 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-screen flex flex-col`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="legacy-light"
+          themes={[
+            "legacy-light",
+            "legacy-dark",
+            "standard-light",
+            "standard-dark",
+          ]}
+          value={{
+            "legacy-light": "legacy-light",
+            "legacy-dark": "legacy-dark dark",
+            "standard-light": "standard-light",
+            "standard-dark": "standard-dark dark",
+          }}
+        >
           <I18nProvider>
             <TooltipProvider>
               <ClientLayout>
