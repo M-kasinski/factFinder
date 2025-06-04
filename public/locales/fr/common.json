@@ -58,6 +58,10 @@
     "showConversationFeature": "Afficher la section Fonctionnalités",
     "system": "Système",
     "light": "Clair",
+    "legacyLight": "Legacy Clair",
+    "legacyDark": "Legacy Sombre",
+    "standardLight": "Standard Clair",
+    "standardDark": "Standard Sombre",
     "searchBarPosition": "Position Barre Recherche",
     "positionTop": "Haut",
     "positionBottom": "Bas"
