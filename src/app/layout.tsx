@@ -7,6 +7,7 @@ import { Analytics } from '@vercel/analytics/next';
 import I18nProvider from "@/i18n/I18nProvider";
 import ClientLayout from "./client-layout";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { DarkClassSync } from "@/components/DarkClassSync";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -53,11 +54,12 @@ export default function RootLayout({
           ]}
           value={{
             "legacy-light": "legacy-light",
-            "legacy-dark": "legacy-dark dark",
+            "legacy-dark": "legacy-dark",
             "standard-light": "standard-light",
-            "standard-dark": "standard-dark dark",
+            "standard-dark": "standard-dark",
           }}
         >
+          <DarkClassSync />
           <I18nProvider>
             <TooltipProvider>
               <ClientLayout>
